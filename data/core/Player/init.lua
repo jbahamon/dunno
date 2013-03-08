@@ -6,6 +6,7 @@ local Element = require 'data.core.Element'
 
 local PlayerState = require 'data.core.Player.PlayerState'
 local Jump = require 'data.core.CommonStates.Jump'
+local Climb = require 'data.core.CommonStates.Climb'
 
 local anim8 = require 'lib.anim8'
 
@@ -26,16 +27,6 @@ local Player = Class {
 		end	
 }
 
-function Player:setSpriteData(sprites, spriteSizeX, spriteSizeY)
-	self.spriteSizeX = spriteSizeX
-	self.spriteSizeY = spriteSizeY
-	self.sprites = love.graphics.newImage(sprites)
-	self.spritesGrid = anim8.newGrid(self.spriteSizeX,
-                                         self.spriteSizeY,
-                                         self.sprites:getWidth(),
-                                         self.sprites:getHeight())
-end
-
 function Player:setControls(bindings) 
 	self.binds.keys = bindings
 end
@@ -46,14 +37,15 @@ function Player:update(dt)
 end
 
 
-function Player:addBasicStates(standParams, walkParams, jumpParams, fallParams)
+function Player:addBasicStates(standParams, walkParams, jumpParams, fallParams, climbParams)
 
     local walk, stand, fall, jump 
 
     stand = PlayerState("stand", standParams.dynamics, anim8.newAnimation(unpack(standParams.animationData)))
     walk = PlayerState("walk", walkParams.dynamics, anim8.newAnimation(unpack(walkParams.animationData)))
     jump = Jump("jump", jumpParams.dynamics, anim8.newAnimation(unpack(jumpParams.animationData)))
-    fall = PlayerState("fall", fallParams.dynamics, anim8.newAnimation(unpack(jumpParams.animationData)))
+    fall = PlayerState("fall", fallParams.dynamics, anim8.newAnimation(unpack(fallParams.animationData)))
+    climb = Climb("climb", climbParams.dynamics, anim8.newAnimation(unpack(climbParams.animationData)))
 
     walk:addTransition( 
     	function(currentState, collisionFlags) 
@@ -91,11 +83,48 @@ function Player:addBasicStates(standParams, walkParams, jumpParams, fallParams)
     	end,
     	"fall")
 
+    stand:addTransition(
+        function (currentState, collisionFlags)
+            local ladder = collisionFlags.specialEvents.ladder
+            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
+                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 0)
+                return true
+            else
+                return false
+            end
+        end,   
+        "climb")
+
+    stand:addTransition(
+        function (currentState, collisionFlags)
+            local ladder = collisionFlags.specialEvents.standingOnLadder
+            if ladder and currentState.owner.control["down"] then
+                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 
+                                        ladder.position.y - currentState.dynamics.position.y)
+                return true
+            else
+                return false
+            end
+        end,   
+        "climb")
+
 	fall:addTransition( 
     	function(currentState, collisionFlags) 
     		return not collisionFlags.canMoveDown
     	end,
     	"stand")
+
+	fall:addTransition(
+		function (currentState, collisionFlags)
+		    local ladder = collisionFlags.specialEvents.ladder
+		    if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
+		        currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 0)
+		        return true
+		    else
+		        return false
+		    end
+		end,   
+		"climb")
 
     jump:addTransition( 
         function(currentState, collisionFlags) 
@@ -109,19 +138,38 @@ function Player:addBasicStates(standParams, walkParams, jumpParams, fallParams)
         end,
         "fall")
 
+    jump:addTransition(
+        function (currentState, collisionFlags)
+            local ladder = collisionFlags.specialEvents.ladder
+            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
+                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 0)
+                return true
+            else
+                return false
+            end
+        end,   
+        "climb")
+
+    climb:addTransition(
+        function (currentState, collisionFlags)
+            return currentState.owner.control.tap["jump"] or not collisionFlags.specialEvents.ladder
+        end,
+        "fall")
+
 
     self:addState(walk)
     self:addState(stand)
     self:addState(fall)
     self:addState(jump)
+    self:addState(climb)
 
-    return walk, stand, jump, fall
+    return walk, stand, jump, fall, climb
 end
 
 
----------------------------------------
+--=====================================
 -- Static functions
----------------------------------------
+--=====================================
 
 Player.characterFolder = 'characters/'
 
@@ -194,34 +242,44 @@ function Player.loadFromFolder(path, tileCollider, activeCollider)
 	local states = parameters.states
 
 	if parameters.includeBasicStates then
+		
+		assert(states.stand and states.walk and states.jump and states.fall and states.climb,
+			"All five basic states must be specified for basic state inclusion")
 
-		assert(states.stand and states.walk and states.jump and states.fall
-				and states.stand.dynamics and states.walk.dynamics and states.jump.dynamics and states.fall.dynamics
-				and states.stand.animation and states.walk.animation and states.jump.animation and states.fall.animation,
-				"All four basic state dynamics and animations must be specified for basic state inclusion")
+		assert(states.stand.dynamics and states.walk.dynamics and states.jump.dynamics and states.fall.dynamics and states.climb.dynamics,
+			"All five basic state dynamics must be specified for basic state inclusion")
+		assert(states.stand.animation and states.walk.animation and states.jump.animation and states.fall.animation and states.climb.animation,
+				"All five basic state animations must be specified for basic state inclusion")
 
-		local statesData = {stand = {}, walk = {}, jump = {}, fall = {}}
+		local statesData = {stand = {}, walk = {}, jump = {}, fall = {}, climb = {}}
 
-		for _, state in ipairs({"stand", "walk", "jump", "fall"}) do
-			assert(states[state].animation and states[state].animation.mode and states[state].animation.frames 
-				and states[state].animation.defaultDelay, "Missing arguments in animation data")
+		for stateName, state in pairs(statesData) do
+			assert(states[stateName].animation and states[stateName].animation.mode and states[stateName].animation.frames 
+				and states[stateName].animation.defaultDelay, "Missing arguments in animation data")
 			
-			statesData[state].animationData = {
-				states[state].animation.mode, 
-				player.spritesGrid(states[state].animation.frames),
-				states[state].animation.defaultDelay,
-				states[state].animation.delays or {},
-				states[state].animation.flippedH or false,
-				states[state].animation.flippedV or false
+			local frames 
+			if type(states[stateName].animation.frames) == "table" then
+				frames = player.spritesGrid(unpack(states[stateName].animation.frames))
+			else
+				frames = player.spritesGrid(states[stateName].animation.frames)
+			end 
+
+			state.animationData = {
+				states[stateName].animation.mode, 
+				frames,
+				states[stateName].animation.defaultDelay,
+				states[stateName].animation.delays or {},
+				states[stateName].animation.flippedH or false,
+				states[stateName].animation.flippedV or false
 			}
 
-			assert(love.filesystem.isFile(folder .. "/" .. states[state].dynamics), "Dynamics file \'".. folder .. "/" .. states[state].dynamics .. "\'does not exist")
+			assert(love.filesystem.isFile(folder .. "/" .. states[stateName].dynamics), "Dynamics file \'".. folder .. "/" .. states[stateName].dynamics .. "\'does not exist")
 
-			statesData[state].dynamics = love.filesystem.load(folder .. "/" .. states[state].dynamics)()
+			state.dynamics = love.filesystem.load(folder .. "/" .. states[stateName].dynamics)()
 
 		end
 
-		player:addBasicStates(statesData.stand, statesData.walk, statesData.jump, statesData.fall)
+		player:addBasicStates(statesData.stand, statesData.walk, statesData.jump, statesData.fall, statesData.climb)
 	end
 
 	------------------------------------
@@ -233,9 +291,18 @@ function Player.loadFromFolder(path, tileCollider, activeCollider)
 		assert(stateParams.animation and stateParams.animation.mode and stateParams.animation.frames 
 				and stateParams.animation.defaultDelay, "Missing animation data for state \'" .. stateName .. "\'.")
 
-		local isBaseState = stateName == "stand" or stateName == "walk" or stateName == "jump" or stateName == "fall"
+		local isBaseState = stateName == "stand" or stateName == "walk" or stateName == "jump" or stateName == "fall" or stateName == "climb"
 
 		if stateParams.class or (not isBaseState)  then --non basic state or overriden basic state
+
+			local frames 
+
+			if type(stateParams.animation.frames) == "table" then
+				frames = player.spritesGrid(unpack(stateParams.animation.frames))
+			else
+				frames = player.spritesGrid(stateParams.animation.frames)
+			end 
+
 
 			local animation = anim8.newAnimation( stateParams.animation.mode, 
 													player.spritesGrid(stateParams.animation.frames),
@@ -264,9 +331,6 @@ function Player.loadFromFolder(path, tileCollider, activeCollider)
 			newState = CustomState(stateName, dynamics, animation)
 
 			player:addState(newState)
-
-			print(newState.name)
-			print(newState.addTransition)
 
 		end
 	end

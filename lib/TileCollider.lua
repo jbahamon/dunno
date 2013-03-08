@@ -92,4 +92,4 @@ function TileCollider:update(dt)
 
 end
 
-return TileCollider
+return TileCollider	

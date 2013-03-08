@@ -1,5 +1,6 @@
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
+local anim8 = require 'lib.anim8'
 
 local GeometryUtils = require 'lib.GeometryUtils'
 local shapes = require 'lib.HardonCollider.shapes'
@@ -51,17 +52,16 @@ local Element = Class {
 -- Drawing
 -----------------------------------------------------------------
 
-function Element:setSpriteData(sprites)
-	self.sprites = love.graphics.newImage(sprites.sheet)
-	self.spriteSizeX = sprites.spriteSize.x
-	self.spriteSizeX = sprites.spriteSize.y
-
-	self.spritesGrid = anim8.newGrid(self.spriteSize.x,
-	                    self.spriteSize.y,
-	                    self.sprites:getWidth(),
-	                    self.sprites:getHeight())
+function Element:setSpriteData(sprites, spriteSizeX, spriteSizeY)
+	self.spriteSizeX = spriteSizeX
+	self.spriteSizeY = spriteSizeY
+	self.sprites = love.graphics.newImage(sprites)
+	self.sprites:setFilter('nearest', 'nearest')
+	self.spritesGrid = anim8.newGrid(self.spriteSizeX,
+                                         self.spriteSizeY,
+                                         self.sprites:getWidth(),
+                                         self.sprites:getHeight())
 end
-
 
 function Element:draw()
 	if self.currentState.draw then
@@ -74,6 +74,7 @@ function Element:draw()
     end
 
 end
+
 -----------------------------------------------------------------
 -- Positioning, dynamics
 -----------------------------------------------------------------
@@ -102,6 +103,10 @@ end
 
 function Element:getVelocity()
 	return self.currentState.dynamics.velocity
+end
+
+function Element:center()
+	return self.currentCollisionBox:center()
 end
 
 -----------------------------------------------------------------
@@ -173,6 +178,43 @@ end
 -----------------------------------------------------------------
 -- Collisions
 -----------------------------------------------------------------
+function Element:moveIntoCollidingBox(box)
+	local collisionBox = self:getCollisionBox()
+
+
+	local collides, dx, dy = collisionBox:collidesWith(box)
+
+	if not collides then
+		return
+	end
+
+	local playerCenter = vector(self:center())
+	local boxCenter = vector(box:center())
+
+	local displacement, direction
+	if math.abs(dx) > math.abs(dy) then
+
+		if playerCenter.x < boxCenter.x then
+			direction = 1
+		else 
+			direction = -1
+		end
+
+		displacement = vector((self.width - math.abs(dx)), 0)
+	else
+
+		if playerCenter.y < boxCenter.y then
+			direction = 1
+		else 
+			direction = -1
+		end
+
+		displacement = vector(0, (self.height - math.abs(dy)))
+	end
+
+	self:move((displacement * direction):unpack())
+
+end
 
 function Element:resetCollisionFlags()
 	self.collisionFlags.canMoveLeft = true
@@ -187,14 +229,10 @@ end
 function Element:onTileCollide(dt, tileElement, tile, x, y)
 
 	if tile.properties.solid or tile.properties.oneWayPlatform or tile.properties.ladder then
-		local x1,y1, x2,y2 = self.currentCollisionBox:bbox()
-
-		local tileX1,tileY1, tileX2,tileY2 = tileElement:bbox()
-
-		local collides, dx, dy = tileElement
+		
 		local collisionEvent = { x = x, y = y, tile = tile }
 
-		collisionEvent.area = GeometryUtils.getCollisionArea(x1, y1, x2, y2, tileX1, tileY1, tileX2, tileY2)
+		collisionEvent.area = GeometryUtils.getCollisionArea(tileElement, self:getCollisionBox())
 
 		table.insert(self.pendingCollisions, collisionEvent)
 
@@ -295,12 +333,22 @@ function Element:setCollisionBox(collisionBox)
 	self.currentCollisionBox.parent = self
 	self.currentCollisionBox.active = true
 
+	local x1, y1, x2, y2 = collisionBox:bbox()
+
+	self.width = x2 - x1
+	self.height = y2 - y1
+
 	--this if should be removed
 	if self.activeCollider then
 		self.activeCollider:setSolid(self.currentCollisionBox)
 	end
 
 end
+
+function Element:getCollisionBox(collisionBox)
+	return self.currentCollisionBox
+end
+
 
 function Element:disableTileCollisions()
 	if self.currentCollisionBox then

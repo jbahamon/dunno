@@ -1,5 +1,6 @@
 local vector = require 'lib.hump.vector'
 
+print("Holi")
 local params = {
 	
 	includeBasicStates = true,
@@ -11,8 +12,8 @@ local params = {
 
 	sprites = {
 		sheet = "Sprites.png",
-		spriteSizeX = 33,
-		spriteSizeY = 34
+		spriteSizeX = 66,
+		spriteSizeY = 68
 	},
 
 	states = {
@@ -26,6 +27,30 @@ local params = {
 			},
 
 			transitions = {
+				{ 	condition = 
+						function (currentState, collisionFlags)
+				            local ladder = collisionFlags.specialEvents.ladder
+				            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
+				                currentState.owner.move(ladder.position.x - currentState.dynamics.position.x, 0)
+				                return true
+				            else
+				                return false
+				            end
+				        end,
+			    	targetState = "climb" },
+
+			    { 	condition = 
+			    	    function (currentState, collisionFlags)
+                	        local ladder = collisionFlags.specialEvents.standingOnLadder
+				            if ladder and currentState.owner.control["down"] then
+				                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 
+			                                            ladder.position.y - currentState.dynamics.position.y)
+				                return true
+				            else
+				                return false
+				            end
+				        end,
+			        targetState = "climb" },
 
 			    { 	condition = 
 			        	function (currentState, collisionFlags)
@@ -59,7 +84,19 @@ local params = {
 			        	function(currentState, collisionFlags) 
 			            	return currentState.owner.control["attack"]
 			        	end,
-			        targetState = "pogoFall" }
+			        targetState = "pogoFall" },
+
+				{ 	condition = 
+			    	    function (currentState, collisionFlags)
+				            local ladder = collisionFlags.specialEvents.ladder
+				            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
+				                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 0)
+				                return true
+				            else
+				                return false
+				            end
+				        end,
+			        targetState = "climb" }
 			}
 		},
 
@@ -86,7 +123,7 @@ local params = {
 				            end
 				        end,
         			targetState = "climb" },
-				{ 	condition = 
+			 	{ 	condition = 
 			        	function(currentState, collisionFlags) 
 			            	return (not currentState.owner.control["jump"]) or (currentState.jumpTimer > currentState.dynamics.jumpTime)
 			        	end,
@@ -234,7 +271,7 @@ local params = {
 				mode = "loop",
 				frames = "1-2,13",
 				defaultDelay = 8/60.0
-			},
+			}
 		}
 
 	},	

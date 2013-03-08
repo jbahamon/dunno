@@ -10,7 +10,8 @@ local DynamicCollider = require 'lib.HardonCollider'
 local TileCollider = require 'lib.TileCollider'
 
 function love.load()
-	currentStage = Stage()
+
+	currentStage = Stage.loadFromFolder("TomahawkMan")
 	dynamicCollider = DynamicCollider(100, onDynamicCollide)
 	tileCollider = TileCollider(currentStage)
 
@@ -18,12 +19,13 @@ function love.load()
 									tileCollider,
 									dynamicCollider)
 
-	player:setStartingPosition(currentStage:getStartingPosition():unpack())
+	currentStage:initPlayer(player)
 	player:start()
 
 	local stageSize = currentStage:getPixelSize()
-	camera = Camera.new(0, 0, stageSize.x, stageSize.y)
-	camera:setScale(2.0)
+
+	camera = Camera.new(currentStage:getBounds())	
+	camera:setScale(2)
 
 end
 
@@ -31,7 +33,7 @@ end
 function love.draw()
 
 	love.graphics.setColor(255, 255, 255, 255)
-
+	camera:setWorld(currentStage:getBounds())
 	camera:setPosition(player:getPosition():unpack())
 	camera:draw(drawWorldElements)
 
@@ -64,6 +66,12 @@ function love.update(dt)
     -- We check for state changes after everything is done.
     player:checkStateChange()
 
+    local roomChange = currentStage:checkRoomChange(player)
+
+    if roomChange then
+    	player:moveIntoCollidingBox(roomChange.nextRoom)
+    	camera:setWorld(currentStage:getBounds())
+    end
 
 end
 

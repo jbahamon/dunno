@@ -117,9 +117,9 @@ end
 
 function ElementState:draw()
 	self.animation:draw(self.owner.sprites,
-	                    self.dynamics.position.x - self.owner.spriteSizeX/4,
-                       	self.dynamics.position.y - self.owner.spriteSizeY/2,
-                       	0, 0.5, 0.5)
+	                    self.dynamics.position.x - self.owner.spriteSizeX/2,
+                       	self.dynamics.position.y - self.owner.spriteSizeY,
+                       	0, 1, 1)
 end
 
 function ElementState:checkStateChange(collisionFlags)
