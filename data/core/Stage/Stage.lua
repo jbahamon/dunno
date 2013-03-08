@@ -8,16 +8,11 @@ local Stage = Class {
 	name = 'Stage',
 
 	init = 
-		function (self, mapPath, params) 
+		function (self, mapPath) 
 			self.loader = require 'lib.AdvTileLoader.Loader'
 			self:setMap(mapPath)
 			self.rooms = {}
 			self.defaultRoom = "_defaultRoom"
-			self:setStartingPosition(params.startingPosition)
-
-			for _, room in ipairs(params.rooms) do
-				self:addRoom(room)
-			end
 		end
 }
 
@@ -52,14 +47,16 @@ end
 -- Room Handling
 -----------------------------------------------------------------
 
-function Stage:addRoom(roomCoords)
-	local topLeft =  roomCoords.topLeft 
-	local bottomRight =  roomCoords.bottomRight + vector(1,1)
-
-	table.insert(self.rooms, shapes.newPolygonShape( topLeft.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
+function Stage:addRoom(roomParams)
+	local topLeft =  roomParams.topLeft 
+	local bottomRight =  roomParams.bottomRight + vector(1,1)
+	local newRoom = shapes.newPolygonShape( topLeft.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
 												 	 bottomRight.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
 													 bottomRight.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight,
-													 topLeft.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight ))
+													 topLeft.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight )
+
+	newRoom.avoidFocus = roomParams.avoidFocus
+	table.insert(self.rooms, newRoom)
 end
 
 function Stage:initPlayer(player)
@@ -122,7 +119,7 @@ function Stage:checkRoomChange(player)
 	local previousRoom = self.currentRoom
 	
 	for _, room in ipairs(collidingRooms) do
-		if room.box ~= previousRoom then
+		if room.box ~= previousRoom and not room.box.avoidFocus then
 			self.currentRoom = room.box
 			return {previousRoom = previousRoom, nextRoom = self.currentRoom}
 		end	
@@ -203,6 +200,19 @@ function Stage.loadFromFolder(folderName)
 	local mapPath = folder .. "/" ..parameters.map
 	local stage = Stage(mapPath, parameters)
 
+	assert(parameters.startingPosition and vector.isvector(parameters.startingPosition), 
+		"Missing parameter \'startingPosition\' or parameter is not a vector.")
+
+	stage:setStartingPosition(parameters.startingPosition)
+
+	if parameters.rooms then
+		assert (type(parameters.rooms) == "table", "\'rooms\' parameter must be an array")
+		for _, room in ipairs(parameters.rooms) do
+			assert(room.topLeft and room.bottomRight and vector.isvector(room.topLeft) and vector.isvector(room.bottomRight), 
+				"Room must specify top left and bottom right corners as vectors.")
+			stage:addRoom(room)
+		end
+	end
 	return stage
 
 end

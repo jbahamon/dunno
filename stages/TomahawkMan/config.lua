@@ -48,7 +48,8 @@ local stageParameters ={
 					bottomRight = vector(208, 48) },					
 
 				{ 	topLeft = vector(177, 32),
-					bottomRight = vector(192, 46) },
+					bottomRight = vector(192, 46),
+					avoidFocus = true },
 
 				{ 	topLeft = vector(193, 17),
 					bottomRight = vector(224, 31) },
@@ -70,9 +71,9 @@ local stageParameters ={
 
 		},
 
-	roomTransitionMode = "cinematic", -- , "fadeToBlack", --zoomFade
+	roomTransitionMode = "none", -- , "fadeToBlack", --zoomFade, --scroll
 
-	startingPosition = vector(8, 20),
+	startingPosition = vector(198, 51),
 
 
 	--{ stageElements = {}}
