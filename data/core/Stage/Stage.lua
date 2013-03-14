@@ -4,6 +4,13 @@ local vector = require 'lib.hump.vector'
 local shapes = require 'lib.HardonCollider.shapes'
 local GeometryUtils = require 'lib.GeometryUtils'
 
+
+--[[ TODO:
+		- Floor tension
+		- Scroll
+
+]]
+
 local Stage = Class {
 	name = 'Stage',
 
@@ -33,6 +40,16 @@ function Stage:getPixelStartingPosition()
 		vector(self.map.tileWidth, self.map.tileHeight )
 end
 
+
+function Stage:getPixelStartingFocus()
+	if self.startingFocus then
+		return self.startingFocus * self.map.tileWidth +
+			vector(self.map.tileWidth, self.map.tileHeight )
+	else
+		return self:getPixelStartingPosition()
+	end
+end
+
 function Stage:getPixelSize()
 	return vector(self.map.width * self.map.tileWidth,
 				  self.map.height * self.map.tileHeight)
@@ -50,26 +67,36 @@ end
 function Stage:addRoom(roomParams)
 	local topLeft =  roomParams.topLeft 
 	local bottomRight =  roomParams.bottomRight + vector(1,1)
-	local newRoom = shapes.newPolygonShape( topLeft.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
-												 	 bottomRight.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
-													 bottomRight.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight,
-													 topLeft.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight )
+	local newRoom = {}
 
-	newRoom.avoidFocus = roomParams.avoidFocus
+	newRoom.box = shapes.newPolygonShape( topLeft.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
+									 	 bottomRight.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
+										 bottomRight.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight,
+										 topLeft.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight )
+
+	if roomParams.tags then
+		newRoom.tags = roomParams.tags
+	end
+
 	table.insert(self.rooms, newRoom)
 end
 
-function Stage:initPlayer(player)
-	local startingPlayerPosition = self:getPixelStartingPosition()
-	player:setStartingPosition(startingPlayerPosition:unpack())
-	self.currentRoom = self:getRoom(startingPlayerPosition)
+function Stage:setRoom(position, dontMoveCamera)
+	self.currentRoom = self:getRoom(position)
+
+	if not dontMoveCamera then
+		self.currentViewRoom = self.currentRoom
+	end
 end
 
 
 function Stage:getRoom(position)
+
+	if not position then return self.currentRoom end
+
 	local x, y = position:unpack()
 	for _, room in ipairs(self.rooms) do
-		if room:contains(x, y) then
+		if room.box:contains(x, y) then
 			return room
 		end
 	end
@@ -84,8 +111,8 @@ function Stage:getRooms(player)
 	local collidingRooms = {}
 
 	for _, room in ipairs(self.rooms) do
-		if room:collidesWith(playerBox) then
-			table.insert(collidingRooms, {box = room})
+		if room.box:collidesWith(playerBox) then
+			table.insert(collidingRooms, room)
 		end
 	end
 
@@ -100,8 +127,8 @@ function Stage:checkRoomChange(player)
 
 	local x1, y1, x2, y2 = player:getCollisionBox():bbox()
 
-	if self.currentRoom:contains(x1, y1) and self.currentRoom:contains(x2, y1) and
-		self.currentRoom:contains(x1, y2) and self.currentRoom:contains(x2, y2) then
+	if self.currentRoom.box:contains(x1, y1) and self.currentRoom.box:contains(x2, y1) and
+		self.currentRoom.box:contains(x1, y2) and self.currentRoom.box:contains(x2, y2) then
 		return false
 	end
 
@@ -119,11 +146,14 @@ function Stage:checkRoomChange(player)
 	local previousRoom = self.currentRoom
 	
 	for _, room in ipairs(collidingRooms) do
-		if room.box ~= previousRoom and not room.box.avoidFocus then
-			self.currentRoom = room.box
-			return {previousRoom = previousRoom, nextRoom = self.currentRoom}
+		if room ~= previousRoom and not (room.tags and room.tags.hidden) then
+			return {previousRoom = previousRoom, nextRoom = room}
 		end	
 	end
+end
+
+function Stage:changeToRoom(room)
+	self.currentRoom = room
 end
 
 
@@ -138,7 +168,7 @@ function Stage:getBounds()
 		minX, minY = 0, 0
 		maxX, maxY = self:getPixelSize():unpack()
 	else
-		minX, minY, maxX, maxY = self.currentRoom:bbox() 
+		minX, minY, maxX, maxY = self.currentRoom.box:bbox() 
 	end
 
 	return minX, minY, maxX - minX, maxY - minY
@@ -148,9 +178,8 @@ function Stage:draw()
 	self.map:draw()
 end
 
-
 -----------------------------------------------------------------
--- Map, layers and tiles
+-- Map, layers and tiles116
 -----------------------------------------------------------------
 
 function Stage:setMap(mapPath)
@@ -204,6 +233,11 @@ function Stage.loadFromFolder(folderName)
 		"Missing parameter \'startingPosition\' or parameter is not a vector.")
 
 	stage:setStartingPosition(parameters.startingPosition)
+
+	if parameters.roomTransitionMode then
+		assert(type(parameters.roomTransitionMode) == "string", "Room transition mode must be specified using a string")
+		stage.roomTransitionMode = parameters.roomTransitionMode
+	end
 
 	if parameters.rooms then
 		assert (type(parameters.rooms) == "table", "\'rooms\' parameter must be an array")

@@ -16,24 +16,18 @@ local Element = Class {
 		function (self, width, height, tileCollider, activeCollider)
 			StateMachine.init(self)
 
-			self.tileCollider = tileCollider
-			self.activeCollider = activeCollider
-
 		    self.defaultCollisionBox = shapes.newPolygonShape(
 		    	- math.floor(width/2), 0,
 		    	  math.ceil(width/2), 0,
 		    	  math.ceil(width/2), - height,
 		    	- math.floor(width/2), - height)
 
-		    self.activeCollider:addShape(self.defaultCollisionBox)
-		    self.activeCollider:setGhost(self.defaultCollisionBox)
-
-			self.tileCollider:addElement(self.defaultCollisionBox)
-			self.defaultCollisionBox.active = false
-
 		    self.defaultCollisionBox.width = width
 		    self.defaultCollisionBox.height = height
 			self.defaultCollisionBox.color = {255, 255, 255, 255}
+			self.currentCollisionBox = self.defaultCollisionBox
+
+			self:setColliders(tileCollider, activeCollider)
 
 		    -- Collision flags
 		    self.collisionFlags = { canMoveLeft = true,
@@ -178,6 +172,29 @@ end
 -----------------------------------------------------------------
 -- Collisions
 -----------------------------------------------------------------
+
+function Element:setColliders(tileCollider, activeCollider)
+	if self.activeCollider then
+		self.activeCollider:remove(self.currentCollisionBox)
+	end
+
+	if self.tileCollider then
+		self.tileCollider:remove(self.currentCollisionBox)
+	end
+
+	self.tileCollider = tileCollider
+	self.activeCollider = activeCollider
+	
+    self.activeCollider:addShape(self.defaultCollisionBox)
+	self.tileCollider:addElement(self.defaultCollisionBox)
+
+	if self.currentCollisionBox ~= self.defaultCollisionBox then
+		self.activeCollider:setGhost(self.defaultCollisionBox)
+		self.defaultCollisionBox.active = false
+	end
+
+end
+
 function Element:moveIntoCollidingBox(box)
 	local collisionBox = self:getCollisionBox()
 
@@ -200,7 +217,7 @@ function Element:moveIntoCollidingBox(box)
 			direction = -1
 		end
 
-		displacement = vector((self.width - math.abs(dx)), 0)
+		displacement = vector((self.width - math.abs(dx)) + 1, 0)
 	else
 
 		if playerCenter.y < boxCenter.y then
@@ -209,7 +226,7 @@ function Element:moveIntoCollidingBox(box)
 			direction = -1
 		end
 
-		displacement = vector(0, (self.height - math.abs(dy)))
+		displacement = vector(0, (self.height - math.abs(dy)) + 1)
 	end
 
 	self:move((displacement * direction):unpack())

@@ -27,9 +27,6 @@ function StateMachine:checkStateChange()
 end
 
 function StateMachine:changeToState(nextState)
-	if DEBUG then
-		print("From " .. self.currentState.name .. " to " .. nextState.name)
-	end
 
 	if self.currentState.onExitTo then
 		self.currentState:onExitTo(nextState)
