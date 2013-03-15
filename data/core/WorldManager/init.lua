@@ -131,18 +131,34 @@ end
 -----------------------------------------------------------------
 
 function WorldManager:updateCameraFocus() 
+	local snapDistance = 10
 	local cameraMode = self.stage:getCameraMode() or { mode = "default" }
 
 	local cameraFunction = WorldManager.cameraModes[cameraMode.mode]
 	 or WorldManager.cameraModes["default"]
 
 	cameraFunction(self, self.players[1], self.stage, cameraMode)
+	
+--[[	if (targetPosition - self.lookingAt):len2() > snapDistance then
+		if not self.currentCameraMovement then
+			self:scrollCamera(0.5, targetPosition)
+		end
+	else]]
+	
+end
+
+
+function WorldManager:scrollCameraWithSpeed(speed, pointB, postFunction)
+	local pointA = self.lookingAt
+	local distance = (pointB - pointA):len()
+
+	self:scrollCameraWithTime(distance/speed, pointB, postFunction)
 
 end
 
-function WorldManager:scrollCamera(time, pointB)
+function WorldManager:scrollCameraWithTime(time, pointB, postFunction)
 
-	local pointA = vector(self.camera:getVisible())
+	local pointA = self.lookingAt
 
 	if self.currentCameraMovement then
 		Timer.cancel(self.currentCameraMovement)
@@ -151,60 +167,128 @@ function WorldManager:scrollCamera(time, pointB)
 
 		local cameraVelocity = (pointB - pointA)/time
 
-		self.currentCameraMovement = Timer.do_for( time, 
+		self.currentCameraMovement = Timer.do_for(time, 
 			function (dt) 
-				local l, t, w, h = self.camera:getVisible()
-				self.camera:setWorld( l + cameraVelocity.x * dt,
-									  t + cameraVelocity.y * dt,
-									  w,
-									  h)
+				self.lookingAt = self.lookingAt + cameraVelocity * dt 
 			end,
 			function ()
+				if postFunction then
+					postFunction()
+				end
 				self.currentCameraMovement = nil
 			end)
 	end
 end
 
-function WorldManager:followPlayerWithCamera(player, stage, cameraMode)
-	local snapDistance = math.huge
+function WorldManager:followCameraMode(player, stage, cameraMode)
 
+	local targetPosition = self.lookingAt:clone()
 
 	if cameraMode.tension then
 		local tension = cameraMode.tension
 
-		local snapTime = cameraMode.snapTime or 0.5
-
 		local playerPos = player:getPosition()
 		local lastPlayerPos = player:getLastPosition()
 		
+
 		-- horizontal following
 		if playerPos.x > (self.lookingAt.x + tension.x) or
-			playerPos.x < (self.lookingAt.x - tension.x)then 
+			playerPos.x < (self.lookingAt.x - tension.x) then 
 
-			self.lookingAt.x = self.lookingAt.x + (playerPos.x - lastPlayerPos.x)
+			targetPosition.x = targetPosition.x + (playerPos.x - lastPlayerPos.x)
 
 		end
 
 		-- horizontal following
 		if playerPos.y > (self.lookingAt.y + tension.y) or
-			playerPos.y < (self.lookingAt.y - tension.y)then 
+			playerPos.y < (self.lookingAt.y - tension.y) then 
 
-			self.lookingAt.y = self.lookingAt.y + (playerPos.y - lastPlayerPos.y)
+			targetPosition.y =  targetPosition.y + (playerPos.y - lastPlayerPos.y)
 
 		end
 
 	else 
 
-		self.lookingAt = player:getPosition()
+		targetPosition = player:getPosition()
 	end
+
+	self.lookingAt = targetPosition
 end
 
--- Lets see some camera modes. 
+function WorldManager:lockCameraMode(player, stage, cameraMode)
+	local targetPosition 
+	-- if we have to follow the player in one direction, then we do that first
+	if not (cameraMode.verticalLock and cameraMode.horizontalLock) then 
+		targetPosition = self:followCameraMode(player, stage, cameraMode)
+	else 
+		targetPosition = self.lookingAt:clone()
+	end
+
+	if cameraMode.horizontalLock then
+		targetPosition.x = cameraMode.horizontalLock * self.stage.tileWidth
+	end
+
+	if cameraMode.verticalLock then
+		targetPosition.y = cameraMode.verticalLock * self.stage.tileHeight
+	end
+
+	self.lookingAt = targetPosition
+end
+
+function WorldManager:platformCameraMode(player, stage, cameraMode)
+
+	local tension = cameraMode.tension or vector(0, 0)
+
+	local playerPos = player:getPosition()
+	local lastPlayerPos = player:getLastPosition()
+
+	-- horizontal following
+	if playerPos.x > (self.lookingAt.x + tension.x) or
+		playerPos.x < (self.lookingAt.x - tension.x) then 
+
+		self.lookingAt.x = self.lookingAt.x + (playerPos.x - lastPlayerPos.x)
+
+	end
+
+	--vertical following
+	if playerPos.y > (self.lookingAt.y + tension.y) or cameraMode._scrolling then
+		self.lookingAt.y = self.lookingAt.y + (playerPos.y - lastPlayerPos.y)
+	end
+
+
+	local targetPosition = self.lookingAt:clone()
+
+	-- Snapping to a platform. We only snap to the platform if the player gets to a higher platform.
+	-- This is the behavior observed in Super Mario World's "Yoshi's Island 3" stage.
+
+	if player:getStateFlags()["grounded"] then
+		local oldLock = cameraMode.verticalLock	or math.floor(player:getPosition().y /  self.stage.tileHeight)
+
+		cameraMode.verticalLock = math.floor(player:getPosition().y /  self.stage.tileHeight)
+
+		if cameraMode.verticalLock < oldLock and not cameraMode._scrolling then
+
+			targetPosition.y = cameraMode.verticalLock * self.stage.tileHeight
+
+			self:scrollCameraWithSpeed(cameraMode.snapSpeed,
+										targetPosition,
+										function() 
+											cameraMode._scrolling = nil
+										end)
+
+			cameraMode._scrolling = self.currentCameraMovement
+		end
+
+	end
+	
+
+end
+
 WorldManager.cameraModes = {
-	followPlayer = WorldManager.followPlayerWithCamera, -- 'free mode with tension'
-	scrolling = WorldManager.snapToPlatforms, -- 'snap to platforms with smooth transitions, horizontally free with tension (ignores vertical tension)' -- requires stateType
-	fading = WorldManager.snapToCeiling, -- 'snap to ceiling (?) (ignores vertical tension) '
-	default = WorldManager.followPlayerWithCamera -- more modes can be added here "custom" modes with names. same for transitions
+	followPlayer = WorldManager.followCameraMode, -- 'free mode with tension'
+	lock = WorldManager.lockCameraMode, -- 'snap to platforms with smooth transitions, horizontally free with tension (ignores vertical tension)' -- requires stateType
+	snapToPlatform = WorldManager.platformCameraMode, -- 'snap to ceiling (?) (ignores vertical tension) '
+	default = WorldManager.followCameraMode -- more modes can be added here "custom" modes with names. same for transitions
 }
 
 -----------------------------------------------------------------

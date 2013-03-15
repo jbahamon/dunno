@@ -33,8 +33,8 @@ local params = {
 				        end,
 			        targetState = "crouch" }
 
-
 			}
+
 		},
 
 		walk = {
@@ -73,6 +73,7 @@ local params = {
 			},
 
 			class = "States/Jump.lua",
+        	flags = {"air"},
 
 			transitions = {
 				{	condition =
@@ -111,6 +112,7 @@ local params = {
         			targetState = "pogoFall" }
         		
         	}
+
 		},
 
 		pogoJump = {
@@ -122,6 +124,7 @@ local params = {
 			},
 
 			class = "States/Jump.lua",
+        	flags = {"air"},
 
 			transitions = {
  				{	condition =
@@ -155,7 +158,9 @@ local params = {
 				            end
 				        end,
         			targetState = "climb" },
-			}
+			},
+
+			flags = {"air"}
 
 		},
 
@@ -166,6 +171,8 @@ local params = {
 				frames = "1,6",
 				defaultDelay = 0.2
 			},
+
+			flags = {"air"},
 			
 			transitions = {
  				{	condition =
@@ -194,7 +201,9 @@ local params = {
 				            end
 				        end,
         			targetState = "climb" },
-			}
+			},
+
+			flags = {"air"}
 
 		},
 
@@ -206,6 +215,7 @@ local params = {
 				defaultDelay = 0.2
 			},
 
+			flags = {"grounded"},
 
 			transitions = {
 				{	condition = 
@@ -225,7 +235,8 @@ local params = {
 				        end,
         			targetState = "fall" },
 				
-			}
+			},
+
 		},
 
 		climb = {

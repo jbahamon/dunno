@@ -12,6 +12,11 @@ local StateMachine = Class {
 
 }
 
+function StateMachine:getStateFlags()
+	return self.currentState:getFlags()
+end
+
+
 function StateMachine:update(dt)
 	self.currentState:update(dt)
 end

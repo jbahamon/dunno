@@ -7,6 +7,7 @@ local ElementState = Class {
 	init = 
 		function(self, name)
 			self.name = name
+			self.flags = {}
 		end
 }
 
@@ -21,6 +22,24 @@ function ElementState:addTransition(condition, targetState, position)
 	else
 		table.insert(self.transitions, transition, position)
 	end
+end
+
+function ElementState:addFlag(flag)
+	self.flags[flag] = true
+end
+
+
+function ElementState:getFlags()
+	return self.flags
+end
+
+
+function ElementState:clearFlags(flag)
+	self.flags = {}
+end
+
+function ElementState:removeFlag(flag)
+	self.flags[flag] = nil
 end
 
 function ElementState:update(dt)

@@ -43,27 +43,27 @@ function Stage:getStartingPosition()
 end
 
 function Stage:getPixelStartingPosition()
-	return self.startingPosition * self.map.tileWidth +
-		vector(self.map.tileWidth, self.map.tileHeight )
+	return self.startingPosition * self.tileWidth +
+		vector(self.tileWidth, self.tileHeight )
 end
 
 
 function Stage:getPixelStartingFocus()
 	if self.startingFocus then
-		return self.startingFocus * self.map.tileWidth +
-			vector(self.map.tileWidth, self.map.tileHeight )
+		return self.startingFocus * self.tileWidth +
+			vector(self.tileWidth, self.tileHeight )
 	else
 		return self:getPixelStartingPosition()
 	end
 end
 
 function Stage:getPixelSize()
-	return vector(self.map.width * self.map.tileWidth,
-				  self.map.height * self.map.tileHeight)
+	return vector(self.map.width * self.tileWidth,
+				  self.map.height * self.tileHeight)
 end
 
 function Stage:getTileSize()
-	return vector(self.map.tileWidth, self.map.tileHeight)
+	return vector(self.tileWidth, self.tileHeight)
 end
 
 -----------------------------------------------------------------
@@ -74,10 +74,10 @@ function Stage:addRoom(roomParams)
 	local topLeft =  roomParams.topLeft 
 	local bottomRight =  roomParams.bottomRight + vector(1,1)
 
-	roomParams.box = shapes.newPolygonShape( topLeft.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
-									 	 bottomRight.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
-										 bottomRight.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight,
-										 topLeft.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight )
+	roomParams.box = shapes.newPolygonShape( topLeft.x * self.tileWidth, topLeft.y * self.tileHeight,
+									 	 bottomRight.x * self.tileWidth, topLeft.y * self.tileHeight,
+										 bottomRight.x * self.tileWidth, bottomRight.y * self.tileHeight,
+										 topLeft.x * self.tileWidth, bottomRight.y * self.tileHeight )
 
 	roomParams.topLeft = nil
 	roomParams.bottomRight = nil
@@ -197,6 +197,9 @@ function Stage:setMap(mapPath)
 			--self.map = self.loader.load('CastleKeep/CastleKeep.tmx')
 			self.map = self.loader.load(mapPath)
 			self.map:setDrawRange(0,0,love.graphics.getWidth(), love.graphics.getHeight())
+
+			self.tileWidth = self.map.tileWidth 
+			self.tileHeight = self.map.tileHeight 
 			
 end
 

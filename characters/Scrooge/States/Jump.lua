@@ -11,6 +11,7 @@ local Jump = Class {
 			BasicJump.init(self, name, dynamics, animation)
 			self.jumpTimer = 0
 			self.holdControl = "jump"
+			self:addFlag("air")
 		end
 }
 

@@ -19,7 +19,8 @@ function love.load()
 
 	manager = WorldManager()
 
-	manager:setStage("TomahawkMan")
+	--manager:setStage("TomahawkMan")
+	manager:setStage("SMB3-1-1")
 	manager:addPlayer("Scrooge")
 
 	manager:start()

@@ -47,6 +47,13 @@ function Player:addBasicStates(standParams, walkParams, jumpParams, fallParams, 
     fall = PlayerState("fall", fallParams.dynamics, anim8.newAnimation(unpack(fallParams.animationData)))
     climb = Climb("climb", climbParams.dynamics, anim8.newAnimation(unpack(climbParams.animationData)))
 
+
+    stand:addFlag("grounded")
+    walk:addFlag("grounded")
+    jump:addFlag("air")
+    fall:addFlag("air")
+    climb:addFlag("climb")
+
     walk:addTransition( 
     	function(currentState, collisionFlags) 
     		return currentState.hasControl and currentState.owner.control.tap["jump"]
@@ -351,6 +358,14 @@ function Player.loadFromFolder(path, tileCollider, activeCollider)
 				assert(transition.targetState, "Transition target not specified for state \'".. stateName .."\'")
 				
 				player.states[stateName]:addTransition(transition.condition, transition.targetState)
+			end
+		end
+
+
+		if stateParams.flags then
+			for _, flag in ipairs(stateParams.flags) do
+				assert(type(flag) == "string", "Flag name must be a string, got \'".. tostring(flag) .."\'")
+				player.states[stateName]:addFlag(flag)
 			end
 		end
 	end

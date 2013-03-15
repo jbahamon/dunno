@@ -5,10 +5,12 @@ local State = require 'data.core.StateMachine.State'
 
 local ElementState = Class {
 	name = "ElementState",
+
+	__includes = State,
 	
 	init =
 		function(self, name, dynamics, animation)
-			self.name = name
+			State.init(self, name)
 			self.dynamics = dynamics
 			self.dynamics.velocity = vector(0, 0)
 			self.dynamics.position = vector(0, 0)
@@ -21,7 +23,7 @@ local ElementState = Class {
 
 
 
-function ElementState:addTransition(condition, targetState, position)
+--[[function ElementState:addTransition(condition, targetState, position)
 
 	position = position or -1
 
@@ -33,7 +35,7 @@ function ElementState:addTransition(condition, targetState, position)
 		table.insert(self.transitions, transition, position)
 	end
 end
-
+]]
 function ElementState:applyFriction(dt, frictionForce)
 	local friction = frictionForce * dt
 
