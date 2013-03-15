@@ -18,5 +18,6 @@ dynamics.gravity = vector(0, 0.211) * scale * scale
 -- Other Properties, Counters and Flags
 dynamics.jumpVelocity = - 3.5 * scale
 dynamics.jumpTime = 6 / scale
+dynamics.groundedTime = 0.0
 
 return dynamics	

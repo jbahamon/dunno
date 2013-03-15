@@ -11,18 +11,29 @@ local Jump = Class {
 			BasicJump.init(self, name, dynamics, animation)
 			self.jumpTimer = 0
 			self.holdControl = "jump"
-			self:addFlag("air")
+			self.groundedTimer = 0
 		end
 }
 
 function Jump:update(dt)
 	BasicJump.update(self, dt)
 	self.jumpTimer = self.jumpTimer + dt
+	self.groundedTimer = self.groundedTimer + dt
+
+	if self.groundedTimer >= self.dynamics.groundedTime then
+		self:removeFlag("grounded")
+		self:addFlag("air")
+	end
+
 end
 
 function Jump:onEnterFrom(previousState)
 	BasicJump.onEnterFrom(self, previousState)
 	self.jumpTimer = 0
+	self.groundedTimer = 0
+
+	self:removeFlag("air")
+	self:addFlag("grounded")
 end
 
 
