@@ -26,6 +26,13 @@ local Stage = Class {
 -----------------------------------------------------------------
 -- Size and Position
 -----------------------------------------------------------------
+function Stage:getTension()
+	return self.tension or vector(0,0)
+end
+
+-----------------------------------------------------------------
+-- Size and Position
+-----------------------------------------------------------------
 
 function Stage:setStartingPosition(position)
 	self.startingPosition = position
@@ -59,7 +66,6 @@ function Stage:getTileSize()
 	return vector(self.map.tileWidth, self.map.tileHeight)
 end
 
-
 -----------------------------------------------------------------
 -- Room Handling
 -----------------------------------------------------------------
@@ -67,18 +73,16 @@ end
 function Stage:addRoom(roomParams)
 	local topLeft =  roomParams.topLeft 
 	local bottomRight =  roomParams.bottomRight + vector(1,1)
-	local newRoom = {}
 
-	newRoom.box = shapes.newPolygonShape( topLeft.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
+	roomParams.box = shapes.newPolygonShape( topLeft.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
 									 	 bottomRight.x * self.map.tileWidth, topLeft.y * self.map.tileHeight,
 										 bottomRight.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight,
 										 topLeft.x * self.map.tileWidth, bottomRight.y * self.map.tileHeight )
 
-	if roomParams.tags then
-		newRoom.tags = roomParams.tags
-	end
+	roomParams.topLeft = nil
+	roomParams.bottomRight = nil
 
-	table.insert(self.rooms, newRoom)
+	table.insert(self.rooms, roomParams)
 end
 
 function Stage:setRoom(position, dontMoveCamera)
@@ -161,6 +165,10 @@ end
 -- Drawing
 -----------------------------------------------------------------
 
+function Stage:getCameraMode()
+	return self.currentRoom.cameraMode or self.defaultCameraMode
+end
+
 function Stage:getBounds()
 	local minX, minY, maxX, maxY
 
@@ -187,7 +195,7 @@ function Stage:setMap(mapPath)
 			self.loader.path = 'stages/'
 			--self.map = self.loader.load('SMB3-1-1.tmx')
 			--self.map = self.loader.load('CastleKeep/CastleKeep.tmx')
-			self.map = self.loader.load('TomahawkMan/TomahawkMan.tmx')
+			self.map = self.loader.load(mapPath)
 			self.map:setDrawRange(0,0,love.graphics.getWidth(), love.graphics.getHeight())
 			
 end
@@ -226,7 +234,7 @@ function Stage.loadFromFolder(folderName)
 
 	assert(type(parameters) == "table", "Stage configuration file must return a table")
 
-	local mapPath = folder .. "/" ..parameters.map
+	local mapPath = folderName .. "/" ..parameters.map
 	local stage = Stage(mapPath, parameters)
 
 	assert(parameters.startingPosition and vector.isvector(parameters.startingPosition), 
@@ -247,6 +255,11 @@ function Stage.loadFromFolder(folderName)
 			stage:addRoom(room)
 		end
 	end
+
+	if parameters.defaultCameraMode then
+		stage.defaultCameraMode = parameters.defaultCameraMode
+	end
+	
 	return stage
 
 end

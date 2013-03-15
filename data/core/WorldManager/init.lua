@@ -119,13 +119,98 @@ function WorldManager:update(dt)
 	end
 
 	-- camera managing
-	self.lookingAt = self.players[1]:getPosition()
+
+	local playerPos = self.players[1]:getPosition()
+	local tension = self.stage:getTension()
+
+	self:updateCameraFocus()
 end
 
+-----------------------------------------------------------------
+-- Camera Managing
+-----------------------------------------------------------------
+
+function WorldManager:updateCameraFocus() 
+	local cameraMode = self.stage:getCameraMode() or { mode = "default" }
+
+	local cameraFunction = WorldManager.cameraModes[cameraMode.mode]
+	 or WorldManager.cameraModes["default"]
+
+	cameraFunction(self, self.players[1], self.stage, cameraMode)
+
+end
+
+function WorldManager:scrollCamera(time, pointB)
+
+	local pointA = vector(self.camera:getVisible())
+
+	if self.currentCameraMovement then
+		Timer.cancel(self.currentCameraMovement)
+		self.currentCameraMovement = nil
+	else
+
+		local cameraVelocity = (pointB - pointA)/time
+
+		self.currentCameraMovement = Timer.do_for( time, 
+			function (dt) 
+				local l, t, w, h = self.camera:getVisible()
+				self.camera:setWorld( l + cameraVelocity.x * dt,
+									  t + cameraVelocity.y * dt,
+									  w,
+									  h)
+			end,
+			function ()
+				self.currentCameraMovement = nil
+			end)
+	end
+end
+
+function WorldManager:followPlayerWithCamera(player, stage, cameraMode)
+	local snapDistance = math.huge
+
+
+	if cameraMode.tension then
+		local tension = cameraMode.tension
+
+		local snapTime = cameraMode.snapTime or 0.5
+
+		local playerPos = player:getPosition()
+		local lastPlayerPos = player:getLastPosition()
+		
+		-- horizontal following
+		if playerPos.x > (self.lookingAt.x + tension.x) or
+			playerPos.x < (self.lookingAt.x - tension.x)then 
+
+			self.lookingAt.x = self.lookingAt.x + (playerPos.x - lastPlayerPos.x)
+
+		end
+
+		-- horizontal following
+		if playerPos.y > (self.lookingAt.y + tension.y) or
+			playerPos.y < (self.lookingAt.y - tension.y)then 
+
+			self.lookingAt.y = self.lookingAt.y + (playerPos.y - lastPlayerPos.y)
+
+		end
+
+	else 
+
+		self.lookingAt = player:getPosition()
+	end
+end
+
+-- Lets see some camera modes. 
+WorldManager.cameraModes = {
+	followPlayer = WorldManager.followPlayerWithCamera, -- 'free mode with tension'
+	scrolling = WorldManager.snapToPlatforms, -- 'snap to platforms with smooth transitions, horizontally free with tension (ignores vertical tension)' -- requires stateType
+	fading = WorldManager.snapToCeiling, -- 'snap to ceiling (?) (ignores vertical tension) '
+	default = WorldManager.followPlayerWithCamera -- more modes can be added here "custom" modes with names. same for transitions
+}
 
 -----------------------------------------------------------------
 -- Transitions
 -----------------------------------------------------------------
+
 function WorldManager:roomTransition(player, roomChange, mode)
 	local transitionMode = mode or self.stage.roomTransitionMode
 	local transition = WorldManager.transitions[transitionMode] or WorldManager.transitions["default"]
@@ -180,23 +265,28 @@ function WorldManager:scrollTransition(player, roomChange)
 	local cameraVelocity = (nextCameraPos - prevCameraPos)/scrollTime
 	self:pauseGame(scrollTime)
 
-	Timer.do_for( scrollTime, 
-				function (dt) 
-					local l, t, w, h
-					player:move((playerVelocity * dt):unpack())
-		
-					l, t, w, h = self.camera:getVisible()
-					self.camera:setWorld( l + cameraVelocity.x * dt,
-										  t + cameraVelocity.y * dt,
-										  w,
-										  h)
-				end,
-				function()
-					self.stage:changeToRoom(roomChange.nextRoom)
-					self.camera:setPosition(nextCameraPos:unpack())
-					player:moveTo(nextPlayerPos:unpack())
-					self.camera:setWorld(self.stage:getBounds())
-				end )
+	if self.currentCameraMovement then
+		Timer.cancel(self.currentCameraMovement)
+	end
+
+	self.currentCameraMovement = Timer.do_for( scrollTime, 
+		function (dt) 
+			local l, t, w, h
+			player:move((playerVelocity * dt):unpack())
+
+			l, t, w, h = self.camera:getVisible()
+			self.camera:setWorld( l + cameraVelocity.x * dt,
+								  t + cameraVelocity.y * dt,
+								  w,
+								  h)
+		end,
+		function()
+			self.stage:changeToRoom(roomChange.nextRoom)
+			self.camera:setPosition(nextCameraPos:unpack())
+			player:moveTo(nextPlayerPos:unpack())
+			self.camera:setWorld(self.stage:getBounds())
+			self.currentCameraMovement = nil
+		end )
 end
 
 

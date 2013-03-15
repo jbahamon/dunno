@@ -49,7 +49,7 @@ local stageParameters ={
 
 				{ 	topLeft = vector(177, 32),
 					bottomRight = vector(192, 46),
-					tags = {"hidden"} },
+					hidden = true },
 
 				{ 	topLeft = vector(193, 17),
 					bottomRight = vector(224, 31) },
@@ -77,6 +77,14 @@ local stageParameters ={
 	startingPosition = vector(124, 21),
 
 	--{ stageElements = {}}
+
+	additionalParameters = {},
+
+	defaultCameraMode = { mode = "followPlayer",
+						  tension = vector(8, 0)}
+
+	--defaultCameraMode = { mode = "snap",
+	--						vertical = {}, horizontal = {} }
 
 }
 
