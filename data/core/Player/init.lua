@@ -18,7 +18,7 @@ local Player = Class {
 	init =
 		function (self, width, height, tileCollider, activeCollider)
 			Element.init(self, width, height, tileCollider, activeCollider)
-			self.binds, self.control = love.filesystem.load("lib/TLbind.lua")()
+			self.binds, self.control = love.filesystem.load("lib/TLBind.lua")()
 
 			self.binds.keys = {
 			    w="up", a="left", s="down", d="right", [" "]="jump", lctrl="attack", escape="menu",

@@ -106,13 +106,17 @@ function Stage:getRoom(position)
 end
 
 
-function Stage:getRooms(player)
+function Stage:getCollidingRooms(player)
 	local playerBox = player:getCollisionBox()
 	local collidingRooms = {}
 
 	for _, room in ipairs(self.rooms) do
 		if room.box:collidesWith(playerBox) then
-			table.insert(collidingRooms, room)
+			room.collisionArea = GeometryUtils.getCollisionArea(player:getCollisionBox(), room.box)			
+
+			if room.collisionArea > 0 then
+				table.insert(collidingRooms, room)
+			end
 		end
 	end
 
@@ -132,14 +136,10 @@ function Stage:checkRoomChange(player)
 		return false
 	end
 
-	local collidingRooms = self:getRooms(player)
-
-	for _, room in ipairs(collidingRooms) do
-		room.area = GeometryUtils.getCollisionArea(player:getCollisionBox(), room.box)
-	end
+	local collidingRooms = self:getCollidingRooms(player)
 
 	table.sort(collidingRooms, function(a, b)
-											return a.area > b.area
+											return a.collisionArea > b.collisionArea
 										end)
 
 
