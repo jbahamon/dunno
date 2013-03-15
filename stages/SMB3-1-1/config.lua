@@ -12,12 +12,21 @@ local stageParameters ={
 
 	defaultCameraMode = { mode = "snapToPlatform",
 						  snapSpeed = 360,
-						  --verticalLock = 26,
-						  --speed = 
 						  tension = vector(8, 0)}
 
-	--defaultCameraMode = { mode = "snap",
-	--						vertical = {}, horizontal = {} }
+	--[[defaultCameraMode = { mode = "lock",
+									verticalLock = 26,
+									tension = vector(8, 0)}
+]]
+
+	--[[defaultCameraMode = { mode = "lock",
+									verticalLock = 26,
+									tension = vector(8, 0)}
+]]
+
+	--[[defaultCameraMode = { mode = "folllowPlayer",
+									tension = vector(8, 0)}
+]]
 
 }
 
