@@ -58,6 +58,11 @@ function StateMachine:setInitialState(stateName)
 	self.initialState = self.states[stateName]
 end
 
+function StateMachine:getInitialState()
+	return self.initialState
+end
+
+
 function StateMachine:start(position)
 	self.currentState = self.initialState
 end

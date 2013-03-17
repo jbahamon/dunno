@@ -23,19 +23,12 @@ local ElementState = Class {
 
 
 
---[[function ElementState:addTransition(condition, targetState, position)
-
-	position = position or -1
-
-	local transition = {condition = condition, targetState = targetState}
-
-	if position < 0 then
-		table.insert(self.transitions, transition)
-	else
-		table.insert(self.transitions, transition, position)
-	end
+function ElementState:turn()
+	self.facing = -self.facing
+	self.dynamics.velocity.x = - self.dynamics.velocity.x
 end
-]]
+
+
 function ElementState:applyFriction(dt, frictionForce)
 	local friction = frictionForce * dt
 
@@ -65,8 +58,6 @@ function ElementState:update(dt)
 	-- Process Dynamics
 	self.dynamics.oldPosition = self.dynamics.position
 	self:stepDynamics(dt, self:getCurrentAcceleration(dt))
-	
-
 end
 
 function ElementState:stepDynamics(dt, acceleration)
@@ -98,7 +89,7 @@ function ElementState:applyPostForceEffects(dt)
 end
 
 function ElementState:getCurrentAcceleration(dt)
-	local acceleration = self.dynamics.defaultAcceleration + self.dynamics.gravity
+	local acceleration = self.dynamics.defaultAcceleration:permul(vector(self.facing, 1)) + self.dynamics.gravity
 	return acceleration
 
 end
@@ -119,8 +110,8 @@ end
 
 function ElementState:draw()
 	self.animation:draw(self.owner.sprites,
-	                    self.dynamics.position.x - self.owner.spriteSizeX/2,
-                       	self.dynamics.position.y - self.owner.spriteSizeY,
+	                    self.dynamics.position.x - self.owner.spriteSizeX/2 + self.owner.spriteOffset.x,
+                       	self.dynamics.position.y - self.owner.spriteSizeY + self.owner.spriteOffset.y,
                        	0, 1, 1)
 end
 

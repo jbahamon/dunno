@@ -1,0 +1,4 @@
+montage foo.png bar.png ... baz.png -geometry "1x1+0+0" -tile x1 
+
+x1-> horizontal
+1x ->vertical

@@ -4,13 +4,6 @@ local vector = require 'lib.hump.vector'
 local shapes = require 'lib.HardonCollider.shapes'
 local GeometryUtils = require 'lib.GeometryUtils'
 
-
---[[ TODO:
-		- Floor tension
-		- Scroll
-
-]]
-
 local Stage = Class {
 	name = 'Stage',
 
@@ -33,6 +26,14 @@ end
 -----------------------------------------------------------------
 -- Size and Position
 -----------------------------------------------------------------
+
+function Stage:setFolder(path)
+	self.folder = path
+end
+
+function Stage:getFolder()
+	return self.folder
+end
 
 function Stage:setStartingPosition(position)
 	self.startingPosition = position
@@ -220,7 +221,7 @@ function Stage:moveTo(x, y)
 	self.map.viewY = y
 end
 
----------------------------------------
+---------------------------------------ole
 -- Static functions
 ---------------------------------------
 Stage.stageFolder = "stages/"
@@ -228,6 +229,7 @@ Stage.stageFolder = "stages/"
 function Stage.loadFromFolder(folderName)
 
 	local folder = Stage.stageFolder .. string.gsub(folderName, '[^%a%d-_/]', '')
+
 	assert(love.filesystem.isFile(folder .. "/config.lua"), "Stage configuration file \'".. folder .. "/config.lua"   .."\' not found")
 	local ok, stageFile = pcall(love.filesystem.load, folder .. "/config.lua")
 
@@ -262,7 +264,17 @@ function Stage.loadFromFolder(folderName)
 	if parameters.defaultCameraMode then
 		stage.defaultCameraMode = parameters.defaultCameraMode
 	end
+
+	if parameters.elementTypes then
+		stage.elementTypes = parameters.elementTypes
+	end
+
+	if parameters.elementLocations then
+		stage.elementLocations = parameters.elementLocations
+	end
 	
+	stage:setFolder(folder)
+
 	return stage
 
 end

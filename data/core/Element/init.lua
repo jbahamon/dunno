@@ -2,10 +2,12 @@ local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 local anim8 = require 'lib.anim8'
 
+
 local GeometryUtils = require 'lib.GeometryUtils'
 local shapes = require 'lib.HardonCollider.shapes'
 
 local StateMachine = require 'data.core.StateMachine'
+local ElementState = require 'data.core.Element.ElementState'
 
 local Element = Class {
 
@@ -13,7 +15,7 @@ local Element = Class {
 	__includes = StateMachine,
 
 	init =
-		function (self, width, height, tileCollider, activeCollider)
+		function (self, width, height)
 			StateMachine.init(self)
 
 		    self.defaultCollisionBox = shapes.newPolygonShape(
@@ -26,8 +28,6 @@ local Element = Class {
 		    self.defaultCollisionBox.height = height
 			self.defaultCollisionBox.color = {255, 255, 255, 255}
 			self.currentCollisionBox = self.defaultCollisionBox
-
-			self:setColliders(tileCollider, activeCollider)
 
 		    -- Collision flags
 		    self.collisionFlags = { canMoveLeft = true,
@@ -42,11 +42,20 @@ local Element = Class {
 
 }
 
+function Element:setFolder(path)
+	self.folder = path
+end
+
+
+function Element:getFolder(path)
+	return self.folder
+end
+
 -----------------------------------------------------------------
 -- Drawing
 -----------------------------------------------------------------
 
-function Element:setSpriteData(sprites, spriteSizeX, spriteSizeY)
+function Element:setSpriteData(sprites, spriteSizeX, spriteSizeY, offset)
 	self.spriteSizeX = spriteSizeX
 	self.spriteSizeY = spriteSizeY
 	self.sprites = love.graphics.newImage(sprites)
@@ -55,9 +64,12 @@ function Element:setSpriteData(sprites, spriteSizeX, spriteSizeY)
                                          self.spriteSizeY,
                                          self.sprites:getWidth(),
                                          self.sprites:getHeight())
+
+	self.spriteOffset = offset or vector(0,0)
 end
 
 function Element:draw()
+
 	if self.currentState.draw then
 		self.currentState:draw()
 	end	
@@ -205,13 +217,13 @@ function Element:moveIntoCollidingBox(box)
 		return
 	end
 
-	local playerCenter = vector(self:center())
+	local elementCenter = vector(self:center())
 	local boxCenter = vector(box:center())
 
 	local displacement, direction
 	if math.abs(dx) > math.abs(dy) then
 
-		if playerCenter.x < boxCenter.x then
+		if elementCenter.x < boxCenter.x then
 			direction = 1
 		else 
 			direction = -1
@@ -220,7 +232,7 @@ function Element:moveIntoCollidingBox(box)
 		displacement = vector((self.width - math.abs(dx)) + 1, 0)
 	else
 
-		if playerCenter.y < boxCenter.y then
+		if elementCenter.y < boxCenter.y then
 			direction = 1
 		else 
 			direction = -1
@@ -382,6 +394,139 @@ end
 
 function Element:getDefaultCollisionBox(collisionBox)
 	return self.defaultCollisionBox
+end
+
+-----------------------------------------------------------------
+-- Loading from File
+-----------------------------------------------------------------
+
+function Element:getDefaultStateClass()
+	return ElementState
+end
+
+function Element:loadSpritesFromParams(parameters)
+
+	------------------------------------
+	-- Sprite Data
+	------------------------------------
+
+	assert(parameters.sprites,"No sprite info supplied")
+	assert(parameters.sprites.sheet, "No spritesheet info supplied" )
+
+	local folder = parameters.sprites.folder or self:getFolder()
+
+	local sprites = folder .. "/" .. string.gsub(parameters.sprites.sheet, '[^%a%d-_/.]', '')
+
+	assert(love.filesystem.isFile(sprites), "Spritesheet \'".. sprites .."\' supplied is not a file")	
+
+	assert(parameters.sprites.spriteSizeX and parameters.sprites.spriteSizeY,
+		"No sprite size supplied")
+
+	self:setSpriteData(sprites, parameters.sprites.spriteSizeX, parameters.sprites.spriteSizeY)
+
+end
+
+function Element:loadStatesFromParams(parameters)
+
+	------------------------------------
+	-- States
+	------------------------------------
+
+	assert(parameters.states and type(parameters.states) == "table" and next(parameters.states) ~= nil,
+		 "\'states\' parameter must not be empty.")
+
+	local states = parameters.states
+	local folder = states.folder or self:getFolder()
+
+	------------------------------------
+	-- Creating the States
+	------------------------------------
+	for stateName, stateParams in pairs(states) do
+		self:addSingleStateFromParams(stateName, stateParams, folder)
+	end
+
+	assert(parameters.initialState and type(parameters.initialState) == "string" and self.states[parameters.initialState],
+		"Must specify a valid initial state")
+
+	self:setInitialState(parameters.initialState)
+	
+end
+
+function Element:addSingleStateFromParams(stateName, stateParams, folder)
+	local folder = folder or self:getFolder()
+
+	assert(stateParams.dynamics, "Missing dynamics data for state \'".. stateName .."\'.")
+	assert(stateParams.animation and stateParams.animation.mode and stateParams.animation.frames 
+			and stateParams.animation.defaultDelay, "Missing animation data for state \'" .. stateName .. "\'.")
+
+	local frames 
+
+	if type(stateParams.animation.frames) == "table" then
+		frames = self.spritesGrid(unpack(stateParams.animation.frames))
+	else
+		frames = self.spritesGrid(stateParams.animation.frames)
+	end 
+
+	local animation = anim8.newAnimation( stateParams.animation.mode, 
+											self.spritesGrid(stateParams.animation.frames),
+											stateParams.animation.defaultDelay,
+											stateParams.animation.delays or {},
+											stateParams.animation.flippedH or false,
+											stateParams.animation.flippedV or false )
+
+
+	local CustomState, newState
+
+	if stateParams.class then
+		local ok, classFile = pcall(love.filesystem.load, folder ..  '/' .. stateParams.class)
+		assert(ok, "Element state class file has syntax errors: " .. tostring(classFile))
+		CustomState = classFile()
+	else
+		CustomState = self:getDefaultStateClass()
+	end
+
+	local ok, dynamicsFile = pcall(love.filesystem.load, folder .. "/" .. stateParams.dynamics)
+	
+	assert(ok, "Character dynamics file has syntax errors: " .. tostring(dynamicsFile))
+
+	local dynamics = dynamicsFile()
+
+	newState = CustomState(stateName, dynamics, animation)
+
+	self:addState(newState)
+
+	if stateParams.transitions then
+		for _, transition in ipairs(stateParams.transitions) do
+
+			assert(transition.condition, "Transition condition not specified for state \'".. stateName .."\'")
+			assert(transition.targetState, "Transition target not specified for state \'".. stateName .."\'")
+			
+			self.states[stateName]:addTransition(transition.condition, transition.targetState)
+		end
+	end
+
+
+	if stateParams.flags then
+		for _, flag in ipairs(stateParams.flags) do
+			assert(type(flag) == "string", "Flag name must be a string, got \'".. tostring(flag) .."\'")
+			self.states[stateName]:addFlag(flag)
+		end
+	end
+end
+--------------------------
+-- STATIC FUNCTIONS
+--------------------------
+function Element.loadBasicFromParams(parameters, folder)
+
+	assert(type(parameters) == "table", "Element configuration file must return a table")
+
+	assert(parameters.size and parameters.size.width and parameters.size.height, "Element size not specified")
+
+	local elem = Element(parameters.size.width, parameters.size.height)
+
+	elem:setFolder(folder)
+
+	return elem
 end
 
 return Element

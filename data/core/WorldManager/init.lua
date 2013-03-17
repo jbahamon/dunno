@@ -3,6 +3,7 @@ local Timer = require 'lib.hump.timer'
 
 local Player = require 'data.core.Player'
 local Stage = require 'data.core.Stage.Stage'
+local ElementFactory = require 'data.core.ElementFactory'
 
 local Camera = require 'lib.gamera'
 
@@ -10,7 +11,6 @@ local ActiveCollider = require 'lib.HardonCollider'
 local TileCollider = require 'lib.TileCollider'
 
 local vector = require 'lib.hump.vector'
-
 
 local WorldManager = Class {
 	name = "WorldManager",
@@ -21,10 +21,11 @@ local WorldManager = Class {
 			self.fullScreenTint = {255, 255, 255, 255}
 			self.paused = false
 			self.lookingAt = vector(0,0)
+			self.elementFactories = {}
+			self.stageElements = {}
 		end
 
 }
-
 
 -----------------------------------------------------------------
 -- Building
@@ -39,6 +40,14 @@ function WorldManager:setStage(stageName)
 	for i, player in ipairs(self.players) do
 		player:setColliders(self.tileCollider, self.activeCollider)
 	end
+
+	self.stage.elementTypes = self.stage.elementTypes or {}
+
+	for _, elementType in ipairs(self.stage.elementTypes) do
+		self.elementFactories[elementType.name] = ElementFactory(elementType, self.tileCollider, self.activeCollider, self.stage:getFolder())
+	end
+
+	self.stage.elementLocations = self.stage.elementLocations or {}
 end
 
 function WorldManager:start()
@@ -55,16 +64,30 @@ function WorldManager:start()
 		player:start()
 	end
 
+
+	for _, element in ipairs(self.stage.elementLocations) do 
+		local facing = element.facing or 1
+		local elem = self.elementFactories[element.name]:createAt(element.position, element.facing)
+		table.insert(self.stageElements, elem)
+		elem:start()
+	end
+
 	self.paused = false
 
 end
 
 function WorldManager:addPlayer(playerName)
-	local player = Player.loadFromFolder(playerName,
-										self.tileCollider,
-										self.activeCollider)
-	table.insert(self.players, player)
+	local parameters = self:loadParameters(playerName, Player.characterFolder)
 
+	local player = Player.loadBasicFromParams(parameters, Player.characterFolder .. '/' .. playerName )
+
+	player:setColliders(self.tileCollider, self.activeCollider)
+	player:loadSpritesFromParams(parameters)
+	player:loadBasicStates(parameters)
+	player:loadStatesFromParams(parameters)
+
+	table.insert(self.players, player)
+	
 	if self.stage then 
 		player:setColliders(self.tileCollider, self.activeCollider)
 	end
@@ -83,18 +106,31 @@ function WorldManager:draw()
    						self.stage:moveTo(l, t)
 						self.stage:draw()
 
+						for i, element in ipairs(self.stageElements) do
+							element:draw()
+							love.graphics.setColor(self.fullScreenTint)
+						end
+
 						for i, player in ipairs(self.players) do
 							player:draw()
+							love.graphics.setColor(self.fullScreenTint)
 						end
+
 					end)
 end
 
 function WorldManager:update(dt)
 
 	if not self.paused then
+
 		for i, player in ipairs(self.players) do
 			player:update(dt)
 		end
+
+		for i, element in ipairs(self.stageElements) do
+			element:update(dt)
+		end
+
 		
 		-- Collisions between a dynamic object and
 		-- a static object (ie an interactive tile)
@@ -116,6 +152,10 @@ function WorldManager:update(dt)
 		    	self:roomTransition(player, roomChange)
 		    end
 	    end
+
+	    for i, element in ipairs(self.stageElements) do
+			element:checkStateChange()
+		end
 	end
 
 	-- camera managing
@@ -460,6 +500,21 @@ end
 
 function WorldManager.onDynamicCollide (dt, shapeA, shapeB)
    
+end
+
+function WorldManager:loadParameters(path, rootFolder)
+	rootFolder = rootFolder or ""
+
+	local folder = rootFolder .. string.gsub(path, '[^%a%d-_/]', '')
+	assert(love.filesystem.isFile(folder .. "/config.lua"), "Character configuration file \'".. folder .. "/config.lua"   .."\' not found")
+	local ok, paramsFile = pcall(love.filesystem.load, folder .. "/config.lua")
+
+	assert(ok, "Parameters file " .. path .. " has syntax errors: " .. tostring(playerFile))
+
+	local parameters = paramsFile()
+	assert(type(parameters) == "table", "Parameters file " .. path .. " must return a table")
+
+	return parameters
 end
 
 return WorldManager
