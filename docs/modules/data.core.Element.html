@@ -61,6 +61,10 @@
 	<td class="name" nowrap><a href="#Element">Element&nbsp;(width, height)</a></td>
 	<td class="summary">Builds a new Element with a collision box and no states.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#loadBasicFromParams">loadBasicFromParams&nbsp;(parameters, folder)</a></td>
+	<td class="summary">Creates a minimal Element from a parameter table.</td>
+	</tr>
 </table>
 <h2><a href="#Class_Element">Class Element</a></h2>
 <table class="function_list">
@@ -185,10 +189,6 @@
 	<td class="name" nowrap><a href="#Element:addSingleStateFromParams">Element:addSingleStateFromParams&nbsp;(stateName, stateParams, folder)</a></td>
 	<td class="summary">Creates and adds a single state from a parameter table.</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Element:loadBasicFromParams">Element:loadBasicFromParams&nbsp;(parameters, folder)</a></td>
-	<td class="summary">Creates a minimal Element from a parameter table.</td>
-	</tr>
 </table>
 
 <br/>
@@ -212,6 +212,32 @@
          The width of the Element's collision box.</li>
         <li><span class="parameter">height</span>
          The height of the Element's collision box.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created Element.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "loadBasicFromParams"></a>
+    <strong>loadBasicFromParams&nbsp;(parameters, folder)</strong>
+    </dt>
+    <dd>
+    Creates a minimal Element from a parameter table.
+ See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parameters</span>
+         The parameter table.</li>
+        <li><span class="parameter">folder</span>
+         The folder where the Element's parameters are found.</li>
     </ul>
 
     <h3>Returns:</h3>
@@ -887,32 +913,6 @@
          <li><a href="../modules/data.core.Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
          <li><a href="../modules/data.core.Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
     </ul>
-
-
-</dd>
-    <dt>
-    <a name = "Element:loadBasicFromParams"></a>
-    <strong>Element:loadBasicFromParams&nbsp;(parameters, folder)</strong>
-    </dt>
-    <dd>
-    Creates a minimal Element from a parameter table.
- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">parameters</span>
-         The parameter table.</li>
-        <li><span class="parameter">folder</span>
-         The folder where the Element's parameters are found.</li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        The newly created Element.
-    </ol>
-
-
 
 
 </dd>

@@ -53,6 +53,29 @@ local Element = Class {
 
 }
 
+--===============================================================
+-- STATIC FUNCTIONS
+--===============================================================
+
+
+--- Creates a minimal Element from a parameter table.
+-- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+-- @param parameters The parameter table.
+-- @param folder The folder where the Element's parameters are found.
+-- @return The newly created Element.
+function Element.loadBasicFromParams(parameters, folder)
+
+	assert(type(parameters) == "table", "Element configuration file must return a table")
+
+	assert(parameters.size and parameters.size.width and parameters.size.height, "Element size not specified")
+
+	local elem = Element(parameters.size.width, parameters.size.height)
+
+	elem:setFolder(folder)
+
+	return elem
+end
+
 --- A game element implementation.
 -- Every dynamic element of a stage (players, enemies, interactive objects) is an Element
 -- or inherits from this class. Elements are currently animated using <a href="https://github.com/kikito/anim8/">anim8</a>
@@ -668,29 +691,6 @@ function Element:addSingleStateFromParams(stateName, stateParams, folder)
 			self.states[stateName]:addFlag(flag)
 		end
 	end
-end
-
---===============================================================
--- STATIC FUNCTIONS
---===============================================================
-
-
---- Creates a minimal Element from a parameter table.
--- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
--- @param parameters The parameter table.
--- @param folder The folder where the Element's parameters are found.
--- @return The newly created Element.
-function Element.loadBasicFromParams(parameters, folder)
-
-	assert(type(parameters) == "table", "Element configuration file must return a table")
-
-	assert(parameters.size and parameters.size.width and parameters.size.height, "Element size not specified")
-
-	local elem = Element(parameters.size.width, parameters.size.height)
-
-	elem:setFolder(folder)
-
-	return elem
 end
 
 return Element
