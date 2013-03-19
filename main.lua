@@ -1,11 +1,5 @@
 --- Dunno entry point. Also the point of definition of global variables.
---<br />
--- @class module
-
---[[ The entry point for dunno.
-	module 'dunno'
-]]
-
+-- @module main
 
 --- Global variables.
 -- @class table
@@ -17,7 +11,7 @@
 -- more info on its use and behavior.
 globals = {
 	
-	DEBUG = true,
+	DEBUG = true	,
 	Timer = require 'lib.hump.timer'
 }
 

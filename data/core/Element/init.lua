@@ -1,14 +1,6 @@
 --- An element implementation. Extends StateMachine.
--- Every dynamic element of a stage (players, enemies, interactive objects) is an Element
--- or inherits from this class. Elements are currently animated using <a href="https://github.com/kikito/anim8/">anim8</a>
--- and have a collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape).
--- An Element's position is considered to be its feet's position (bottom-center).
---<br />
 -- @class module
-
---[[ An element implementation.
-	module 'Element'
-]]
+-- @name data.core.Element
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
@@ -60,6 +52,13 @@ local Element = Class {
 		end	
 
 }
+
+--- A game element implementation.
+-- Every dynamic element of a stage (players, enemies, interactive objects) is an Element
+-- or inherits from this class. Elements are currently animated using <a href="https://github.com/kikito/anim8/">anim8</a>
+-- and have a collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape).
+-- An Element's position is considered to be its feet's position (bottom-center).
+-- @type Element
 
 --- Sets the folder from where the Element may load parameters.
 -- @see Element:loadSpritesFromParams, Element:loadStatesFromParams
@@ -194,8 +193,8 @@ end
 --- Checks for conditions and executes any possible state change.
 -- If two or more transitions are possible, the one with higher priority
 -- is taken (or the one that was added first, if there is more than one transition with the
---	sane priority). <br /> Element conditions can use an additional parameter: the collision flags.
--- @see TileCollider
+--	same priority). <br /> Element conditions can use an additional parameter: the collision flags.
+-- @see Element:changeToState
 function Element:checkStateChange()
 	local currentState = self.currentState
 	for _ , transition in ipairs(currentState.transitions) do
@@ -230,6 +229,7 @@ end
 -- If the new state has a collision box, its information is added to the Element's
 -- collider.
 -- @param state The state to be added.
+-- @see Element:removeState
 function Element:addState(state)
 	if self.states[state.name] and self.states[state.name].collisionBox then
 		self.activeCollider:remove(self.states[state.name])
@@ -252,6 +252,7 @@ end
 -- Elements: use copies instead.
 -- @param stateName The name of the state to be removed. If there is no state 
 -- with such name in the machine, nothing is done.
+-- @see Element:addState
 function Element:removeState(stateName)
 
 	if self.states[state.name] and self.states[state.name].collisionBox then
@@ -269,8 +270,8 @@ end
 
 --- Sets the colliders for this Element, adding every collision box
 -- (the default collision box and the states' collision boxes, if any) to them.
--- @param stateName The name of the state to be removed. If there is no state 
--- with such name in the machine, nothing is done.
+-- @param tileCollider The tileCollider to set.
+-- @param activeCollider The activeCollider to set.
 function Element:setColliders(tileCollider, activeCollider)
 	if self.activeCollider then
 		self.activeCollider:remove(self.currentCollisionBox)
@@ -369,10 +370,11 @@ end
 -- This function should not be overriden; if you want to implement your own collision
 -- resolution for tiles, override Element:resolveTileCollisions.
 -- @param dt The time slice for the collision frame.
--- @param tileElement The tile Element with which the Element is colliding.
+-- @param tileElement A sample tile that can be used to recreate the collision (should be removed).
+-- @param tile The tile Element with which the Element is colliding.
 -- @param x the horizontal position of the colliding tile, measured in tiles
 -- @param y the vertical position of the colliding tile, measured in tiles
--- @see Element:resolveTileCollisions, Element:resetCollisionFlags.
+-- @see Element:resolveTileCollisions, Element:resetCollisionFlags
 function Element:onTileCollide(dt, tileElement, tile, x, y)
 
 	if tile.properties.solid or tile.properties.oneWayPlatform or tile.properties.ladder then
@@ -392,7 +394,7 @@ end
 -- @param sampleTile A tile of the appropriate size that can be moved around to simulate 
 -- the collisions.
 -- @param tileSize A vector that contains the size of the stage's tiles, in pixels.
--- @see Element:onTileCollide, Element:resetCollisionFlags.
+-- @see Element:onTileCollide, Element:resetCollisionFlags
 function Element:resolveTileCollisions(sampleTile, tileSize)
 
 	table.sort(self.pendingCollisions, function(a, b)
@@ -469,6 +471,7 @@ end
 -- It must have been added to this Element's collider
 -- (for example, by belonging to a state and having called element:addState)
 -- and must not be active.
+-- @see Element:getCollisionBox
 function Element:setCollisionBox(collisionBox)
 	if self.currentCollisionBox then
 		self.currentCollisionBox.active = false
@@ -501,12 +504,14 @@ end
 --- Returns the Element's current collision box.
 -- @return The current collision box, as a 
 -- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+-- @see Element:setCollisionBox
 function Element:getCollisionBox(collisionBox)
 	return self.currentCollisionBox
 end
 
 
 --- Disables the Element's collisions against tiles.
+-- @see Element:enableTileCollisions
 function Element:disableTileCollisions()
 	if self.currentCollisionBox then
 		self.currentCollisionBox.active = false
@@ -514,6 +519,7 @@ function Element:disableTileCollisions()
 end
 
 --- Enables the Element's collisions against tiles.
+-- @see Element:disableTileCollisions
 function Element:enableTileCollisions()
 	if self.currentCollisionBox then
 		self.currentCollisionBox.active = true
@@ -543,6 +549,7 @@ end
 --- Loads sprite info (sprite sheet and sprite size) from a parameter table.
 -- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
 -- @param parameters The parameter table.
+-- @see Element:loadStatesFromParams, Element:addSingleStateFromParams
 function Element:loadSpritesFromParams(parameters)
 
 	--==================================
@@ -565,9 +572,10 @@ function Element:loadSpritesFromParams(parameters)
 
 end
 
---- Loads and adds states from a parameter table.
+--- Creates and adds states from a parameter table.
 -- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
 -- @param parameters The parameter table.
+-- @see Element:addSingleStateFromParams, Element:loadSpritesFromParams
 function Element:loadStatesFromParams(parameters)
 
 	--==================================
@@ -594,11 +602,12 @@ function Element:loadStatesFromParams(parameters)
 	
 end
 
---- Loads and adds a single state from a parameter table.
+--- Creates and adds a single state from a parameter table.
 -- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
 -- @param stateName The name to give to the new state.
--- @param parameters The parameter table.
+-- @param stateParams The parameter table.
 -- @param folder (Optional) the specific folder to load the state from. If omitted, the Element's folder is used.
+-- @see Element:loadStatesFromParams, Element:loadSpritesFromParams
 function Element:addSingleStateFromParams(stateName, stateParams, folder)
 	local folder = folder or self:getFolder()
 
@@ -670,6 +679,7 @@ end
 -- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
 -- @param parameters The parameter table.
 -- @param folder The folder where the Element's parameters are found.
+-- @return The newly created Element.
 function Element.loadBasicFromParams(parameters, folder)
 
 	assert(type(parameters) == "table", "Element configuration file must return a table")

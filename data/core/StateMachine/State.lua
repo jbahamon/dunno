@@ -1,11 +1,6 @@
---- Implementation of a state machine's state.
--- It is the base for all other states.
---<br />
+--- State machine's state implementation
 -- @class module
-
---[[ Implementation of a state machine's state.
-	module 'State'
-]]
+-- @name data.core.StateMachine.State
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
@@ -15,6 +10,7 @@ local vector = require 'lib.hump.vector'
 -- @name State
 -- @param name The state's name.
 -- @return The newly created State.
+
 local State = Class {
 	name = "State",
 
@@ -24,6 +20,11 @@ local State = Class {
 			self.flags = {}
 		end
 }
+
+---A StateMachine's state implementation.
+-- It is the base for all other states.
+-- @type State
+
 
 --- Adds a transition to the state.
 -- position indicates the priority of the transition with respect to the others.
@@ -55,7 +56,8 @@ end
 
 --- Retrieves a state's flags.
 -- @return The state's flags. as a table 
--- @usage local foo = state:getFlags()<br />assert(foo["someStateFlag"], "The 'someStateFlag' flag is not set")
+-- @usage local foo = state:getFlags()
+--assert(foo["someStateFlag"], "The 'someStateFlag' flag is not set")
 function State:getFlags()
 	return self.flags
 end

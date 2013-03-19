@@ -33,12 +33,13 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_Element">Class Element</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul>
-  <li><strong>Element</strong></li>
+  <li><strong>data.core.Element</strong></li>
   <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
   <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
   <li><a href="../modules/main.html">main</a></li>
@@ -48,15 +49,10 @@
 
 <div id="content">
 
-<h1>Module <code>Element</code></h1>
+<h1>Module <code>data.core.Element</code></h1>
 
 <p>An element implementation.</p>
-<p> Extends StateMachine.
- Every dynamic element of a stage (players, enemies, interactive objects) is an Element
- or inherits from this class. Elements are currently animated using <a href="https://github.com/kikito/anim8/">anim8</a>
- and have a collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape).
- An Element's position is considered to be its feet's position (bottom-center).
-<br /></p>
+<p> Extends StateMachine.</p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
@@ -65,6 +61,9 @@
 	<td class="name" nowrap><a href="#Element">Element&nbsp;(width, height)</a></td>
 	<td class="summary">Builds a new Element with a collision box and no states.</td>
 	</tr>
+</table>
+<h2><a href="#Class_Element">Class Element</a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#Element:setFolder">Element:setFolder&nbsp;(path)</a></td>
 	<td class="summary">Sets the folder from where the Element may load parameters.</td>
@@ -187,7 +186,7 @@
 	<td class="summary">Creates and adds a single state from a parameter table.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#loadBasicFromParams">loadBasicFromParams&nbsp;(parameters, folder)</a></td>
+	<td class="name" nowrap><a href="#Element:loadBasicFromParams">Element:loadBasicFromParams&nbsp;(parameters, folder)</a></td>
 	<td class="summary">Creates a minimal Element from a parameter table.</td>
 	</tr>
 </table>
@@ -225,6 +224,14 @@
 
 
 </dd>
+</dl>
+    <h2><a name="Class_Element"></a>Class Element</h2>
+        A game element implementation.
+ Every dynamic element of a stage (players, enemies, interactive objects) is an Element
+ or inherits from this class. Elements are currently animated using <a href="https://github.com/kikito/anim8/">anim8</a>
+ and have a collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape).
+ An Element's position is considered to be its feet's position (bottom-center).
+    <dl class="function">
     <dt>
     <a name = "Element:setFolder"></a>
     <strong>Element:setFolder&nbsp;(path)</strong>
@@ -242,8 +249,8 @@
 
     <h3>see also:</h3>
     <ul>
-         <li><a href="../modules/Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
-         <li><a href="../modules/Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
     </ul>
 
 
@@ -265,8 +272,8 @@
 
     <h3>see also:</h3>
     <ul>
-         <li><a href="../modules/Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
-         <li><a href="../modules/Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
     </ul>
 
 
@@ -460,7 +467,7 @@
 
     <h3>see also:</h3>
     <ul>
-         <a href="../modules/Element.html#Element:setStartingPosition">Element:setStartingPosition</a>
+         <a href="../modules/data.core.Element.html#Element:setStartingPosition">Element:setStartingPosition</a>
     </ul>
 
 
@@ -480,7 +487,7 @@
 
     <h3>see also:</h3>
     <ul>
-         <a href="../modules/Element.html#Element:changeToState">Element:changeToState</a>
+         <a href="../modules/data.core.Element.html#Element:changeToState">Element:changeToState</a>
     </ul>
 
 
@@ -528,7 +535,7 @@
 
     <h3>see also:</h3>
     <ul>
-         <a href="../modules/Element.html#Element:removeState">Element:removeState</a>
+         <a href="../modules/data.core.Element.html#Element:removeState">Element:removeState</a>
     </ul>
 
 
@@ -554,7 +561,7 @@
 
     <h3>see also:</h3>
     <ul>
-         <a href="../modules/Element.html#Element:addState">Element:addState</a>
+         <a href="../modules/data.core.Element.html#Element:addState">Element:addState</a>
     </ul>
 
 
@@ -641,8 +648,8 @@
 
     <h3>see also:</h3>
     <ul>
-         <li><a href="../modules/Element.html#Element:resolveTileCollisions">Element:resolveTileCollisions</a></li>
-         <li><a href="../modules/Element.html#Element:resetCollisionFlags">Element:resetCollisionFlags</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:resolveTileCollisions">Element:resolveTileCollisions</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:resetCollisionFlags">Element:resetCollisionFlags</a></li>
     </ul>
 
 
@@ -669,8 +676,8 @@
 
     <h3>see also:</h3>
     <ul>
-         <li><a href="../modules/Element.html#Element:onTileCollide">Element:onTileCollide</a></li>
-         <li><a href="../modules/Element.html#Element:resetCollisionFlags">Element:resetCollisionFlags</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:onTileCollide">Element:onTileCollide</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:resetCollisionFlags">Element:resetCollisionFlags</a></li>
     </ul>
 
 
@@ -696,7 +703,7 @@
 
     <h3>see also:</h3>
     <ul>
-         <a href="../modules/Element.html#Element:getCollisionBox">Element:getCollisionBox</a>
+         <a href="../modules/data.core.Element.html#Element:getCollisionBox">Element:getCollisionBox</a>
     </ul>
 
 
@@ -724,7 +731,7 @@
 
     <h3>see also:</h3>
     <ul>
-         <a href="../modules/Element.html#Element:setCollisionBox">Element:setCollisionBox</a>
+         <a href="../modules/data.core.Element.html#Element:setCollisionBox">Element:setCollisionBox</a>
     </ul>
 
 
@@ -741,7 +748,7 @@
 
     <h3>see also:</h3>
     <ul>
-         <a href="../modules/Element.html#Element:enableTileCollisions">Element:enableTileCollisions</a>
+         <a href="../modules/data.core.Element.html#Element:enableTileCollisions">Element:enableTileCollisions</a>
     </ul>
 
 
@@ -758,7 +765,7 @@
 
     <h3>see also:</h3>
     <ul>
-         <a href="../modules/Element.html#Element:disableTileCollisions">Element:disableTileCollisions</a>
+         <a href="../modules/data.core.Element.html#Element:disableTileCollisions">Element:disableTileCollisions</a>
     </ul>
 
 
@@ -825,8 +832,8 @@
 
     <h3>see also:</h3>
     <ul>
-         <li><a href="../modules/Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
-         <li><a href="../modules/Element.html#Element:addSingleStateFromParams">Element:addSingleStateFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:addSingleStateFromParams">Element:addSingleStateFromParams</a></li>
     </ul>
 
 
@@ -849,8 +856,8 @@
 
     <h3>see also:</h3>
     <ul>
-         <li><a href="../modules/Element.html#Element:addSingleStateFromParams">Element:addSingleStateFromParams</a></li>
-         <li><a href="../modules/Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:addSingleStateFromParams">Element:addSingleStateFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
     </ul>
 
 
@@ -877,15 +884,15 @@
 
     <h3>see also:</h3>
     <ul>
-         <li><a href="../modules/Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
-         <li><a href="../modules/Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "loadBasicFromParams"></a>
-    <strong>loadBasicFromParams&nbsp;(parameters, folder)</strong>
+    <a name = "Element:loadBasicFromParams"></a>
+    <strong>Element:loadBasicFromParams&nbsp;(parameters, folder)</strong>
     </dt>
     <dd>
     Creates a minimal Element from a parameter table.
