@@ -1,3 +1,6 @@
+--- See <a href="https://love2d.org/wiki/Config_Files">LOVE's documentation</a>.
+-- @param t The configuration table.
+
 function love.conf(t)
     t.title = "Dunno"        -- The title of the window the game is in (string)
     t.author = "SilentProtagonist"        -- The author of the game (string)

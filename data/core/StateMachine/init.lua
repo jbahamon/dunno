@@ -1,6 +1,20 @@
+--- A state machine implementation.
+-- It is the base for all elements (player, enemy and neutral) in the game.
+-- Can also be used for non-element behavior.
+--<br />
+-- @class module
+
+--[[ A state machine implementation.
+	module 'StateMachine'
+]]
+
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 
+--- Builds a new StateMachine with no states.
+-- @class function
+-- @name StateMachine
+-- @return The newly created StateMachine.
 local StateMachine = Class {
 	name = "StateMachine",
 
@@ -12,15 +26,24 @@ local StateMachine = Class {
 
 }
 
+--- Retrieves the current state's flags.
+-- @return flags The current state's flag table.
+-- @usage local foo = machine:getStateFlags()<br />assert(foo["someStateFlag"], "The state flag is not set")
 function StateMachine:getStateFlags()
 	return self.currentState:getFlags()
 end
 
-
+--- Updates the state machine.
+-- @param dt Time since the last update, in seconds.
 function StateMachine:update(dt)
 	self.currentState:update(dt)
 end
 
+--- Checks for conditions and executes any possible state change.
+-- If two or more transitions are possible, the one with higher priority
+-- is taken (or the one that was added first, if there is more than one transition with the
+-- sane priority). State transition conditions take a single argument: the current
+-- state.
 function StateMachine:checkStateChange()
 	local currentState = self.currentState
 	for _ , transition in ipairs(currentState.transitions) do
@@ -31,6 +54,10 @@ function StateMachine:checkStateChange()
 	end
 end
 
+--- Executes a transition to a specified state.
+-- The current state's onExitTo and the target state's onEnterFrom
+-- are executed, if found.
+-- @param nextState The target state.
 function StateMachine:changeToState(nextState)
 
 	if self.currentState.onExitTo then
@@ -44,20 +71,37 @@ function StateMachine:changeToState(nextState)
 	self.currentState = nextState
 end
 
+--- Adds a state to the machine. 
+-- A state can only belong to a single machine at a time: it should not belong 
+-- to another state machine when this method is called. 
+-- Call removeState on the other machine first.
+-- @param state The state to be added.
 function StateMachine:addState(state)
 	self.states[state.name] = state
 	state.owner = self	
 end
 
+--- Removes a state from the machine, leaving it with no owner.
+-- @param stateName The name of the state to be removed. If there is no state 
+-- with such name in the machine, nothing is done.
 function StateMachine:removeState(stateName)
+	if self.states[stateName] then
+		self.states[stateName].owner = nil
+	end
+
 	self.states[stateName] = nil
 end
 
+--- Sets the machine's initial state.
+-- @param stateName The name of the state to be set as the machine's initial state.
+-- There must be a state with this name in the machine, or an error will be raised.
 function StateMachine:setInitialState(stateName)
 	assert(self.states[stateName], "No state with name \'".. stateName .."\'")
 	self.initialState = self.states[stateName]
 end
 
+--- Returns the state machine's initial state
+-- @return The machine's initial state.
 function StateMachine:getInitialState()
 	return self.initialState
 end

@@ -1,5 +1,6 @@
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
+local shapes = require 'lib.HardonCollider.shapes'
 
 local State = require 'data.core.StateMachine.State'
 
@@ -18,6 +19,13 @@ local ElementState = Class {
 			self.facing = 1
 			self.animation = animation
 			self.transitions = {}
+			if self.dynamics.width and self.dynamics.height then
+				self.collisionBox = shapes.newPolygonShape(
+							    	- math.floor(self.dynamics.width/2), 0,
+							    	  math.ceil(self.dynamics.width/2), 0,
+							    	  math.ceil(self.dynamics.width/2), - self.dynamics.height,
+							    	- math.floor(self.dynamics.width/2), - self.dynamics.height)
+			end
 		end
 }
 

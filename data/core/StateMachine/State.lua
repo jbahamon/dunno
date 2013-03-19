@@ -1,8 +1,22 @@
+--- Implementation of a state machine's state.
+-- It is the base for all other states.
+--<br />
+-- @class module
+
+--[[ Implementation of a state machine's state.
+	module 'State'
+]]
+
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 
-local ElementState = Class {
-	name = "ElementState",
+--- Builds a new State.
+-- @class function
+-- @name State
+-- @param name The state's name.
+-- @return The newly created State.
+local State = Class {
+	name = "State",
 
 	init = 
 		function(self, name)
@@ -11,7 +25,10 @@ local ElementState = Class {
 		end
 }
 
-function ElementState:addTransition(condition, targetState, position)
+--- Adds a transition to the state.
+-- position indicates the priority of the transition with respect to the others.
+-- (1 meaning the new transition will be checked before all those added before)
+function State:addTransition(condition, targetState, position)
 
 	position = position or -1
 
@@ -24,25 +41,33 @@ function ElementState:addTransition(condition, targetState, position)
 	end
 end
 
-function ElementState:addFlag(flag)
+--- Sets a state's flag as on.
+-- @param flag The name of the flag to turn on.
+function State:addFlag(flag)
 	self.flags[flag] = true
 end
 
-
-function ElementState:getFlags()
-	return self.flags
-end
-
-
-function ElementState:clearFlags(flag)
-	self.flags = {}
-end
-
-function ElementState:removeFlag(flag)
+--- Sets a state's flag as off.
+-- @param flag The name of the flag to turn off.
+function State:removeFlag(flag)
 	self.flags[flag] = nil
 end
 
-function ElementState:update(dt)
+--- Retrieves a state's flags.
+-- @return The state's flags. as a table 
+-- @usage local foo = state:getFlags()<br />assert(foo["someStateFlag"], "The 'someStateFlag' flag is not set")
+function State:getFlags()
+	return self.flags
 end
 
-return ElementState
+--- Sets all of a state's flag to off.
+function State:clearFlags(flag)
+	self.flags = {}
+end
+
+--- Updates the state
+-- @param dt Time since the last update, in seconds.
+function State:update(dt)
+end
+
+return State

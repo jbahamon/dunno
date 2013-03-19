@@ -50,13 +50,12 @@ function TileCollider:update(dt)
 
 			elem.color = {255, 0, 255, 255}
 			local x1,y1, x2,y2 = elem:bbox()
-			
 
 			local minTileX = math.floor(x1/tileSize.x)
 			local minTileY = math.floor(y1/tileSize.y)
 			
-			local elemWidth = math.ceil(elem.width/tileSize.x)
-			local elemHeight = math.ceil(elem.height/tileSize.x)
+			local elemWidth = math.ceil((x2 - x1)/tileSize.x)
+			local elemHeight = math.ceil((y2 - y1)/tileSize.x)
 
 			for x, y, tile in self.stage:getTilesAt(layer,
 													minTileX,

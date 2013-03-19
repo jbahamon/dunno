@@ -12,6 +12,8 @@ local TileCollider = require 'lib.TileCollider'
 
 local vector = require 'lib.hump.vector'
 
+local Timer = globals.Timer
+
 local WorldManager = Class {
 	name = "WorldManager",
 

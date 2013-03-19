@@ -1,13 +1,33 @@
+--- An element implementation. Extends StateMachine.
+-- Every dynamic element of a stage (players, enemies, interactive objects) is an Element
+-- or inherits from this class. Elements are currently animated using <a href="https://github.com/kikito/anim8/">anim8</a>
+-- and have a collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape).
+-- An Element's position is considered to be its feet's position (bottom-center).
+--<br />
+-- @class module
+
+--[[ An element implementation.
+	module 'Element'
+]]
+
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 local anim8 = require 'lib.anim8'
-
 
 local GeometryUtils = require 'lib.GeometryUtils'
 local shapes = require 'lib.HardonCollider.shapes'
 
 local StateMachine = require 'data.core.StateMachine'
 local ElementState = require 'data.core.Element.ElementState'
+
+--- Builds a new Element with a collision box and no states. The collision box of an Element is 
+-- a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+-- Extends StateMachine.
+-- @class function
+-- @name Element
+-- @param width The width of the Element's collision box.
+-- @param height The height of the Element's collision box.
+-- @return The newly created Element.
 
 local Element = Class {
 
@@ -24,9 +44,7 @@ local Element = Class {
 		    	  math.ceil(width/2), - height,
 		    	- math.floor(width/2), - height)
 
-		    self.defaultCollisionBox.width = width
-		    self.defaultCollisionBox.height = height
-			self.defaultCollisionBox.color = {255, 255, 255, 255}
+			self.collisionBoxColor = {255, 255, 255, 255}
 			self.currentCollisionBox = self.defaultCollisionBox
 
 		    -- Collision flags
@@ -38,23 +56,35 @@ local Element = Class {
 
 			self.pendingCollisions = {}
 
+			self:setStartingPosition(0,0)
 		end	
 
 }
 
+--- Sets the folder from where the Element may load parameters.
+-- @see Element:loadSpritesFromParams, Element:loadStatesFromParams
+-- @param path The folder path to assign.
 function Element:setFolder(path)
 	self.folder = path
 end
 
-
-function Element:getFolder(path)
+--- Gets the folder from where the Element may load parameters.
+-- @see Element:loadSpritesFromParams, Element:loadStatesFromParams
+-- @return The Element's folder path.
+function Element:getFolder()
 	return self.folder
 end
 
------------------------------------------------------------------
+--===============================================================
 -- Drawing
------------------------------------------------------------------
+--===============================================================
 
+--- Sets the Element's sprite data for it to be drawn.
+-- @param sprites The sprite sheet image, as loaded by love.graphics.newImage.
+-- Sprites in the sheet must be arranged in a grid where every cell must have the same size.
+-- @param spriteSizeX The width of a sprite's cell in the sheet.
+-- @param spriteSizeY The width of a sprite's cell in the sheet.
+-- @param offset The sprites' offset as a vector. 
 function Element:setSpriteData(sprites, spriteSizeX, spriteSizeY, offset)
 	self.spriteSizeX = spriteSizeX
 	self.spriteSizeY = spriteSizeY
@@ -68,57 +98,86 @@ function Element:setSpriteData(sprites, spriteSizeX, spriteSizeY, offset)
 	self.spriteOffset = offset or vector(0,0)
 end
 
+--- Draws the Element's current animation. If globals.DEBUG is set to <i>true</i>, 
+-- The collision box is drawn over the Element's sprite.
 function Element:draw()
 
 	if self.currentState.draw then
 		self.currentState:draw()
 	end	
 
-    if DEBUG then
-        love.graphics.setColor(self.currentCollisionBox.color)
+    if globals.DEBUG then
+        love.graphics.setColor(self.collisionBoxColor)
         self.currentCollisionBox:draw()
     end
 
 end
 
------------------------------------------------------------------
+--===============================================================
 -- Positioning, dynamics
------------------------------------------------------------------
+--===============================================================
 
+--- Moves the Element by a certain amount, in pixels.
+-- The same displacement is applied Element's collision box.
+-- @param dx The horizontal displacement.
+-- @param dy The vertical displacement.
 function Element:move(dx, dy)
 	self.currentCollisionBox:move(dx, dy)
 	self.currentState:move(dx, dy)
 end
 
+--- Moves the Element to a given location, in pixels.
+-- The Element's collision box is moved so that the Element's
+-- new position lies at the bottom-center of the collision box.
+-- @param x The horizontal position.
+-- @param y The vertical position.
 function Element:moveTo(x, y)
-	self.currentCollisionBox:moveTo(x, y - self.currentCollisionBox.height/2)
+	local x1, y1, x2, y2 = self.currentCollisionBox:bbox()
+
+	self.currentCollisionBox:moveTo(x, y - (y2 - y1)/2)
 	self.currentState:moveTo(x, y)
 end
 
+--- Sets the Element's starting position, in pixels. The Element is NOT moved to this position;
+-- instead, it will be moved when Element:start is called.
+-- @param x The horizontal position.
+-- @param y The vertical position.
 function Element:setStartingPosition(x, y)
 	self.startingPosition = vector(x, y)
 end
 
+--- Returns the Element's current position, in pixels.
+-- @return The Element's position, as a vector.
 function Element:getPosition()
 	return self.currentState.dynamics.position
 end
 
+--- Returns the Element's position from the last frame, in pixels.
+-- @return The Element's position from the last frame, as a vector.
 function Element:getLastPosition()
 	return self.currentState.dynamics.oldPosition
 end
 
+--- Returns the Element's velocity, in pixels/second.
+-- @return The Element's position from the last frame, as a vector.
 function Element:getVelocity()
 	return self.currentState.dynamics.velocity
 end
 
+--- Returns the center of the Element's collision box, in pixels.
+-- @return The center's position, as a vector.
 function Element:center()
 	return self.currentCollisionBox:center()
 end
 
------------------------------------------------------------------
+--===============================================================
 -- State handling
------------------------------------------------------------------
+--===============================================================
 
+--- Starts the Element.
+-- In particular, sets the initial state, the initial collision box, and moves the Element 
+-- to its initial position.
+-- @see Element:setStartingPosition
 function Element:start()
 	StateMachine.start(self)
 
@@ -132,6 +191,11 @@ function Element:start()
 
 end
 
+--- Checks for conditions and executes any possible state change.
+-- If two or more transitions are possible, the one with higher priority
+-- is taken (or the one that was added first, if there is more than one transition with the
+--	sane priority). <br /> Element conditions can use an additional parameter: the collision flags.
+-- @see TileCollider
 function Element:checkStateChange()
 	local currentState = self.currentState
 	for _ , transition in ipairs(currentState.transitions) do
@@ -140,9 +204,13 @@ function Element:checkStateChange()
 			return
 		end
 	end
-	
 end
 
+--- Executes a transition to a specified state.
+-- The current state's onExitTo and the target state's onEnterFrom
+-- are executed, if found. The Element's collision box is adjusted if the next
+-- state has a different box from the current one.
+-- @param nextState The target state.
 function Element:changeToState(nextState)
 	local previousState = self.currentState
 
@@ -155,6 +223,13 @@ function Element:changeToState(nextState)
 
 end
 
+--- Adds a state to the Element. 
+-- A state can only belong to a single machine at a time: it should not belong 
+-- to another state machine when this method is called. 
+-- Call removeState on the other machine first.
+-- If the new state has a collision box, its information is added to the Element's
+-- collider.
+-- @param state The state to be added.
 function Element:addState(state)
 	if self.states[state.name] and self.states[state.name].collisionBox then
 		self.activeCollider:remove(self.states[state.name])
@@ -164,12 +239,19 @@ function Element:addState(state)
 	StateMachine.addState(self, state)
 
 	if state.collisionBox then
-		self.element.activeCollider:addShape(state.collisionBox)
-		self.element.activeCollider:setGhost(state.collisionBox)
-		self.element.tileCollider:addElement(state.collisionBox)
+		self.activeCollider:addShape(state.collisionBox)
+		self.activeCollider:setGhost(state.collisionBox)
+		self.tileCollider:addElement(state.collisionBox)
 	end
 end
 
+
+--- Removes a state from the machine, leaving it with no owner.
+-- If the state had a collision box, it will be removed from the colliders.
+-- Therefore, it is NOT recommended to use the same collision box in different
+-- Elements: use copies instead.
+-- @param stateName The name of the state to be removed. If there is no state 
+-- with such name in the machine, nothing is done.
 function Element:removeState(stateName)
 
 	if self.states[state.name] and self.states[state.name].collisionBox then
@@ -181,17 +263,31 @@ function Element:removeState(stateName)
 
 end
 
------------------------------------------------------------------
+--===============================================================
 -- Collisions
------------------------------------------------------------------
+--===============================================================
 
+--- Sets the colliders for this Element, adding every collision box
+-- (the default collision box and the states' collision boxes, if any) to them.
+-- @param stateName The name of the state to be removed. If there is no state 
+-- with such name in the machine, nothing is done.
 function Element:setColliders(tileCollider, activeCollider)
 	if self.activeCollider then
 		self.activeCollider:remove(self.currentCollisionBox)
+		for _, state in pairs(self.states) do
+			if state.collisionBox then
+				self.activeCollider:remove(state.collisionBox)
+			end
+		end
 	end
 
 	if self.tileCollider then
 		self.tileCollider:remove(self.currentCollisionBox)
+		for _, state in pairs(self.states) do
+			if state.collisionBox then
+				self.tileCollider:remove(state.collisionBox)
+			end
+		end
 	end
 
 	self.tileCollider = tileCollider
@@ -205,12 +301,25 @@ function Element:setColliders(tileCollider, activeCollider)
 		self.defaultCollisionBox.active = false
 	end
 
+	for _, state in pairs(self.states) do
+		if state.collisionBox then
+			self.activeCollider:addShape(state.collisionBox)
+			self.tileCollider:addElement(state.collisionBox)
+
+			if self.currentCollisionBox ~= state.collisionBox then
+				self.activeCollider:setGhost(state.collisionBox)
+			end
+		end
+	end
+
 end
 
+--- Moves the Element into a colliding box.
+-- The movement is performed in the axis with the smallest distance to the target 
+-- box. Useful for room transitions, for example.
+-- @param box The collision box to move the Element into.
 function Element:moveIntoCollidingBox(box)
 	local collisionBox = self:getCollisionBox()
-
-
 	local collides, dx, dy = collisionBox:collidesWith(box)
 
 	if not collides then
@@ -245,16 +354,25 @@ function Element:moveIntoCollidingBox(box)
 
 end
 
+
+--- Resets the Element's collision flags. 
 function Element:resetCollisionFlags()
 	self.collisionFlags.canMoveLeft = true
 	self.collisionFlags.canMoveRight = true
 	self.collisionFlags.canMoveUp = true
 	self.collisionFlags.canMoveDown = true
-
 	self.collisionFlags.specialEvents = {}
 end
 
-
+--- Called when colliding with a tile from the stage's collision layer. 
+-- Essentially, adds the collision event to the pendingCollisions field.
+-- This function should not be overriden; if you want to implement your own collision
+-- resolution for tiles, override Element:resolveTileCollisions.
+-- @param dt The time slice for the collision frame.
+-- @param tileElement The tile Element with which the Element is colliding.
+-- @param x the horizontal position of the colliding tile, measured in tiles
+-- @param y the vertical position of the colliding tile, measured in tiles
+-- @see Element:resolveTileCollisions, Element:resetCollisionFlags.
 function Element:onTileCollide(dt, tileElement, tile, x, y)
 
 	if tile.properties.solid or tile.properties.oneWayPlatform or tile.properties.ladder then
@@ -266,13 +384,15 @@ function Element:onTileCollide(dt, tileElement, tile, x, y)
 		table.insert(self.pendingCollisions, collisionEvent)
 
 	end
-
-	-- Insert other collision types here. One-way platforms, ladders and
-	-- slopes are the most relevant. Each one resolves and sets flags in
-	-- their own way.
-
 end
 
+--- Resolves collisions with tiles.
+-- Iterates over the registered collision events and resolves them appropriately.
+-- This function can be overriden to implement custom tile collision resolution.
+-- @param sampleTile A tile of the appropriate size that can be moved around to simulate 
+-- the collisions.
+-- @param tileSize A vector that contains the size of the stage's tiles, in pixels.
+-- @see Element:onTileCollide, Element:resetCollisionFlags.
 function Element:resolveTileCollisions(sampleTile, tileSize)
 
 	table.sort(self.pendingCollisions, function(a, b)
@@ -330,9 +450,7 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 				end
 			end	
 		end
-
 	end
-
 				
 	if highestLadderEvent and highestLadderEvent.y * tileSize.y >= self:getLastPosition().y then
 		self:move(0, highestLadderEvent.y * tileSize.y - self:getPosition().y)
@@ -345,6 +463,12 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 
 end
 
+--- Sets the current collision box for the Element.
+-- @param collisionBox The collision box to set, a 
+-- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+-- It must have been added to this Element's collider
+-- (for example, by belonging to a state and having called element:addState)
+-- and must not be active.
 function Element:setCollisionBox(collisionBox)
 	if self.currentCollisionBox then
 		self.currentCollisionBox.active = false
@@ -356,16 +480,16 @@ function Element:setCollisionBox(collisionBox)
 
 	end
 	
+	local x1, y1, x2, y2 = collisionBox:bbox()
+	
+	self.width = x2 - x1
+	self.height = y2 - y1
+
 	collisionBox:moveTo(self.currentState.dynamics.position.x,
-					    self.currentState.dynamics.position.y - collisionBox.height/2)
+					    self.currentState.dynamics.position.y - self.height/2)
 	self.currentCollisionBox = collisionBox
 	self.currentCollisionBox.parent = self
 	self.currentCollisionBox.active = true
-
-	local x1, y1, x2, y2 = collisionBox:bbox()
-
-	self.width = x2 - x1
-	self.height = y2 - y1
 
 	--this if should be removed
 	if self.activeCollider then
@@ -374,41 +498,56 @@ function Element:setCollisionBox(collisionBox)
 
 end
 
+--- Returns the Element's current collision box.
+-- @return The current collision box, as a 
+-- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
 function Element:getCollisionBox(collisionBox)
 	return self.currentCollisionBox
 end
 
 
+--- Disables the Element's collisions against tiles.
 function Element:disableTileCollisions()
 	if self.currentCollisionBox then
 		self.currentCollisionBox.active = false
 	end
 end
 
-
+--- Enables the Element's collisions against tiles.
 function Element:enableTileCollisions()
 	if self.currentCollisionBox then
 		self.currentCollisionBox.active = true
 	end
 end
 
+--- Returns the Element's default collision box.
+-- @return The default collision box, as a 
+-- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
 function Element:getDefaultCollisionBox(collisionBox)
 	return self.defaultCollisionBox
 end
 
------------------------------------------------------------------
+--===============================================================
 -- Loading from File
------------------------------------------------------------------
+--===============================================================
 
+--- Returns the Element's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).
+-- This method is used when building a character from a file, to determine the class used when no state class is specified.
+-- For an Element, it's ElementState; override this method if you want to create a character with a custom base state.
+-- @return The hump class to be used in the construction of this Element's states when no class is specified.
 function Element:getDefaultStateClass()
 	return ElementState
 end
 
+
+--- Loads sprite info (sprite sheet and sprite size) from a parameter table.
+-- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+-- @param parameters The parameter table.
 function Element:loadSpritesFromParams(parameters)
 
-	------------------------------------
+	--==================================
 	-- Sprite Data
-	------------------------------------
+	--==================================
 
 	assert(parameters.sprites,"No sprite info supplied")
 	assert(parameters.sprites.sheet, "No spritesheet info supplied" )
@@ -426,11 +565,14 @@ function Element:loadSpritesFromParams(parameters)
 
 end
 
+--- Loads and adds states from a parameter table.
+-- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+-- @param parameters The parameter table.
 function Element:loadStatesFromParams(parameters)
 
-	------------------------------------
+	--==================================
 	-- States
-	------------------------------------
+	--==================================
 
 	assert(parameters.states and type(parameters.states) == "table" and next(parameters.states) ~= nil,
 		 "\'states\' parameter must not be empty.")
@@ -438,9 +580,9 @@ function Element:loadStatesFromParams(parameters)
 	local states = parameters.states
 	local folder = states.folder or self:getFolder()
 
-	------------------------------------
+	--==================================
 	-- Creating the States
-	------------------------------------
+	--==================================
 	for stateName, stateParams in pairs(states) do
 		self:addSingleStateFromParams(stateName, stateParams, folder)
 	end
@@ -452,6 +594,11 @@ function Element:loadStatesFromParams(parameters)
 	
 end
 
+--- Loads and adds a single state from a parameter table.
+-- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+-- @param stateName The name to give to the new state.
+-- @param parameters The parameter table.
+-- @param folder (Optional) the specific folder to load the state from. If omitted, the Element's folder is used.
 function Element:addSingleStateFromParams(stateName, stateParams, folder)
 	local folder = folder or self:getFolder()
 
@@ -513,9 +660,16 @@ function Element:addSingleStateFromParams(stateName, stateParams, folder)
 		end
 	end
 end
---------------------------
+
+--===============================================================
 -- STATIC FUNCTIONS
---------------------------
+--===============================================================
+
+
+--- Creates a minimal Element from a parameter table.
+-- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+-- @param parameters The parameter table.
+-- @param folder The folder where the Element's parameters are found.
 function Element.loadBasicFromParams(parameters, folder)
 
 	assert(type(parameters) == "table", "Element configuration file must return a table")

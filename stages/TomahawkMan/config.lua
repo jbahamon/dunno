@@ -71,7 +71,7 @@ local stageParameters ={
 
 		},
 
-	roomTransitionMode = "fading", 
+	roomTransitionMode = "none", 
 
 	--startingPosition = vector(198, 51),
 	startingPosition = vector(124, 21),
