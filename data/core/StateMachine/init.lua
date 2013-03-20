@@ -5,6 +5,7 @@
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 local State = require 'data.core.StateMachine.State'
+
 --- Builds a new StateMachine with no states.
 -- @class function
 -- @name StateMachine

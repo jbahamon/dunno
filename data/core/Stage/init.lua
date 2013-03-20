@@ -238,14 +238,14 @@ function Stage:checkRoomChange(element)
 		return false
 	end
 
-	local x1, y1, x2, y2 = player:getCollisionBox():bbox()
+	local x1, y1, x2, y2 = element:getCollisionBox():bbox()
 
 	if self.currentRoom.box:contains(x1, y1) and self.currentRoom.box:contains(x2, y1) and
 		self.currentRoom.box:contains(x1, y2) and self.currentRoom.box:contains(x2, y2) then
 		return false
 	end
 
-	local collidingRooms = self:getCollidingRooms(player)
+	local collidingRooms = self:getCollidingRooms(element)
 
 	table.sort(collidingRooms, function(a, b)
 											return a.collisionArea > b.collisionArea
