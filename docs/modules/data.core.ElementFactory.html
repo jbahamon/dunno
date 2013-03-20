@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_ElementFactory">Class ElementFactory</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/data.core.Element.html">data.core.Element</a></li>
+  <li><a href="../modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
+  <li><strong>data.core.ElementFactory</strong></li>
+  <li><a href="../modules/data.core.Player.html">data.core.Player</a></li>
+  <li><a href="../modules/data.core.Player.PlayerState.html">data.core.Player.PlayerState</a></li>
+  <li><a href="../modules/data.core.Stage.html">data.core.Stage</a></li>
+  <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
+  <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
+  <li><a href="../modules/data.core.WorldManager.html">data.core.WorldManager</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>data.core.ElementFactory</code></h1>
+
+<p>ElementFactory implementation.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ElementFactory">ElementFactory&nbsp;(parameters, tileCollider, tileCollider, folder)</a></td>
+	<td class="summary">Builds a new ElementFactory.</td>
+	</tr>
+</table>
+<h2><a href="#Class_ElementFactory">Class ElementFactory</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ElementFactory:create">ElementFactory:create&nbsp;()</a></td>
+	<td class="summary">Creates a new instance of the ElementFactory's Element.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ElementFactory:createAt">ElementFactory:createAt&nbsp;(position, facing)</a></td>
+	<td class="summary">Creates a new instance of the ElementFactory's Element at the specified position
+ and facing the specified direction.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "ElementFactory"></a>
+    <strong>ElementFactory&nbsp;(parameters, tileCollider, tileCollider, folder)</strong>
+    </dt>
+    <dd>
+    Builds a new ElementFactory.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parameters</span>
+         The parameters to use in the building of elements. It must include a sprite field,
+ with sheet, spriteSizeX and spriteSizeY as fields. The sheet must be an image loaded with love.graphics.newImage.--</li>
+        <li><span class="parameter">tileCollider</span>
+         The TileCollider to assign to every Element created by this ElementFactory.</li>
+        <li><span class="parameter">tileCollider</span>
+         The TileCollider to assign to every Element created by this ElementFactory.</li>
+        <li><span class="parameter">folder</span>
+         The base folder to load files (sprites, classes, etc) for building the Elements from.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created ElementFactory.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_ElementFactory"></a>Class ElementFactory</h2>
+        An object that can generate copies of an object without reloading every resource.
+ In particular, sprite data and the parameters are not loaded multiple times.
+ Useful for respawning enemies or other elements (e.g. bullets).
+    <dl class="function">
+    <dt>
+    <a name = "ElementFactory:create"></a>
+    <strong>ElementFactory:create&nbsp;()</strong>
+    </dt>
+    <dd>
+    Creates a new instance of the ElementFactory's Element.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created Element.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ElementFactory:createAt"></a>
+    <strong>ElementFactory:createAt&nbsp;(position, facing)</strong>
+    </dt>
+    <dd>
+    Creates a new instance of the ElementFactory's Element at the specified position
+ and facing the specified direction.
+ than zero indicates facing right; a value smaller than zero indicates facing left.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">position</span>
+         The position, in pixels, where to put the new Element.</li>
+        <li><span class="parameter">facing</span>
+         The direction the Element should be facing. A value of facing greater</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created Element.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

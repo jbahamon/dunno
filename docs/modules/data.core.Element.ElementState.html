@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_ElementState">Class ElementState</a></li>
+<li><a href="#Positioning_and_dynamics">Positioning and dynamics</a></li>
+<li><a href="#Transition_handling">Transition handling</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/data.core.Element.html">data.core.Element</a></li>
+  <li><strong>data.core.Element.ElementState</strong></li>
+  <li><a href="../modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
+  <li><a href="../modules/data.core.Player.html">data.core.Player</a></li>
+  <li><a href="../modules/data.core.Player.PlayerState.html">data.core.Player.PlayerState</a></li>
+  <li><a href="../modules/data.core.Stage.html">data.core.Stage</a></li>
+  <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
+  <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
+  <li><a href="../modules/data.core.WorldManager.html">data.core.WorldManager</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>data.core.Element.ElementState</code></h1>
+
+<p>Element state implementation.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ElementState">ElementState&nbsp;(name, dynamics, animation)</a></td>
+	<td class="summary">Builds a new ElementState.</td>
+	</tr>
+</table>
+<h2><a href="#Class_ElementState">Class ElementState</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ElementState:draw">ElementState:draw&nbsp;()</a></td>
+	<td class="summary">Draws the ElementState's animation at the ElementState's position.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ElementState:update">ElementState:update&nbsp;(dt)</a></td>
+	<td class="summary">Updates the ElementState.</td>
+	</tr>
+</table>
+<h2><a href="#Positioning_and_dynamics">Positioning and dynamics</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ElementState:move">ElementState:move&nbsp;(dx, dy)</a></td>
+	<td class="summary">Moves the Element by a certain amount, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ElementState:moveTo">ElementState:moveTo&nbsp;(x, y)</a></td>
+	<td class="summary">Moves the Element to a certain position, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ElementState:turn">ElementState:turn&nbsp;()</a></td>
+	<td class="summary">Flips the Element horizontally, reversing its velocity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ElementState:applyFriction">ElementState:applyFriction&nbsp;(dt, frictionForce)</a></td>
+	<td class="summary">Applies the provided friction force to the Element.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ElementState:stepDynamics">ElementState:stepDynamics&nbsp;(dt, acceleration)</a></td>
+	<td class="summary">Applies an acceleration to the Element and moves it.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ElementState:applyPostForceEffects">ElementState:applyPostForceEffects&nbsp;(dt)</a></td>
+	<td class="summary">Applies those effects that come into play after applying a force but
+ before moving the Element (such as friction).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ElementState:getCurrentAcceleration">ElementState:getCurrentAcceleration&nbsp;(dt)</a></td>
+	<td class="summary">Returns the acceleration to be applied to the Element.</td>
+	</tr>
+</table>
+<h2><a href="#Transition_handling">Transition handling</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ElementState:onEnterFrom">ElementState:onEnterFrom&nbsp;(previousState)</a></td>
+	<td class="summary">Initializes the ElementState with info (position, velocity, facing, etc) from the previous one.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "ElementState"></a>
+    <strong>ElementState&nbsp;(name, dynamics, animation)</strong>
+    </dt>
+    <dd>
+    Builds a new ElementState.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         The state's name.</li>
+        <li><span class="parameter">dynamics</span>
+         The dynamic parameters for the state.</li>
+        <li><span class="parameter">animation</span>
+         The state's animation, as created with <a href="https://github.com/kikito/anim8/">anim8</a>.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created State.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_ElementState"></a>Class ElementState</h2>
+        An Element's state implementation.  Extends <a href="../modules/data.core.StateMachine.State.html#">State</a>.
+ Has animation data and dynamics, in addition to normal State properties.
+    <dl class="function">
+    <dt>
+    <a name = "ElementState:draw"></a>
+    <strong>ElementState:draw&nbsp;()</strong>
+    </dt>
+    <dd>
+    Draws the ElementState's animation at the ElementState's position.
+ The image is aligned so that the ElementState's position lies at the bottom-center of the sprite.
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ElementState:update"></a>
+    <strong>ElementState:update&nbsp;(dt)</strong>
+    </dt>
+    <dd>
+    Updates the ElementState.
+ Movement is done here.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The current frame's time slice, in seconds.</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Positioning_and_dynamics"></a>Positioning and dynamics</h2>
+        Positioning and dynamics
+    <dl class="function">
+    <dt>
+    <a name = "ElementState:move"></a>
+    <strong>ElementState:move&nbsp;(dx, dy)</strong>
+    </dt>
+    <dd>
+    Moves the Element by a certain amount, in pixels.  Called by <a href="../modules/data.core.Element.html#Element:move">Element:move</a>.
+ The ElementState's collision box, if any, is not moved.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dx</span>
+         The horizontal displacement.</li>
+        <li><span class="parameter">dy</span>
+         The vertical displacement.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ElementState:moveTo"></a>
+    <strong>ElementState:moveTo&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Moves the Element to a certain position, in pixels.  Called by <a href="../modules/data.core.Element.html#Element:moveTo">Element:moveTo</a>.
+ The ElementState's collision box, if any, is not moved.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         The horizontal position.</li>
+        <li><span class="parameter">y</span>
+         The vertical position.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ElementState:turn"></a>
+    <strong>ElementState:turn&nbsp;()</strong>
+    </dt>
+    <dd>
+    Flips the Element horizontally, reversing its velocity.
+ Note that a positive horizontal velocity always means moving towards the right.
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ElementState:applyFriction"></a>
+    <strong>ElementState:applyFriction&nbsp;(dt, frictionForce)</strong>
+    </dt>
+    <dd>
+    Applies the provided friction force to the Element.
+ A friction force is always dissipative: it will never cause
+ the element to reverse its velocity.
+ This means that every Element has the same mass, for the time being.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The current frame's time slice, in seconds</li>
+        <li><span class="parameter">frictionForce</span>
+         The friction to apply, in acceleration units (pixels/seconds^2)</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ElementState:stepDynamics"></a>
+    <strong>ElementState:stepDynamics&nbsp;(dt, acceleration)</strong>
+    </dt>
+    <dd>
+    Applies an acceleration to the Element and moves it.
+ It calls <a href="../modules/data.core.Element.ElementState.html#ElementState:applyPostForceEffects">ElementState:applyPostForceEffects</a> to apply those
+ effects that come into play after applying a force but
+ before moving the Element (such as friction).
+ This function should not be called alone: instead, it is called from
+ ElementState:update.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The current frame's time slice, in seconds.</li>
+        <li><span class="parameter">acceleration</span>
+         The acceleration to be applied.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ElementState:applyPostForceEffects"></a>
+    <strong>ElementState:applyPostForceEffects&nbsp;(dt)</strong>
+    </dt>
+    <dd>
+    Applies those effects that come into play after applying a force but
+ before moving the Element (such as friction).  The only default effect is applying friction.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The current frame's time slice, in seconds.</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/data.core.Element.ElementState.html#ElementState:applyFriction">ElementState:applyFriction</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "ElementState:getCurrentAcceleration"></a>
+    <strong>ElementState:getCurrentAcceleration&nbsp;(dt)</strong>
+    </dt>
+    <dd>
+    Returns the acceleration to be applied to the Element.
+ The default implementation returns the default acceleration values specified in the dynamics table.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The current frame's time slice, in seconds.</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Transition_handling"></a>Transition handling</h2>
+        Transition handling
+    <dl class="function">
+    <dt>
+    <a name = "ElementState:onEnterFrom"></a>
+    <strong>ElementState:onEnterFrom&nbsp;(previousState)</strong>
+    </dt>
+    <dd>
+    Initializes the ElementState with info (position, velocity, facing, etc) from the previous one.
+ It also starts the ElementState's animation from its first frame.
+ Automatically called from <a href="../modules/data.core.StateMachine.html#StateMachine:changeToState">StateMachine:changeToState</a>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">previousState</span>
+         The preceding state, from which to copy values.</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

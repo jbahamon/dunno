@@ -1,3 +1,6 @@
+--- The game player class and helper functions.
+-- @class module
+-- @name data.core.Player
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
@@ -9,6 +12,14 @@ local Jump = require 'data.core.CommonStates.Jump'
 local Climb = require 'data.core.CommonStates.Climb'
 
 local anim8 = require 'lib.anim8'
+
+
+--- Builds a new Player with the default control scheme, a collision box and states.
+-- @class function
+-- @name Player
+-- @param width The width of the Player's collision box.
+-- @param height The height of the Player's collision box.
+-- @return The newly created Player.
 
 local Player = Class {
 
@@ -27,17 +38,37 @@ local Player = Class {
 		end	
 }
 
+--- A game player implementation.  Extends @{data.core.Element|Element}.
+-- A player has all of the Element's features, plus receiving input from the user.
+-- @type Player
+
+--- Sets the player's bindings.
+-- @param bindings The bindings to set, as a table.  See <a href="http://love2d.org/wiki/TLbind">TLbind's documentation</a> for details (under bind.keys).
 function Player:setControls(bindings) 
 	self.binds.keys = bindings
 end
 
+--- Updates the Player. Should be called on each frame where the Player is active.
+-- @param dt Time since the last update, in seconds.
 function Player:update(dt)
 	self.binds:update()
 	Element.update(self, dt)	
 end
 
+--- Adds the basic states and transitions for a player. Called by @{Player:loadBasicStates}.
+-- The table entries must have the following structure:
+--
+-- - animationData: An <a href="https://github.com/kikito/anim8/">anim8</a> animation.
+--
+-- - dynamics: A dynamics table, as specified (TODO :( )
+-- @param basicStatesParams The basic states' parameters, as a table. The table must have "stand", "walk", "jump", "fall" and "climb" entries.
+function Player:addBasicStates(basicStatesParams)
 
-function Player:addBasicStates(standParams, walkParams, jumpParams, fallParams, climbParams)
+    local standParams = basicStatesParams["stand"]
+    local walkParams = basicStatesParams["walk"]
+    local jumpParams = basicStatesParams["jump"]
+    local fallParams = basicStatesParams["fall"]
+    local climbParams = basicStatesParams["climb"]
 
     local walk, stand, fall, jump 
 
@@ -172,12 +203,20 @@ function Player:addBasicStates(standParams, walkParams, jumpParams, fallParams, 
     return walk, stand, jump, fall, climb
 end
 
-
+--- Returns the Player's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).
+-- This method is used when building a Player from a file, to determine the class used when no state class is specified.
+-- For a Player, it's PlayerState; override this method if you want to create a character with a custom base state.
+-- @return The hump class to be used in the construction of this Player's states when no class is specified.
 function Player:getDefaultStateClass()
 	return PlayerState
 end
 
-
+--- Adds a Players' basic states and transitions from a parameter table.
+-- Note that calling this function is completely optional, but offers a way to build the common core of many
+-- platforming characters. You can avoid using this function and building al of a Player's states and transitions 
+-- from scratch
+-- @param parameters The parameter table, as described in (TODO :c)
+-- @param folder (Optional) the specific folder to load the state from. If omitted, the Player's folder is used.
 function Player:loadBasicStates(parameters, folder)
 
 	------------------------------------
@@ -226,7 +265,7 @@ function Player:loadBasicStates(parameters, folder)
 
 		end
 
-		self:addBasicStates(statesData.stand, statesData.walk, statesData.jump, statesData.fall, statesData.climb)
+		self:addBasicStates(statesData)
 
 		for stateName, stateParams in pairs(states) do
 			if stateParams.class then
@@ -262,9 +301,9 @@ end
 
 Player.characterFolder = 'characters/'
 
---------------------------
--- STATIC FUNCTIONS
---------------------------
+--- Loads an empty Player from a minimal set of parameters.
+-- @param parameters The set of parameters to be used. It must have width and height as fields.
+-- @param folder The base folder to load files (sprites, classes, etc) from. Required (in opposition to uses of folder parameters in Player methods).
 function Player.loadBasicFromParams(parameters, folder)
 
 	assert(type(parameters) == "table", "Character configuration file must return a table")

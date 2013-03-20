@@ -1,8 +1,12 @@
+--- WorldManager implementation.
+-- @class module
+-- @name data.core.WorldManager
+
 local Class = require 'lib.hump.class'
 local Timer = require 'lib.hump.timer'
 
 local Player = require 'data.core.Player'
-local Stage = require 'data.core.Stage.Stage'
+local Stage = require 'data.core.Stage'
 local ElementFactory = require 'data.core.ElementFactory'
 
 local Camera = require 'lib.gamera'
@@ -14,6 +18,10 @@ local vector = require 'lib.hump.vector'
 
 local Timer = globals.Timer
 
+--- Builds a new, empty WorldManager
+-- @class function
+-- @name WorldManager
+-- @return The newly created WorldManager
 local WorldManager = Class {
 	name = "WorldManager",
 
@@ -29,10 +37,18 @@ local WorldManager = Class {
 
 }
 
------------------------------------------------------------------
--- Building
------------------------------------------------------------------
 
+--- Class that handles interactions between the Stage, the Player(s) and 
+-- other Elements. Is also in charge of moving the camera around and apply some
+-- effects such as transitions and fullscreen fading.
+-- @type WorldManager
+
+-----------------------------------------------------------------
+-- World building
+-- @section building
+
+--- Loads a stage from a file and sets it as the WorldManager's stage.
+-- @param stageName The name of the stage's folder.
 function WorldManager:setStage(stageName)
 	
 	self.stage = Stage.loadFromFolder(stageName)
@@ -52,9 +68,10 @@ function WorldManager:setStage(stageName)
 	self.stage.elementLocations = self.stage.elementLocations or {}
 end
 
+--- Starts the WorldManager and all of its elements (player, enemies, etc)
 function WorldManager:start()
 	local startingPosition = self.stage:getPixelStartingPosition()
-	self.stage:setRoom(startingPosition)
+	self.stage:setRoom(self.stage:getRoomAt(startingPosition))
 
 	self.lookingAt = self.stage:getPixelStartingFocus()
 
@@ -78,8 +95,12 @@ function WorldManager:start()
 
 end
 
+--- Loads a player from a folder and adds it to the WorldManager
+-- Having multiple players in the same world is not fully supported (in fact, it's very limited at the moment)
+-- but should be added at some point.
+-- @param playerName The name of the player's folder
 function WorldManager:addPlayer(playerName)
-	local parameters = self:loadParameters(playerName, Player.characterFolder)
+	local parameters = self:loadPlayerParameters(playerName, Player.characterFolder)
 
 	local player = Player.loadBasicFromParams(parameters, Player.characterFolder .. '/' .. playerName )
 
@@ -97,9 +118,10 @@ end
 
 
 -----------------------------------------------------------------
--- Drawing, Dynamics
------------------------------------------------------------------
+-- Drawing and updating
+-- @section draw
 
+--- Draws all of the Elements managed by the WorldManager
 function WorldManager:draw()
 
 	love.graphics.setColor(self.fullScreenTint)
@@ -121,6 +143,9 @@ function WorldManager:draw()
 					end)
 end
 
+
+--- Updates all of the Elements managed by the WorldManager, as well as the colliders
+-- and the camera.
 function WorldManager:update(dt)
 
 	if not self.paused then
@@ -169,9 +194,11 @@ function WorldManager:update(dt)
 end
 
 -----------------------------------------------------------------
--- Camera Managing
------------------------------------------------------------------
+-- Camera modes and focusing
+-- @section camera
 
+--- Sets the point to where the camera should point to (i.e. the camera's focus).
+-- The focus is set depending on the current camera mode.
 function WorldManager:updateCameraFocus() 
 	local snapDistance = 10
 	local cameraMode = self.stage:getCameraMode() or { mode = "default" }
@@ -189,7 +216,12 @@ function WorldManager:updateCameraFocus()
 	
 end
 
-
+--- Scrolls the camera from the current position to a target position, with
+-- the given speed.
+-- @param speed The speed (in pixels/second) to give to the camera
+-- @param pointB The target position (in pixels) for the camera.
+-- @param postFunction (Optional) A function that receives no parameters, to be executed after the
+-- scrolling finished.
 function WorldManager:scrollCameraWithSpeed(speed, pointB, postFunction)
 	local pointA = self.lookingAt
 	local distance = (pointB - pointA):len()
@@ -198,6 +230,12 @@ function WorldManager:scrollCameraWithSpeed(speed, pointB, postFunction)
 
 end
 
+--- Scrolls the camera from the current position to a target position, such that the scrolling 
+-- lasts a given time.
+-- @param time The time for the scrolling to last, in seconds.
+-- @param pointB The target position (in pixels) for the camera.
+-- @param postFunction (Optional) A function that receives no parameters, to be executed after the
+-- scrolling finished.
 function WorldManager:scrollCameraWithTime(time, pointB, postFunction)
 
 	local pointA = self.lookingAt
@@ -222,6 +260,11 @@ function WorldManager:scrollCameraWithTime(time, pointB, postFunction)
 	end
 end
 
+--- Camera mode that follows the given player. 
+-- @param player The player to follow.
+-- @param stage The world's stage.
+-- @param cameraMode The cameraMode parameters. Check the stage documentation to see 
+-- the details on this parameter.
 function WorldManager:followCameraMode(player, stage, cameraMode)
 
 	local targetPosition = self.lookingAt:clone()
@@ -257,6 +300,14 @@ function WorldManager:followCameraMode(player, stage, cameraMode)
 	self.lookingAt = targetPosition
 end
 
+--- Camera mode that locks to a position in zero, one or more axes, 
+-- and follows the given player in the remaining axes. It is not recommended to use this
+-- mode if you're aiming to follow the player in both axes: followPlayer (and by extension
+--	@{WorldManager:followCameraMode}) is more efficient and achieves this.
+-- @param player The player to follow.
+-- @param stage The world's stage.
+-- @param cameraMode The cameraMode parameters. Check the stage documentation to see 
+-- the details on this parameter.
 function WorldManager:lockCameraMode(player, stage, cameraMode)
 	local targetPosition 
 	-- if we have to follow the player in one direction, then we do that first
@@ -277,6 +328,13 @@ function WorldManager:lockCameraMode(player, stage, cameraMode)
 	self.lookingAt = targetPosition
 end
 
+--- Camera mode that locks to the platform where the player is standing as the player 
+-- goes up, and follows the player if it's going down. It follows the player in the horizontal 
+-- axis.
+-- @param player The player to follow.
+-- @param stage The world's stage.
+-- @param cameraMode The cameraMode parameters. Check the stage documentation to see 
+-- the details on this parameter.
 function WorldManager:platformCameraMode(player, stage, cameraMode)
 
 	local tension = cameraMode.tension or vector(0, 0)
@@ -320,10 +378,7 @@ function WorldManager:platformCameraMode(player, stage, cameraMode)
 
 			cameraMode._scrolling = self.currentCameraMovement
 		end
-
 	end
-	
-
 end
 
 WorldManager.cameraModes = {
@@ -334,15 +389,25 @@ WorldManager.cameraModes = {
 }
 
 -----------------------------------------------------------------
--- Transitions
------------------------------------------------------------------
+-- Room Transitions
+-- @section transitions
 
+--- Executes a transition between two rooms, moving the camera as needed.
+-- @param player The player that will transition between rooms.
+-- @param roomChange The room transition parameters. It includes two fields: previousRoom and nextRoom.
+-- A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+-- @param mode The transition mode. If there isn't a transition mode with this name, 
+-- the transition uses the default mode.
 function WorldManager:roomTransition(player, roomChange, mode)
 	local transitionMode = mode or self.stage.roomTransitionMode
 	local transition = WorldManager.transitions[transitionMode] or WorldManager.transitions["default"]
 	transition(self, player, roomChange)
 end
 
+--- A transition that fades the screen to black and back as the player switches rooms.
+-- @param player The player that will transition between rooms.
+-- @param roomChange The room transition parameters. It includes two fields: previousRoom and nextRoom.
+-- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
 function WorldManager:fadingTransition(player, roomChange)
 	local rampTime = 0.5
 	local blackTime = 0.5
@@ -352,14 +417,18 @@ function WorldManager:fadingTransition(player, roomChange)
 	Timer.add(rampTime + blackTime/2, 
 		function () 
 	    	player:moveIntoCollidingBox(roomChange.nextRoom.box)
-	    	self.stage:changeToRoom(roomChange.nextRoom)
+	    	self.stage:setRoom(roomChange.nextRoom)
 	    	self.camera:setWorld(self.stage:getBounds())
 	    	
 	    end)
-	Timer.add(rampTime + blackTime, function () self:fadeToColor(rampTime, {255, 255, 255, 255}, 5) end )
+	Timer.add(rampTime + blackTime, function () self:fadeToColor(rampTime, {255, 255, 255, 255}) end )
 
 end
 
+--- A transition that scrolls both the player and the camera to the next room.
+-- @param player The player that will scroll between rooms.
+-- @param roomChange The room transition parameters. It includes two fields: previousRoom and nextRoom.
+-- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
 function WorldManager:scrollTransition(player, roomChange)
 	local scrollTime = 1.5
 
@@ -407,7 +476,7 @@ function WorldManager:scrollTransition(player, roomChange)
 								  h)
 		end,
 		function()
-			self.stage:changeToRoom(roomChange.nextRoom)
+			self.stage:setRoom(roomChange.nextRoom)
 			self.camera:setPosition(nextCameraPos:unpack())
 			player:moveTo(nextPlayerPos:unpack())
 			self.camera:setWorld(self.stage:getBounds())
@@ -415,10 +484,13 @@ function WorldManager:scrollTransition(player, roomChange)
 		end )
 end
 
-
+--- A simple room transition that teleports the player and the camera to the next room.
+-- @param player The player that will scroll between rooms.
+-- @param roomChange The room transition parameters. It includes two fields: previousRoom and nextRoom.
+-- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
 function WorldManager:instantTransition(player, roomChange)
 	player:moveIntoCollidingBox(roomChange.nextRoom.box)
-	self.stage:changeToRoom(roomChange.nextRoom)
+	self.stage:setRoom(roomChange.nextRoom)
 	self.camera:setWorld(self.stage:getBounds())
 end
 
@@ -431,20 +503,36 @@ WorldManager.transitions = {
 
 -----------------------------------------------------------------
 -- Effects
------------------------------------------------------------------
+-- @section effects
+
+--- Pauses the game. While the game is paused, nothing moves by itself: 
+-- no update functions are called.
+-- @param time (Optional) The time for which the game will be paused, in seconds. If omitted, 
+-- the game will be paused until @{WorldManager:unPauseGame} is called.
 function WorldManager:pauseGame(time)
 	self.paused = true
 
 	if time then 
-		Timer.add(time, function() self.paused = false end )
+		self.pauseTimer = Timer.add(time, function() self.paused = false end )
 	end
 
 end
 
+--- Unpauses the game. Update functions will start being called again after this function is called.
 function WorldManager:unPauseGame()
 	self.paused = false
+	if self.pauseTimer then
+		Timer.cancel(self.pauseTimer)
+		self.pauseTimer = nil
+	end
 end
 
+--- Fades the screen to a solid tint. 
+-- @param rampTime The time (in seconds) for the screen to get to the tint's full intensity.
+-- @param color The color to apply to all elements, as an array (not a dictionary) of four values,
+-- corresponding to red, green, blue, and alpha, in that order.
+-- @param numSteps (Optional) The number of steps for the ramp. Use this to give the fading a "retro" look, 
+-- having discrete intermediate values. If omitted, the transition is done as smoothly as possible.
 function WorldManager:fadeToColor(rampTime, color, numSteps)
 
 	if self.currentFadingEffect then
@@ -504,7 +592,10 @@ function WorldManager.onDynamicCollide (dt, shapeA, shapeB)
    
 end
 
-function WorldManager:loadParameters(path, rootFolder)
+--- Loads a Player's parameters from a file.
+-- @param path The character's folder path.
+-- @param rootFolder (Optional) Any base path to add to the character's path.
+function WorldManager:loadPlayerParameters(path, rootFolder)
 	rootFolder = rootFolder or ""
 
 	local folder = rootFolder .. string.gsub(path, '[^%a%d-_/]', '')

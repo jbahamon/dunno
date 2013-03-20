@@ -1,8 +1,20 @@
+--- Element state implementation.
+-- @class module
+-- @name data.core.Element.ElementState
+
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 local shapes = require 'lib.HardonCollider.shapes'
 
 local State = require 'data.core.StateMachine.State'
+
+--- Builds a new ElementState.
+-- @class function
+-- @name ElementState
+-- @param name The state's name.
+-- @param dynamics The dynamic parameters for the state.
+-- @param animation The state's animation, as created with <a href="https://github.com/kikito/anim8/">anim8</a>.
+-- @return The newly created State.
 
 local ElementState = Class {
 	name = "ElementState",
@@ -29,14 +41,65 @@ local ElementState = Class {
 		end
 }
 
+---An Element's state implementation. Extends @{data.core.StateMachine.State|State}.
+-- Has animation data and dynamics, in addition to normal State properties.
+-- @type ElementState
 
+--- Draws the ElementState's animation at the ElementState's position.
+-- The image is aligned so that the ElementState's position lies at the bottom-center of the sprite.
+function ElementState:draw()
+	self.animation:draw(self.owner.sprites,
+	                    self.dynamics.position.x - self.owner.spriteSizeX/2 + self.owner.spriteOffset.x,
+                       	self.dynamics.position.y - self.owner.spriteSizeY + self.owner.spriteOffset.y,
+                       	0, 1, 1)
+end
 
+--- Updates the ElementState.
+-- Movement is done here.
+-- @param dt The current frame's time slice, in seconds.
+function ElementState:update(dt)
+	self.animation.flippedH = self.facing < 0
+	-- Animation
+	self.animation:update(dt)
+
+	-- Process Dynamics
+	self.dynamics.oldPosition = self.dynamics.position
+	self:stepDynamics(dt, self:getCurrentAcceleration(dt))
+end
+
+-----------------------------------------------------------------
+-- Positioning and dynamics
+-- @section position
+
+--- Moves the Element by a certain amount, in pixels. Called by @{data.core.Element.Element:move|Element:move}.
+-- The ElementState's collision box, if any, is not moved.
+-- @param dx The horizontal displacement.
+-- @param dy The vertical displacement.
+function ElementState:move(dx, dy)
+	self.dynamics.position = self.dynamics.position + vector(dx, dy)
+end
+
+--- Moves the Element to a certain position, in pixels. Called by @{data.core.Element.Element:moveTo|Element:moveTo}.
+-- The ElementState's collision box, if any, is not moved.
+-- @param x The horizontal position.
+-- @param y The vertical position.
+function ElementState:moveTo(x, y)
+	self.dynamics.position = vector(x, y)
+end
+
+--- Flips the Element horizontally, reversing its velocity.
+-- Note that a positive horizontal velocity always means moving towards the right.
 function ElementState:turn()
 	self.facing = -self.facing
 	self.dynamics.velocity.x = - self.dynamics.velocity.x
 end
 
-
+--- Applies the provided friction force to the Element.
+-- A friction force is always dissipative: it will never cause 
+-- the element to reverse its velocity.
+-- @param dt The current frame's time slice, in seconds
+-- @param frictionForce The friction to apply, in acceleration units (pixels/seconds^2)
+-- This means that every Element has the same mass, for the time being.
 function ElementState:applyFriction(dt, frictionForce)
 	local friction = frictionForce * dt
 
@@ -58,18 +121,15 @@ function ElementState:applyFriction(dt, frictionForce)
 
 end
 
-function ElementState:update(dt)
-	self.animation.flippedH = self.facing < 0
-	-- Animation
-	self.animation:update(dt)
-
-	-- Process Dynamics
-	self.dynamics.oldPosition = self.dynamics.position
-	self:stepDynamics(dt, self:getCurrentAcceleration(dt))
-end
-
+--- Applies an acceleration to the Element and moves it.
+-- It calls @{ElementState:applyPostForceEffects} to apply those
+-- effects that come into play after applying a force but
+-- before moving the Element (such as friction).
+-- This function should not be called alone: instead, it is called from
+-- ElementState:update.
+-- @param dt The current frame's time slice, in seconds.
+-- @param acceleration The acceleration to be applied.
 function ElementState:stepDynamics(dt, acceleration)
-
 
 	self.displacement = self.dynamics.velocity * (dt / 2.0)
     
@@ -90,18 +150,35 @@ function ElementState:stepDynamics(dt, acceleration)
    	
 end
 
+--- Applies those effects that come into play after applying a force but
+-- before moving the Element (such as friction). The only default effect is applying friction.
+-- @param dt The current frame's time slice, in seconds.
+-- @see ElementState:applyFriction
 function ElementState:applyPostForceEffects(dt)
 
 	self:applyFriction(dt, self.dynamics.friction)
 
 end
 
+
+--- Returns the acceleration to be applied to the Element.
+-- The default implementation returns the default acceleration values specified in the dynamics table.
+-- @param dt The current frame's time slice, in seconds.
 function ElementState:getCurrentAcceleration(dt)
 	local acceleration = self.dynamics.defaultAcceleration:permul(vector(self.facing, 1)) + self.dynamics.gravity
 	return acceleration
 
 end
 
+
+-----------------------------------------------------------------
+--- Transition handling
+-- @section transition
+
+--- Initializes the ElementState with info (position, velocity, facing, etc) from the previous one.
+-- It also starts the ElementState's animation from its first frame.
+-- Automatically called from @{data.core.StateMachine.StateMachine:changeToState|StateMachine:changeToState}.
+-- @param previousState The preceding state, from which to copy values.
 function ElementState:onEnterFrom(previousState) 
 
 	previousState.animation:pause()
@@ -115,32 +192,5 @@ function ElementState:onEnterFrom(previousState)
 	self.animation:resume()
 
 end	
-
-function ElementState:draw()
-	self.animation:draw(self.owner.sprites,
-	                    self.dynamics.position.x - self.owner.spriteSizeX/2 + self.owner.spriteOffset.x,
-                       	self.dynamics.position.y - self.owner.spriteSizeY + self.owner.spriteOffset.y,
-                       	0, 1, 1)
-end
-
-function ElementState:checkStateChange(collisionFlags)
-	for order, transition in ipairs(self.transitions) do
-		if transition.condition(self, collisionFlags) then
-			return transition.targetState
-		end
-	end
-
-	return false
-end
-
-function ElementState:move(dx, dy)
-	self.dynamics.position = self.dynamics.position + vector(dx, dy)
-end
-
-
-function ElementState:moveTo(x, y)
-	self.dynamics.position = vector(x, y)
-end
-
 
 return ElementState

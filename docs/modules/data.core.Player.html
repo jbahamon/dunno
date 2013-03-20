@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_Player">Class Player</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/data.core.Element.html">data.core.Element</a></li>
+  <li><a href="../modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
+  <li><a href="../modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
+  <li><strong>data.core.Player</strong></li>
+  <li><a href="../modules/data.core.Player.PlayerState.html">data.core.Player.PlayerState</a></li>
+  <li><a href="../modules/data.core.Stage.html">data.core.Stage</a></li>
+  <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
+  <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
+  <li><a href="../modules/data.core.WorldManager.html">data.core.WorldManager</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>data.core.Player</code></h1>
+
+<p>The game player class and helper functions.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Player">Player&nbsp;(width, height)</a></td>
+	<td class="summary">Builds a new Player with the default control scheme, a collision box and states.</td>
+	</tr>
+</table>
+<h2><a href="#Class_Player">Class Player</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Player:setControls">Player:setControls&nbsp;(bindings)</a></td>
+	<td class="summary">Sets the player's bindings.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Player:update">Player:update&nbsp;(dt)</a></td>
+	<td class="summary">Updates the Player.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Player:addBasicStates">Player:addBasicStates&nbsp;(basicStatesParams)</a></td>
+	<td class="summary">Adds the basic states and transitions for a player.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Player:getDefaultStateClass">Player:getDefaultStateClass&nbsp;()</a></td>
+	<td class="summary">Returns the Player's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Player:loadBasicStates">Player:loadBasicStates&nbsp;(parameters, folder)</a></td>
+	<td class="summary">Adds a Players' basic states and transitions from a parameter table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Player:loadBasicFromParams">Player:loadBasicFromParams&nbsp;(parameters, folder)</a></td>
+	<td class="summary">Loads an empty Player from a minimal set of parameters.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "Player"></a>
+    <strong>Player&nbsp;(width, height)</strong>
+    </dt>
+    <dd>
+    Builds a new Player with the default control scheme, a collision box and states.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">width</span>
+         The width of the Player's collision box.</li>
+        <li><span class="parameter">height</span>
+         The height of the Player's collision box.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created Player.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_Player"></a>Class Player</h2>
+        A game player implementation.   Extends <a href="../modules/data.core.Element.html#">Element</a>.
+ A player has all of the Element's features, plus receiving input from the user.
+    <dl class="function">
+    <dt>
+    <a name = "Player:setControls"></a>
+    <strong>Player:setControls&nbsp;(bindings)</strong>
+    </dt>
+    <dd>
+    Sets the player's bindings.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bindings</span>
+         The bindings to set, as a table.  See <a href="http://love2d.org/wiki/TLbind">TLbind's documentation</a> for details (under bind.keys).</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Player:update"></a>
+    <strong>Player:update&nbsp;(dt)</strong>
+    </dt>
+    <dd>
+    Updates the Player.  Should be called on each frame where the Player is active.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         Time since the last update, in seconds.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Player:addBasicStates"></a>
+    <strong>Player:addBasicStates&nbsp;(basicStatesParams)</strong>
+    </dt>
+    <dd>
+
+<p>Adds the basic states and transitions for a player.  Called by <a href="../modules/data.core.Player.html#Player:loadBasicStates">Player:loadBasicStates</a>.
+ The table entries must have the following structure:</p>
+
+<ul>
+    <li><p>animationData: An <a href="https://github.com/kikito/anim8/">anim8</a> animation.</p></li>
+    <li><p>dynamics: A dynamics table, as specified (TODO :( )</p></li>
+</ul>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">basicStatesParams</span>
+         The basic states' parameters, as a table. The table must have "stand", "walk", "jump", "fall" and "climb" entries.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Player:getDefaultStateClass"></a>
+    <strong>Player:getDefaultStateClass&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the Player's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).
+ This method is used when building a Player from a file, to determine the class used when no state class is specified.
+ For a Player, it's PlayerState; override this method if you want to create a character with a custom base state.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The hump class to be used in the construction of this Player's states when no class is specified.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Player:loadBasicStates"></a>
+    <strong>Player:loadBasicStates&nbsp;(parameters, folder)</strong>
+    </dt>
+    <dd>
+    Adds a Players' basic states and transitions from a parameter table.
+ Note that calling this function is completely optional, but offers a way to build the common core of many
+ platforming characters. You can avoid using this function and building al of a Player's states and transitions
+ from scratch
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parameters</span>
+         The parameter table, as described in (TODO :c)</li>
+        <li><span class="parameter">folder</span>
+         (Optional) the specific folder to load the state from. If omitted, the Player's folder is used.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Player:loadBasicFromParams"></a>
+    <strong>Player:loadBasicFromParams&nbsp;(parameters, folder)</strong>
+    </dt>
+    <dd>
+    Loads an empty Player from a minimal set of parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parameters</span>
+         The set of parameters to be used. It must have width and height as fields.</li>
+        <li><span class="parameter">folder</span>
+         The base folder to load files (sprites, classes, etc) from. Required (in opposition to uses of folder parameters in Player methods).</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

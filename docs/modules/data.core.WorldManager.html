@@ -1,0 +1,616 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#World_building">World building</a></li>
+<li><a href="#Drawing_and_updating">Drawing and updating</a></li>
+<li><a href="#Camera_modes_and_focusing">Camera modes and focusing</a></li>
+<li><a href="#Room_Transitions">Room Transitions</a></li>
+<li><a href="#Effects">Effects</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/data.core.Element.html">data.core.Element</a></li>
+  <li><a href="../modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
+  <li><a href="../modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
+  <li><a href="../modules/data.core.Player.html">data.core.Player</a></li>
+  <li><a href="../modules/data.core.Player.PlayerState.html">data.core.Player.PlayerState</a></li>
+  <li><a href="../modules/data.core.Stage.html">data.core.Stage</a></li>
+  <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
+  <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
+  <li><strong>data.core.WorldManager</strong></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>data.core.WorldManager</code></h1>
+
+<p>WorldManager implementation.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager">WorldManager&nbsp;()</a></td>
+	<td class="summary">Builds a new, empty WorldManager</td>
+	</tr>
+</table>
+<h2><a href="#World_building">World building</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:setStage">WorldManager:setStage&nbsp;(stageName)</a></td>
+	<td class="summary">Loads a stage from a file and sets it as the WorldManager's stage.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:start">WorldManager:start&nbsp;()</a></td>
+	<td class="summary">Starts the WorldManager and all of its elements (player, enemies, etc)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:addPlayer">WorldManager:addPlayer&nbsp;(playerName)</a></td>
+	<td class="summary">Loads a player from a folder and adds it to the WorldManager
+ Having multiple players in the same world is not fully supported (in fact, it's very limited at the moment)
+ but should be added at some point.</td>
+	</tr>
+</table>
+<h2><a href="#Drawing_and_updating">Drawing and updating</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:draw">WorldManager:draw&nbsp;()</a></td>
+	<td class="summary">Draws all of the Elements managed by the WorldManager</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:update">WorldManager:update&nbsp;(dt)</a></td>
+	<td class="summary">Updates all of the Elements managed by the WorldManager, as well as the colliders
+ and the camera.</td>
+	</tr>
+</table>
+<h2><a href="#Camera_modes_and_focusing">Camera modes and focusing</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:updateCameraFocus">WorldManager:updateCameraFocus&nbsp;()</a></td>
+	<td class="summary">Sets the point to where the camera should point to (i.e.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:scrollCameraWithSpeed">WorldManager:scrollCameraWithSpeed&nbsp;(speed, pointB, postFunction)</a></td>
+	<td class="summary">Scrolls the camera from the current position to a target position, with
+ the given speed.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:scrollCameraWithTime">WorldManager:scrollCameraWithTime&nbsp;(time, pointB, postFunction)</a></td>
+	<td class="summary">Scrolls the camera from the current position to a target position, such that the scrolling
+ lasts a given time.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:followCameraMode">WorldManager:followCameraMode&nbsp;(player, stage, cameraMode)</a></td>
+	<td class="summary">Camera mode that follows the given player.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:lockCameraMode">WorldManager:lockCameraMode&nbsp;(player, stage, cameraMode)</a></td>
+	<td class="summary">Camera mode that locks to a position in zero, one or more axes,
+ and follows the given player in the remaining axes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:platformCameraMode">WorldManager:platformCameraMode&nbsp;(player, stage, cameraMode)</a></td>
+	<td class="summary">Camera mode that locks to the platform where the player is standing as the player
+ goes up, and follows the player if it's going down.</td>
+	</tr>
+</table>
+<h2><a href="#Room_Transitions">Room Transitions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:roomTransition">WorldManager:roomTransition&nbsp;(player, roomChange, mode)</a></td>
+	<td class="summary">Executes a transition between two rooms, moving the camera as needed.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:fadingTransition">WorldManager:fadingTransition&nbsp;(player, roomChange)</a></td>
+	<td class="summary">A transition that fades the screen to black and back as the player switches rooms.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:scrollTransition">WorldManager:scrollTransition&nbsp;(player, roomChange)</a></td>
+	<td class="summary">A transition that scrolls both the player and the camera to the next room.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:instantTransition">WorldManager:instantTransition&nbsp;(player, roomChange)</a></td>
+	<td class="summary">A simple room transition that teleports the player and the camera to the next room.</td>
+	</tr>
+</table>
+<h2><a href="#Effects">Effects</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:pauseGame">WorldManager:pauseGame&nbsp;(time)</a></td>
+	<td class="summary">Pauses the game.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:unPauseGame">WorldManager:unPauseGame&nbsp;()</a></td>
+	<td class="summary">Unpauses the game.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:fadeToColor">WorldManager:fadeToColor&nbsp;(rampTime, color, numSteps)</a></td>
+	<td class="summary">Fades the screen to a solid tint.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WorldManager:loadPlayerParameters">WorldManager:loadPlayerParameters&nbsp;(path, rootFolder)</a></td>
+	<td class="summary">Loads a Player's parameters from a file.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "WorldManager"></a>
+    <strong>WorldManager&nbsp;()</strong>
+    </dt>
+    <dd>
+    Builds a new, empty WorldManager
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created WorldManager
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="World_building"></a>World building</h2>
+        World building
+    <dl class="function">
+    <dt>
+    <a name = "WorldManager:setStage"></a>
+    <strong>WorldManager:setStage&nbsp;(stageName)</strong>
+    </dt>
+    <dd>
+    Loads a stage from a file and sets it as the WorldManager's stage.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">stageName</span>
+         The name of the stage's folder.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:start"></a>
+    <strong>WorldManager:start&nbsp;()</strong>
+    </dt>
+    <dd>
+    Starts the WorldManager and all of its elements (player, enemies, etc)
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:addPlayer"></a>
+    <strong>WorldManager:addPlayer&nbsp;(playerName)</strong>
+    </dt>
+    <dd>
+    Loads a player from a folder and adds it to the WorldManager
+ Having multiple players in the same world is not fully supported (in fact, it's very limited at the moment)
+ but should be added at some point.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">playerName</span>
+         The name of the player's folder</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Drawing_and_updating"></a>Drawing and updating</h2>
+        Drawing and updating
+    <dl class="function">
+    <dt>
+    <a name = "WorldManager:draw"></a>
+    <strong>WorldManager:draw&nbsp;()</strong>
+    </dt>
+    <dd>
+    Draws all of the Elements managed by the WorldManager
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:update"></a>
+    <strong>WorldManager:update&nbsp;(dt)</strong>
+    </dt>
+    <dd>
+    Updates all of the Elements managed by the WorldManager, as well as the colliders
+ and the camera.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+
+
+</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Camera_modes_and_focusing"></a>Camera modes and focusing</h2>
+        Camera modes and focusing
+    <dl class="function">
+    <dt>
+    <a name = "WorldManager:updateCameraFocus"></a>
+    <strong>WorldManager:updateCameraFocus&nbsp;()</strong>
+    </dt>
+    <dd>
+    Sets the point to where the camera should point to (i.e.  the camera's focus).
+ The focus is set depending on the current camera mode.
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:scrollCameraWithSpeed"></a>
+    <strong>WorldManager:scrollCameraWithSpeed&nbsp;(speed, pointB, postFunction)</strong>
+    </dt>
+    <dd>
+    Scrolls the camera from the current position to a target position, with
+ the given speed.
+ scrolling finished.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">speed</span>
+         The speed (in pixels/second) to give to the camera</li>
+        <li><span class="parameter">pointB</span>
+         The target position (in pixels) for the camera.</li>
+        <li><span class="parameter">postFunction</span>
+         (Optional) A function that receives no parameters, to be executed after the</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:scrollCameraWithTime"></a>
+    <strong>WorldManager:scrollCameraWithTime&nbsp;(time, pointB, postFunction)</strong>
+    </dt>
+    <dd>
+    Scrolls the camera from the current position to a target position, such that the scrolling
+ lasts a given time.
+ scrolling finished.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">time</span>
+         The time for the scrolling to last, in seconds.</li>
+        <li><span class="parameter">pointB</span>
+         The target position (in pixels) for the camera.</li>
+        <li><span class="parameter">postFunction</span>
+         (Optional) A function that receives no parameters, to be executed after the</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:followCameraMode"></a>
+    <strong>WorldManager:followCameraMode&nbsp;(player, stage, cameraMode)</strong>
+    </dt>
+    <dd>
+    Camera mode that follows the given player.
+ the details on this parameter.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         The player to follow.</li>
+        <li><span class="parameter">stage</span>
+         The world's stage.</li>
+        <li><span class="parameter">cameraMode</span>
+         The cameraMode parameters. Check the stage documentation to see </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:lockCameraMode"></a>
+    <strong>WorldManager:lockCameraMode&nbsp;(player, stage, cameraMode)</strong>
+    </dt>
+    <dd>
+    Camera mode that locks to a position in zero, one or more axes,
+ and follows the given player in the remaining axes.  It is not recommended to use this
+ mode if you're aiming to follow the player in both axes: followPlayer (and by extension</p>
+<pre><code>&lt;a href="../modules/data.core.WorldManager.html#WorldManager:followCameraMode"&gt;WorldManager:followCameraMode&lt;/a&gt;) is more efficient and achieves this.
+</code></pre>
+<p> the details on this parameter.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         The player to follow.</li>
+        <li><span class="parameter">stage</span>
+         The world's stage.</li>
+        <li><span class="parameter">cameraMode</span>
+         The cameraMode parameters. Check the stage documentation to see </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:platformCameraMode"></a>
+    <strong>WorldManager:platformCameraMode&nbsp;(player, stage, cameraMode)</strong>
+    </dt>
+    <dd>
+    Camera mode that locks to the platform where the player is standing as the player
+ goes up, and follows the player if it's going down.  It follows the player in the horizontal
+ axis.
+ the details on this parameter.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         The player to follow.</li>
+        <li><span class="parameter">stage</span>
+         The world's stage.</li>
+        <li><span class="parameter">cameraMode</span>
+         The cameraMode parameters. Check the stage documentation to see </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Room_Transitions"></a>Room Transitions</h2>
+        Room Transitions
+    <dl class="function">
+    <dt>
+    <a name = "WorldManager:roomTransition"></a>
+    <strong>WorldManager:roomTransition&nbsp;(player, roomChange, mode)</strong>
+    </dt>
+    <dd>
+    Executes a transition between two rooms, moving the camera as needed.
+ the transition uses the default mode.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         The player that will transition between rooms.</li>
+        <li><span class="parameter">roomChange</span>
+         The room transition parameters. It includes two fields: previousRoom and nextRoom.
+ A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary</li>
+        <li><span class="parameter">mode</span>
+         The transition mode. If there isn't a transition mode with this name, </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:fadingTransition"></a>
+    <strong>WorldManager:fadingTransition&nbsp;(player, roomChange)</strong>
+    </dt>
+    <dd>
+    A transition that fades the screen to black and back as the player switches rooms.
+ Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         The player that will transition between rooms.</li>
+        <li><span class="parameter">roomChange</span>
+         The room transition parameters. It includes two fields: previousRoom and nextRoom.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:scrollTransition"></a>
+    <strong>WorldManager:scrollTransition&nbsp;(player, roomChange)</strong>
+    </dt>
+    <dd>
+    A transition that scrolls both the player and the camera to the next room.
+ Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         The player that will scroll between rooms.</li>
+        <li><span class="parameter">roomChange</span>
+         The room transition parameters. It includes two fields: previousRoom and nextRoom.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:instantTransition"></a>
+    <strong>WorldManager:instantTransition&nbsp;(player, roomChange)</strong>
+    </dt>
+    <dd>
+    A simple room transition that teleports the player and the camera to the next room.
+ Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         The player that will scroll between rooms.</li>
+        <li><span class="parameter">roomChange</span>
+         The room transition parameters. It includes two fields: previousRoom and nextRoom.</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Effects"></a>Effects</h2>
+        Effects
+    <dl class="function">
+    <dt>
+    <a name = "WorldManager:pauseGame"></a>
+    <strong>WorldManager:pauseGame&nbsp;(time)</strong>
+    </dt>
+    <dd>
+    Pauses the game.  While the game is paused, nothing moves by itself:
+ no update functions are called.
+ the game will be paused until <a href="../modules/data.core.WorldManager.html#WorldManager:unPauseGame">WorldManager:unPauseGame</a> is called.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">time</span>
+         (Optional) The time for which the game will be paused, in seconds. If omitted, </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:unPauseGame"></a>
+    <strong>WorldManager:unPauseGame&nbsp;()</strong>
+    </dt>
+    <dd>
+    Unpauses the game.  Update functions will start being called again after this function is called.
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:fadeToColor"></a>
+    <strong>WorldManager:fadeToColor&nbsp;(rampTime, color, numSteps)</strong>
+    </dt>
+    <dd>
+    Fades the screen to a solid tint.
+ having discrete intermediate values. If omitted, the transition is done as smoothly as possible.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rampTime</span>
+         The time (in seconds) for the screen to get to the tint's full intensity.</li>
+        <li><span class="parameter">color</span>
+         The color to apply to all elements, as an array (not a dictionary) of four values,
+ corresponding to red, green, blue, and alpha, in that order.</li>
+        <li><span class="parameter">numSteps</span>
+         (Optional) The number of steps for the ramp. Use this to give the fading a "retro" look, </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WorldManager:loadPlayerParameters"></a>
+    <strong>WorldManager:loadPlayerParameters&nbsp;(path, rootFolder)</strong>
+    </dt>
+    <dd>
+    Loads a Player's parameters from a file.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+         The character's folder path.</li>
+        <li><span class="parameter">rootFolder</span>
+         (Optional) Any base path to add to the character's path.</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

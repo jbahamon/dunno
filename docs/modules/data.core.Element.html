@@ -34,14 +34,25 @@
 <ul>
 <li><a href="#Functions">Functions</a></li>
 <li><a href="#Class_Element">Class Element</a></li>
+<li><a href="#Positioning__dynamics">Positioning, dynamics</a></li>
+<li><a href="#Drawing">Drawing</a></li>
+<li><a href="#State_handling">State handling</a></li>
+<li><a href="#Collisions">Collisions</a></li>
+<li><a href="#Loading_from_parameters">Loading from parameters</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul>
   <li><strong>data.core.Element</strong></li>
+  <li><a href="../modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
+  <li><a href="../modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
+  <li><a href="../modules/data.core.Player.html">data.core.Player</a></li>
+  <li><a href="../modules/data.core.Player.PlayerState.html">data.core.Player.PlayerState</a></li>
+  <li><a href="../modules/data.core.Stage.html">data.core.Stage</a></li>
   <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
   <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
+  <li><a href="../modules/data.core.WorldManager.html">data.core.WorldManager</a></li>
   <li><a href="../modules/main.html">main</a></li>
 </ul>
 
@@ -51,8 +62,10 @@
 
 <h1>Module <code>data.core.Element</code></h1>
 
-<p>An element implementation.</p>
-<p> Extends StateMachine.</p>
+<p>A game element implementation.</p>
+<p>
+
+</p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
@@ -69,21 +82,16 @@
 <h2><a href="#Class_Element">Class Element</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Element:setFolder">Element:setFolder&nbsp;(path)</a></td>
-	<td class="summary">Sets the folder from where the Element may load parameters.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#Element:getFolder">Element:getFolder&nbsp;()</a></td>
 	<td class="summary">Gets the folder from where the Element may load parameters.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Element:setSpriteData">Element:setSpriteData&nbsp;(sprites, spriteSizeX, spriteSizeY, offset)</a></td>
-	<td class="summary">Sets the Element's sprite data for it to be drawn.</td>
+	<td class="name" nowrap><a href="#Element:setFolder">Element:setFolder&nbsp;(path)</a></td>
+	<td class="summary">Sets the folder from where the Element may load parameters.</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Element:draw">Element:draw&nbsp;()</a></td>
-	<td class="summary">Draws the Element's current animation.</td>
-	</tr>
+</table>
+<h2><a href="#Positioning__dynamics">Positioning, dynamics</a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#Element:move">Element:move&nbsp;(dx, dy)</a></td>
 	<td class="summary">Moves the Element by a certain amount, in pixels.</td>
@@ -112,6 +120,20 @@
 	<td class="name" nowrap><a href="#Element:center">Element:center&nbsp;()</a></td>
 	<td class="summary">Returns the center of the Element's collision box, in pixels.</td>
 	</tr>
+</table>
+<h2><a href="#Drawing">Drawing</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Element:setSpriteData">Element:setSpriteData&nbsp;(sprites, spriteSizeX, spriteSizeY, offset)</a></td>
+	<td class="summary">Sets the Element's sprite data for it to be drawn.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:draw">Element:draw&nbsp;()</a></td>
+	<td class="summary">Draws the Element's current animation.</td>
+	</tr>
+</table>
+<h2><a href="#State_handling">State handling</a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#Element:start">Element:start&nbsp;()</a></td>
 	<td class="summary">Starts the Element.</td>
@@ -132,6 +154,9 @@
 	<td class="name" nowrap><a href="#Element:removeState">Element:removeState&nbsp;(stateName)</a></td>
 	<td class="summary">Removes a state from the machine, leaving it with no owner.</td>
 	</tr>
+</table>
+<h2><a href="#Collisions">Collisions</a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#Element:setColliders">Element:setColliders&nbsp;(tileCollider, activeCollider)</a></td>
 	<td class="summary">Sets the colliders for this Element, adding every collision box
@@ -173,6 +198,9 @@
 	<td class="name" nowrap><a href="#Element:getDefaultCollisionBox">Element:getDefaultCollisionBox&nbsp;(collisionBox)</a></td>
 	<td class="summary">Returns the Element's default collision box.</td>
 	</tr>
+</table>
+<h2><a href="#Loading_from_parameters">Loading from parameters</a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#Element:getDefaultStateClass">Element:getDefaultStateClass&nbsp;()</a></td>
 	<td class="summary">Returns the Element's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).</td>
@@ -202,9 +230,7 @@
     <strong>Element&nbsp;(width, height)</strong>
     </dt>
     <dd>
-    Builds a new Element with a collision box and no states.  The collision box of an Element is
- a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
- Extends StateMachine.
+    Builds a new Element with a collision box and no states.
 
     <h3>Parameters:</h3>
     <ul>
@@ -252,35 +278,13 @@
 </dd>
 </dl>
     <h2><a name="Class_Element"></a>Class Element</h2>
-        A game element implementation.
+        A game element implementation.   Extends <a href="../modules/data.core.StateMachine.html#">StateMachine</a>.
  Every dynamic element of a stage (players, enemies, interactive objects) is an Element
- or inherits from this class. Elements are currently animated using <a href="https://github.com/kikito/anim8/">anim8</a>
- and have a collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape).
- An Element's position is considered to be its feet's position (bottom-center).
+ or inherits from this class. An Element's position is considered to be its feet's position
+ (bottom-center). Elements are animated using <a href="https://github.com/kikito/anim8/">anim8</a>.
+ They're also collidable: every Element has an active collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape) at all times.
+ Finally, Elements are dynamic. Their dynamics depend on their current state.
     <dl class="function">
-    <dt>
-    <a name = "Element:setFolder"></a>
-    <strong>Element:setFolder&nbsp;(path)</strong>
-    </dt>
-    <dd>
-    Sets the folder from where the Element may load parameters.
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-         The folder path to assign.</li>
-    </ul>
-
-
-
-    <h3>see also:</h3>
-    <ul>
-         <li><a href="../modules/data.core.Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
-         <li><a href="../modules/data.core.Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
-    </ul>
-
-
-</dd>
     <dt>
     <a name = "Element:getFolder"></a>
     <strong>Element:getFolder&nbsp;()</strong>
@@ -305,44 +309,32 @@
 
 </dd>
     <dt>
-    <a name = "Element:setSpriteData"></a>
-    <strong>Element:setSpriteData&nbsp;(sprites, spriteSizeX, spriteSizeY, offset)</strong>
+    <a name = "Element:setFolder"></a>
+    <strong>Element:setFolder&nbsp;(path)</strong>
     </dt>
     <dd>
-    Sets the Element's sprite data for it to be drawn.
+    Sets the folder from where the Element may load parameters.
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">sprites</span>
-         The sprite sheet image, as loaded by love.graphics.newImage.
- Sprites in the sheet must be arranged in a grid where every cell must have the same size.</li>
-        <li><span class="parameter">spriteSizeX</span>
-         The width of a sprite's cell in the sheet.</li>
-        <li><span class="parameter">spriteSizeY</span>
-         The width of a sprite's cell in the sheet.</li>
-        <li><span class="parameter">offset</span>
-         The sprites' offset as a vector.</li>
+        <li><span class="parameter">path</span>
+         The folder path to assign.</li>
     </ul>
 
 
 
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="../modules/data.core.Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
+         <li><a href="../modules/data.core.Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
+    </ul>
 
 
 </dd>
-    <dt>
-    <a name = "Element:draw"></a>
-    <strong>Element:draw&nbsp;()</strong>
-    </dt>
-    <dd>
-    Draws the Element's current animation.  If globals.DEBUG is set to <i>true</i>,
- The collision box is drawn over the Element's sprite.
-
-
-
-
-
-
-</dd>
+</dl>
+    <h2><a name="Positioning__dynamics"></a>Positioning, dynamics</h2>
+        Positioning, dynamics
+    <dl class="function">
     <dt>
     <a name = "Element:move"></a>
     <strong>Element:move&nbsp;(dx, dy)</strong>
@@ -479,6 +471,53 @@
 
 
 </dd>
+</dl>
+    <h2><a name="Drawing"></a>Drawing</h2>
+        Drawing
+    <dl class="function">
+    <dt>
+    <a name = "Element:setSpriteData"></a>
+    <strong>Element:setSpriteData&nbsp;(sprites, spriteSizeX, spriteSizeY, offset)</strong>
+    </dt>
+    <dd>
+    Sets the Element's sprite data for it to be drawn.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">sprites</span>
+         The sprite sheet image, as loaded by love.graphics.newImage.
+ Sprites in the sheet must be arranged in a grid where every cell must have the same size.</li>
+        <li><span class="parameter">spriteSizeX</span>
+         The width of a sprite's cell in the sheet.</li>
+        <li><span class="parameter">spriteSizeY</span>
+         The width of a sprite's cell in the sheet.</li>
+        <li><span class="parameter">offset</span>
+         The sprites' offset as a vector.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:draw"></a>
+    <strong>Element:draw&nbsp;()</strong>
+    </dt>
+    <dd>
+    Draws the Element's current animation.  If globals.DEBUG is set to <i>true</i>,
+ The collision box is drawn over the Element's sprite.
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="State_handling"></a>State handling</h2>
+        State handling
+    <dl class="function">
     <dt>
     <a name = "Element:start"></a>
     <strong>Element:start&nbsp;()</strong>
@@ -505,8 +544,10 @@
     <dd>
     Checks for conditions and executes any possible state change.
  If two or more transitions are possible, the one with higher priority
- is taken (or the one that was added first, if there is more than one transition with the
-	same priority). <br /> Element conditions can use an additional parameter: the collision flags.
+ is taken (or the one that was added first, if there is more than one transition with the</p>
+<pre><code>same priority).
+</code></pre>
+<p> Element conditions can use an additional parameter: the collision flags.
 
 
 
@@ -544,10 +585,10 @@
     <strong>Element:addState&nbsp;(state)</strong>
     </dt>
     <dd>
-    Adds a state to the Element.
+    Adds a state to the Element. <br/>
  A state can only belong to a single machine at a time: it should not belong
  to another state machine when this method is called.
- Call removeState on the other machine first.
+ Call <a href="../modules/data.core.Element.html#Element:removeState">Element:removeState</a> on the other machine first.
  If the new state has a collision box, its information is added to the Element's
  collider.
 
@@ -559,10 +600,6 @@
 
 
 
-    <h3>see also:</h3>
-    <ul>
-         <a href="../modules/data.core.Element.html#Element:removeState">Element:removeState</a>
-    </ul>
 
 
 </dd>
@@ -585,13 +622,13 @@
 
 
 
-    <h3>see also:</h3>
-    <ul>
-         <a href="../modules/data.core.Element.html#Element:addState">Element:addState</a>
-    </ul>
 
 
 </dd>
+</dl>
+    <h2><a name="Collisions"></a>Collisions</h2>
+        Collisions
+    <dl class="function">
     <dt>
     <a name = "Element:setColliders"></a>
     <strong>Element:setColliders&nbsp;(tileCollider, activeCollider)</strong>
@@ -651,10 +688,10 @@
     <strong>Element:onTileCollide&nbsp;(dt, tileElement, tile, x, y)</strong>
     </dt>
     <dd>
-    Called when colliding with a tile from the stage's collision layer.
+    Called when colliding with a tile from the stage's collision layer. <br/>
  Essentially, adds the collision event to the pendingCollisions field.
  This function should not be overriden; if you want to implement your own collision
- resolution for tiles, override Element:resolveTileCollisions.
+ resolution for tiles, override <a href="../modules/data.core.Element.html#Element:resolveTileCollisions">Element:resolveTileCollisions</a>.
 
     <h3>Parameters:</h3>
     <ul>
@@ -716,7 +753,7 @@
     Sets the current collision box for the Element.
  <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
  It must have been added to this Element's collider
- (for example, by belonging to a state and having called element:addState)
+ (for example, by belonging to a state and having called <a href="../modules/data.core.Element.html#Element:addState">Element:addState</a>)
  and must not be active.
 
     <h3>Parameters:</h3>
@@ -745,7 +782,9 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">collisionBox</span>
-        </li>
+
+
+</li>
     </ul>
 
     <h3>Returns:</h3>
@@ -807,7 +846,9 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">collisionBox</span>
-        </li>
+
+
+</li>
     </ul>
 
     <h3>Returns:</h3>
@@ -820,13 +861,17 @@
 
 
 </dd>
+</dl>
+    <h2><a name="Loading_from_parameters"></a>Loading from parameters</h2>
+        Loading from parameters
+    <dl class="function">
     <dt>
     <a name = "Element:getDefaultStateClass"></a>
     <strong>Element:getDefaultStateClass&nbsp;()</strong>
     </dt>
     <dd>
     Returns the Element's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).
- This method is used when building a character from a file, to determine the class used when no state class is specified.
+ This method is used when building an Element from a file, to determine the class used when no state class is specified.
  For an Element, it's ElementState; override this method if you want to create a character with a custom base state.
 
 

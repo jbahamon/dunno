@@ -28,7 +28,7 @@ local stageParameters ={
 	elementTypes = love.filesystem.load('stages/SMB3-1-1/enemies/EnemyTypes.lua')(),
 
 	elementLocations = { 
-						{ name = "Goomba", position = vector(16, 25), facing = -1 }
+						{ name = "Goomba", position = vector(256, 400), facing = -1 }
 						
 						}
 

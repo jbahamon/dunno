@@ -25,7 +25,6 @@ local State = Class {
 -- It is the base for all other states.
 -- @type State
 
-
 --- Adds a transition to the state.
 -- position indicates the priority of the transition with respect to the others.
 -- (1 meaning the new transition will be checked before all those added before)

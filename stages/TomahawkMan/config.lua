@@ -49,7 +49,7 @@ local stageParameters ={
 
 				{ 	topLeft = vector(177, 32),
 					bottomRight = vector(192, 46),
-					hidden = true },
+					tags = { hidden = true }},
 
 				{ 	topLeft = vector(193, 17),
 					bottomRight = vector(224, 31) },

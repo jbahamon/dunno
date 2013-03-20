@@ -10,6 +10,7 @@ file = {'data',
 		'main.lua',
 		exclude = {'lib'}}
 
+format = "discount"
 no_summary = false
 no_return_or_parms = false
 

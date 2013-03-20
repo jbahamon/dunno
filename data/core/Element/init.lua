@@ -1,4 +1,4 @@
---- An element implementation. Extends StateMachine.
+--- A game element implementation.
 -- @class module
 -- @name data.core.Element
 
@@ -12,9 +12,7 @@ local shapes = require 'lib.HardonCollider.shapes'
 local StateMachine = require 'data.core.StateMachine'
 local ElementState = require 'data.core.Element.ElementState'
 
---- Builds a new Element with a collision box and no states. The collision box of an Element is 
--- a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
--- Extends StateMachine.
+--- Builds a new Element with a collision box and no states.
 -- @class function
 -- @name Element
 -- @param width The width of the Element's collision box.
@@ -53,6 +51,8 @@ local Element = Class {
 
 }
 
+
+
 --===============================================================
 -- STATIC FUNCTIONS
 --===============================================================
@@ -76,19 +76,13 @@ function Element.loadBasicFromParams(parameters, folder)
 	return elem
 end
 
---- A game element implementation.
+--- A game element implementation.  Extends @{data.core.StateMachine|StateMachine}.
 -- Every dynamic element of a stage (players, enemies, interactive objects) is an Element
--- or inherits from this class. Elements are currently animated using <a href="https://github.com/kikito/anim8/">anim8</a>
--- and have a collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape).
--- An Element's position is considered to be its feet's position (bottom-center).
+-- or inherits from this class. An Element's position is considered to be its feet's position 
+-- (bottom-center). Elements are animated using <a href="https://github.com/kikito/anim8/">anim8</a>.
+-- They're also collidable: every Element has an active collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape) at all times.
+-- Finally, Elements are dynamic. Their dynamics depend on their current state.
 -- @type Element
-
---- Sets the folder from where the Element may load parameters.
--- @see Element:loadSpritesFromParams, Element:loadStatesFromParams
--- @param path The folder path to assign.
-function Element:setFolder(path)
-	self.folder = path
-end
 
 --- Gets the folder from where the Element may load parameters.
 -- @see Element:loadSpritesFromParams, Element:loadStatesFromParams
@@ -97,47 +91,17 @@ function Element:getFolder()
 	return self.folder
 end
 
---===============================================================
--- Drawing
---===============================================================
-
---- Sets the Element's sprite data for it to be drawn.
--- @param sprites The sprite sheet image, as loaded by love.graphics.newImage.
--- Sprites in the sheet must be arranged in a grid where every cell must have the same size.
--- @param spriteSizeX The width of a sprite's cell in the sheet.
--- @param spriteSizeY The width of a sprite's cell in the sheet.
--- @param offset The sprites' offset as a vector. 
-function Element:setSpriteData(sprites, spriteSizeX, spriteSizeY, offset)
-	self.spriteSizeX = spriteSizeX
-	self.spriteSizeY = spriteSizeY
-	self.sprites = love.graphics.newImage(sprites)
-	self.sprites:setFilter('nearest', 'nearest')
-	self.spritesGrid = anim8.newGrid(self.spriteSizeX,
-                                         self.spriteSizeY,
-                                         self.sprites:getWidth(),
-                                         self.sprites:getHeight())
-
-	self.spriteOffset = offset or vector(0,0)
+--- Sets the folder from where the Element may load parameters.
+-- @see Element:loadSpritesFromParams, Element:loadStatesFromParams
+-- @param path The folder path to assign.
+function Element:setFolder(path)
+	self.folder = path
 end
 
---- Draws the Element's current animation. If globals.DEBUG is set to <i>true</i>, 
--- The collision box is drawn over the Element's sprite.
-function Element:draw()
 
-	if self.currentState.draw then
-		self.currentState:draw()
-	end	
-
-    if globals.DEBUG then
-        love.graphics.setColor(self.collisionBoxColor)
-        self.currentCollisionBox:draw()
-    end
-
-end
-
---===============================================================
--- Positioning, dynamics
---===============================================================
+-----------------------------------------------------------------
+--- Positioning, dynamics
+-- @section loldrawing
 
 --- Moves the Element by a certain amount, in pixels.
 -- The same displacement is applied Element's collision box.
@@ -192,9 +156,47 @@ function Element:center()
 	return self.currentCollisionBox:center()
 end
 
---===============================================================
+-----------------------------------------------------------------
+-- Drawing
+-- @section drawing
+
+--- Sets the Element's sprite data for it to be drawn.
+-- @param sprites The sprite sheet image, as loaded by love.graphics.newImage.
+-- Sprites in the sheet must be arranged in a grid where every cell must have the same size.
+-- @param spriteSizeX The width of a sprite's cell in the sheet.
+-- @param spriteSizeY The width of a sprite's cell in the sheet.
+-- @param offset The sprites' offset as a vector. 
+function Element:setSpriteData(sprites, spriteSizeX, spriteSizeY, offset)
+	self.spriteSizeX = spriteSizeX
+	self.spriteSizeY = spriteSizeY
+	self.sprites = love.graphics.newImage(sprites)
+	self.sprites:setFilter('nearest', 'nearest')
+	self.spritesGrid = anim8.newGrid(self.spriteSizeX,
+                                         self.spriteSizeY,
+                                         self.sprites:getWidth(),
+                                         self.sprites:getHeight())
+
+	self.spriteOffset = offset or vector(0,0)
+end
+
+--- Draws the Element's current animation. If globals.DEBUG is set to <i>true</i>, 
+-- The collision box is drawn over the Element's sprite.
+function Element:draw()
+
+	if self.currentState.draw then
+		self.currentState:draw()
+	end	
+
+    if globals.DEBUG then
+        love.graphics.setColor(self.collisionBoxColor)
+        self.currentCollisionBox:draw()
+    end
+
+end
+
+-----------------------------------------------------------------
 -- State handling
---===============================================================
+-- @section state
 
 --- Starts the Element.
 -- In particular, sets the initial state, the initial collision box, and moves the Element 
@@ -216,7 +218,8 @@ end
 --- Checks for conditions and executes any possible state change.
 -- If two or more transitions are possible, the one with higher priority
 -- is taken (or the one that was added first, if there is more than one transition with the
---	same priority). <br /> Element conditions can use an additional parameter: the collision flags.
+--	same priority).
+-- Element conditions can use an additional parameter: the collision flags.
 -- @see Element:changeToState
 function Element:checkStateChange()
 	local currentState = self.currentState
@@ -248,11 +251,10 @@ end
 --- Adds a state to the Element. 
 -- A state can only belong to a single machine at a time: it should not belong 
 -- to another state machine when this method is called. 
--- Call removeState on the other machine first.
+-- Call @{Element:removeState} on the other machine first.
 -- If the new state has a collision box, its information is added to the Element's
 -- collider.
 -- @param state The state to be added.
--- @see Element:removeState
 function Element:addState(state)
 	if self.states[state.name] and self.states[state.name].collisionBox then
 		self.activeCollider:remove(self.states[state.name])
@@ -275,7 +277,6 @@ end
 -- Elements: use copies instead.
 -- @param stateName The name of the state to be removed. If there is no state 
 -- with such name in the machine, nothing is done.
--- @see Element:addState
 function Element:removeState(stateName)
 
 	if self.states[state.name] and self.states[state.name].collisionBox then
@@ -287,9 +288,9 @@ function Element:removeState(stateName)
 
 end
 
---===============================================================
+-----------------------------------------------------------------
 -- Collisions
---===============================================================
+-- @section collision
 
 --- Sets the colliders for this Element, adding every collision box
 -- (the default collision box and the states' collision boxes, if any) to them.
@@ -391,7 +392,7 @@ end
 --- Called when colliding with a tile from the stage's collision layer. 
 -- Essentially, adds the collision event to the pendingCollisions field.
 -- This function should not be overriden; if you want to implement your own collision
--- resolution for tiles, override Element:resolveTileCollisions.
+-- resolution for tiles, override @{Element:resolveTileCollisions}.
 -- @param dt The time slice for the collision frame.
 -- @param tileElement A sample tile that can be used to recreate the collision (should be removed).
 -- @param tile The tile Element with which the Element is colliding.
@@ -492,7 +493,7 @@ end
 -- @param collisionBox The collision box to set, a 
 -- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
 -- It must have been added to this Element's collider
--- (for example, by belonging to a state and having called element:addState)
+-- (for example, by belonging to a state and having called @{Element:addState})
 -- and must not be active.
 -- @see Element:getCollisionBox
 function Element:setCollisionBox(collisionBox)
@@ -556,12 +557,12 @@ function Element:getDefaultCollisionBox(collisionBox)
 	return self.defaultCollisionBox
 end
 
---===============================================================
--- Loading from File
---===============================================================
+-----------------------------------------------------------------
+-- Loading from parameters
+-- @section loadfromparams
 
 --- Returns the Element's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).
--- This method is used when building a character from a file, to determine the class used when no state class is specified.
+-- This method is used when building an Element from a file, to determine the class used when no state class is specified.
 -- For an Element, it's ElementState; override this method if you want to create a character with a custom base state.
 -- @return The hump class to be used in the construction of this Element's states when no class is specified.
 function Element:getDefaultStateClass()

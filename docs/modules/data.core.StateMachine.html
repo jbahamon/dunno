@@ -40,8 +40,14 @@
 <h2>Modules</h2>
 <ul>
   <li><a href="../modules/data.core.Element.html">data.core.Element</a></li>
+  <li><a href="../modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
+  <li><a href="../modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
+  <li><a href="../modules/data.core.Player.html">data.core.Player</a></li>
+  <li><a href="../modules/data.core.Player.PlayerState.html">data.core.Player.PlayerState</a></li>
+  <li><a href="../modules/data.core.Stage.html">data.core.Stage</a></li>
   <li><strong>data.core.StateMachine</strong></li>
   <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
+  <li><a href="../modules/data.core.WorldManager.html">data.core.WorldManager</a></li>
   <li><a href="../modules/main.html">main</a></li>
 </ul>
 
@@ -52,7 +58,9 @@
 <h1>Module <code>data.core.StateMachine</code></h1>
 
 <p>State machine implementation.</p>
-<p></p>
+<p>
+
+</p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
@@ -90,11 +98,15 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#StateMachine:setInitialState">StateMachine:setInitialState&nbsp;(stateName)</a></td>
-	<td class="summary">Sets the StateMachine's initial stat</td>
+	<td class="summary">Sets the StateMachine's initial State</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#StateMachine:getInitialState">StateMachine:getInitialState&nbsp;()</a></td>
 	<td class="summary">Returns the StateMachine's initial state</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachine:getDefaultStateClass">StateMachine:getDefaultStateClass&nbsp;()</a></td>
+	<td class="summary">Returns the StateMachine's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).</td>
 	</tr>
 </table>
 
@@ -156,7 +168,7 @@
     <strong>StateMachine:update&nbsp;(dt)</strong>
     </dt>
     <dd>
-    Updates the StateMachine.
+    Updates the StateMachine.  Should be called on each frame where the StateMachine is active.
 
     <h3>Parameters:</h3>
     <ul>
@@ -211,10 +223,10 @@
     <strong>StateMachine:addState&nbsp;(state)</strong>
     </dt>
     <dd>
-    Adds a state to the StateMachine.
+    Adds a state to the StateMachine. <br/>
  A state can only belong to a single StateMachine at a time: it should not belong
  to another StateMachine when this method is called.
- Call removeState on the other StateMachine first.
+ Call <a href="../modules/data.core.StateMachine.html#StateMachine:removeState">StateMachine:removeState</a> on the other StateMachine first.
 
     <h3>Parameters:</h3>
     <ul>
@@ -250,7 +262,7 @@
     <strong>StateMachine:setInitialState&nbsp;(stateName)</strong>
     </dt>
     <dd>
-    Sets the StateMachine's initial stat
+    Sets the StateMachine's initial State
  There must be a state with this name in the StateMachine, or an error will be raised.
 
     <h3>Parameters:</h3>
@@ -276,6 +288,26 @@
     <ol>
 
         The StateMachine's initial state.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachine:getDefaultStateClass"></a>
+    <strong>StateMachine:getDefaultStateClass&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the StateMachine's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).
+ This method is used when building a StateMachine from a file, to determine the class used when no state class is specified.
+ For a StateMachine, it's State; override this method if you want to create a StateMachine with a custom base state.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The hump class to be used in the construction of this StateMachine's states when no class is specified.
     </ol>
 
 

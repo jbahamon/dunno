@@ -4,7 +4,7 @@
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
-
+local State = require 'data.core.StateMachine.State'
 --- Builds a new StateMachine with no states.
 -- @class function
 -- @name StateMachine
@@ -33,7 +33,7 @@ function StateMachine:getStateFlags()
 	return self.currentState:getFlags()
 end
 
---- Updates the StateMachine.
+--- Updates the StateMachine. Should be called on each frame where the StateMachine is active.
 -- @param dt Time since the last update, in seconds.
 function StateMachine:update(dt)
 	self.currentState:update(dt)
@@ -74,7 +74,7 @@ end
 --- Adds a state to the StateMachine. 
 -- A state can only belong to a single StateMachine at a time: it should not belong 
 -- to another StateMachine when this method is called. 
--- Call removeState on the other StateMachine first.
+-- Call @{StateMachine:removeState} on the other StateMachine first.
 -- @param state The state to be added.
 function StateMachine:addState(state)
 	self.states[state.name] = state
@@ -91,7 +91,7 @@ function StateMachine:removeState(stateName)
 	self.states[stateName] = nil
 end
 
---- Sets the StateMachine's initial stat
+--- Sets the StateMachine's initial State
 -- @param stateName The name of the state to be set as the StateMachine's initial state.
 -- There must be a state with this name in the StateMachine, or an error will be raised.
 function StateMachine:setInitialState(stateName)
@@ -105,6 +105,13 @@ function StateMachine:getInitialState()
 	return self.initialState
 end
 
+--- Returns the StateMachine's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).
+-- This method is used when building a StateMachine from a file, to determine the class used when no state class is specified.
+-- For a StateMachine, it's State; override this method if you want to create a StateMachine with a custom base state.
+-- @return The hump class to be used in the construction of this StateMachine's states when no class is specified.
+function StateMachine:getDefaultStateClass()
+	return State
+end
 
 function StateMachine:start(position)
 	self.currentState = self.initialState
