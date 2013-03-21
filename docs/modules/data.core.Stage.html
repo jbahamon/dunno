@@ -52,6 +52,8 @@
   <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
   <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
   <li><a href="../modules/data.core.WorldManager.html">data.core.WorldManager</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">lib.GeometryUtils</a></li>
+  <li><a href="../modules/lib.TileCollider.html">lib.TileCollider</a></li>
   <li><a href="../modules/main.html">main</a></li>
 </ul>
 
@@ -164,6 +166,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#Stage:getTilesAt">Stage:getTilesAt&nbsp;(layer, minX, minY, width, height)</a></td>
 	<td class="summary">Returns all tiles that touch a given rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Stage:getCollidableLayer">Stage:getCollidableLayer&nbsp;()</a></td>
+	<td class="summary">Returns the Stage's collidable layer.</td>
 	</tr>
 </table>
 <h2><a href="#Camera_and_drawing">Camera and drawing</a></h2>
@@ -436,7 +442,7 @@
     </dt>
     <dd>
     Adds a new room to the Stage.  Do not reuse the parameter table passed to this function.
- A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (as room.box) that represents the room and a tags dictionary.
+ A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (a rectangle, as room.box) that represents the room and a tags dictionary.
  tile coordinates as topLeft and bottomRight fields. Any other field will be preserved.
 
     <h3>Parameters:</h3>
@@ -632,6 +638,24 @@
     <ol>
 
         An iterator that allows traversal over all tiles that touch the given rectangle by means of three variables: x, y and tile.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Stage:getCollidableLayer"></a>
+    <strong>Stage:getCollidableLayer&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the Stage's collidable layer.  Used for tile collisions.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The collidable layer, as a <a href="https://github.com/Kadoba/Advanced-Tiled-Loader/wiki">Advanced-Tiled-Loader</a> layer.
     </ol>
 
 

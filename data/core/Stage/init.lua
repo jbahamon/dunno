@@ -171,7 +171,7 @@ end
 -- @section room
 
 --- Adds a new room to the Stage. Do not reuse the parameter table passed to this function.
--- A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (as room.box) that represents the room and a tags dictionary.
+-- A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (a rectangle, as room.box) that represents the room and a tags dictionary.
 -- @param roomParams The room's parameters. It must include the room's top left and bottom right 
 -- tile coordinates as topLeft and bottomRight fields. Any other field will be preserved.
 function Stage:addRoom(roomParams)
@@ -213,12 +213,12 @@ end
 -- @param element The Element to test for collisions.
 -- @return An array containing the rooms that the Element is touching. 
 function Stage:getCollidingRooms(element)
-	local playerBox = player:getCollisionBox()
+	local playerBox = element:getCollisionBox()
 	local collidingRooms = {}
 
 	for _, room in ipairs(self.rooms) do
 		if room.box:collidesWith(playerBox) then
-			room.collisionArea = GeometryUtils.getCollisionArea(player:getCollisionBox(), room.box)			
+			room.collisionArea = GeometryUtils.getCollisionArea(element:getCollisionBox(), room.box)			
 
 			if room.collisionArea > 0 then
 				table.insert(collidingRooms, room)
@@ -303,8 +303,10 @@ function Stage:getTilesAt(layer, minX, minY, width, height)
 	return layer:rectangle(minX, minY, width, height)
 end
 
+--- Returns the Stage's collidable layer. Used for tile collisions.
+-- @return The collidable layer, as a <a href="https://github.com/Kadoba/Advanced-Tiled-Loader/wiki">Advanced-Tiled-Loader</a> layer.
 function Stage:getCollidableLayer() 
-	return self.map("collision")
+	return self:getLayer("collision")
 end
 
 -----------------------------------------------------------------

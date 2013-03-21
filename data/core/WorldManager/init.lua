@@ -95,7 +95,7 @@ function WorldManager:start()
 
 end
 
---- Loads a player from a folder and adds it to the WorldManager
+--- Loads a player from a folder and adds it to the WorldManager.
 -- Having multiple players in the same world is not fully supported (in fact, it's very limited at the moment)
 -- but should be added at some point.
 -- @param playerName The name of the player's folder
@@ -395,7 +395,7 @@ WorldManager.cameraModes = {
 --- Executes a transition between two rooms, moving the camera as needed.
 -- @param player The player that will transition between rooms.
 -- @param roomChange The room transition parameters. It includes two fields: previousRoom and nextRoom.
--- A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+-- A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary
 -- @param mode The transition mode. If there isn't a transition mode with this name, 
 -- the transition uses the default mode.
 function WorldManager:roomTransition(player, roomChange, mode)
@@ -407,7 +407,7 @@ end
 --- A transition that fades the screen to black and back as the player switches rooms.
 -- @param player The player that will transition between rooms.
 -- @param roomChange The room transition parameters. It includes two fields: previousRoom and nextRoom.
--- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+-- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary
 function WorldManager:fadingTransition(player, roomChange)
 	local rampTime = 0.5
 	local blackTime = 0.5
@@ -428,7 +428,7 @@ end
 --- A transition that scrolls both the player and the camera to the next room.
 -- @param player The player that will scroll between rooms.
 -- @param roomChange The room transition parameters. It includes two fields: previousRoom and nextRoom.
--- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+-- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary
 function WorldManager:scrollTransition(player, roomChange)
 	local scrollTime = 1.5
 
@@ -487,7 +487,7 @@ end
 --- A simple room transition that teleports the player and the camera to the next room.
 -- @param player The player that will scroll between rooms.
 -- @param roomChange The room transition parameters. It includes two fields: previousRoom and nextRoom.
--- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+-- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary
 function WorldManager:instantTransition(player, roomChange)
 	player:moveIntoCollidingBox(roomChange.nextRoom.box)
 	self.stage:setRoom(roomChange.nextRoom)

@@ -52,6 +52,8 @@
   <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
   <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
   <li><strong>data.core.WorldManager</strong></li>
+  <li><a href="../modules/lib.GeometryUtils.html">lib.GeometryUtils</a></li>
+  <li><a href="../modules/lib.TileCollider.html">lib.TileCollider</a></li>
   <li><a href="../modules/main.html">main</a></li>
 </ul>
 
@@ -86,9 +88,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#WorldManager:addPlayer">WorldManager:addPlayer&nbsp;(playerName)</a></td>
-	<td class="summary">Loads a player from a folder and adds it to the WorldManager
- Having multiple players in the same world is not fully supported (in fact, it's very limited at the moment)
- but should be added at some point.</td>
+	<td class="summary">Loads a player from a folder and adds it to the WorldManager.</td>
 	</tr>
 </table>
 <h2><a href="#Drawing_and_updating">Drawing and updating</a></h2>
@@ -237,7 +237,7 @@
     <strong>WorldManager:addPlayer&nbsp;(playerName)</strong>
     </dt>
     <dd>
-    Loads a player from a folder and adds it to the WorldManager
+    Loads a player from a folder and adds it to the WorldManager.
  Having multiple players in the same world is not fully supported (in fact, it's very limited at the moment)
  but should be added at some point.
 
@@ -449,7 +449,7 @@
          The player that will transition between rooms.</li>
         <li><span class="parameter">roomChange</span>
          The room transition parameters. It includes two fields: previousRoom and nextRoom.
- A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary</li>
+ A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary</li>
         <li><span class="parameter">mode</span>
          The transition mode. If there isn't a transition mode with this name, </li>
     </ul>
@@ -465,7 +465,7 @@
     </dt>
     <dd>
     A transition that fades the screen to black and back as the player switches rooms.
- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+ Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary
 
     <h3>Parameters:</h3>
     <ul>
@@ -486,7 +486,7 @@
     </dt>
     <dd>
     A transition that scrolls both the player and the camera to the next room.
- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+ Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary
 
     <h3>Parameters:</h3>
     <ul>
@@ -507,7 +507,7 @@
     </dt>
     <dd>
     A simple room transition that teleports the player and the camera to the next room.
- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape that represents the room and a tags dictionary
+ Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary
 
     <h3>Parameters:</h3>
     <ul>

@@ -11,7 +11,7 @@
 -- more info on its use and behavior.
 globals = {
 	
-	DEBUG = true	,
+	DEBUG = false,
 	Timer = require 'lib.hump.timer'
 }
 

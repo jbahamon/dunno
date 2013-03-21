@@ -80,7 +80,7 @@ end
 -- Every dynamic element of a stage (players, enemies, interactive objects) is an Element
 -- or inherits from this class. An Element's position is considered to be its feet's position 
 -- (bottom-center). Elements are animated using <a href="https://github.com/kikito/anim8/">anim8</a>.
--- They're also collidable: every Element has an active collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape) at all times.
+-- They're also collidable: every Element has an active collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape; in particular, a rectangle) at all times.
 -- Finally, Elements are dynamic. Their dynamics depend on their current state.
 -- @type Element
 
@@ -491,7 +491,7 @@ end
 
 --- Sets the current collision box for the Element.
 -- @param collisionBox The collision box to set, a 
--- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+-- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (in particular, a rectangle).
 -- It must have been added to this Element's collider
 -- (for example, by belonging to a state and having called @{Element:addState})
 -- and must not be active.
@@ -527,7 +527,7 @@ end
 
 --- Returns the Element's current collision box.
 -- @return The current collision box, as a 
--- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+-- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (in particular, a rectangle).
 -- @see Element:setCollisionBox
 function Element:getCollisionBox(collisionBox)
 	return self.currentCollisionBox
@@ -552,7 +552,7 @@ end
 
 --- Returns the Element's default collision box.
 -- @return The default collision box, as a 
--- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+-- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (in particular, a rectangle).
 function Element:getDefaultCollisionBox(collisionBox)
 	return self.defaultCollisionBox
 end

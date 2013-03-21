@@ -7,8 +7,7 @@ full_description = [[
 file = {'data',
 		'lib/GeometryUtils.lua',
 		'lib/TileCollider.lua',
-		'main.lua',
-		exclude = {'lib'}}
+		'main.lua'}
 
 format = "discount"
 no_summary = false
