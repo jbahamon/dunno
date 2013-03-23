@@ -447,6 +447,7 @@ function Element:resetCollisionFlags()
 	self.collisionFlags.canMoveUp = true
 	self.collisionFlags.canMoveDown = true
 	self.collisionFlags.specialEvents = {}
+	self.pendingCollisions = {}
 end
 
 --- Called when colliding with a tile from the stage's collision layer. 
@@ -545,7 +546,7 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 		self.collisionFlags.specialEvents.ladder = nil
 	end
 
-	--self.pendingCollisions = {}
+	
 
 end
 

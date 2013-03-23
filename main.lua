@@ -52,7 +52,7 @@ end
 function love.draw()
 
 	manager:draw()
-	print("FPS: " .. tostring(love.timer.getFPS()))
+
 end
 
 --- Update everything.
@@ -64,6 +64,8 @@ function love.update(dt)
 	if dt > 0.3 then
 		return 
 	end
-	globals.Timer.update(dt)
+	--globals.Timer.update(dt)
 	manager:update(dt)
+
+	print("FPS: " .. tostring(love.timer.getFPS()))
 end

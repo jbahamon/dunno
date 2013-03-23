@@ -1,0 +1,8 @@
+TODO:
+
+- The choice between vector(x, y) and x, y as arguments for most functions 
+	(or, if using both, defining a clear rule for when to use each)
+- Slopes
+- Efficient stage elements (enemies and others) (re)spawning and despawning.
+- Defition of the way dunno will use object layers in .tmx maps, in relation to stage element spawning.
+- Updating Megaman.
