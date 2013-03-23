@@ -303,8 +303,15 @@ function Stage:getTilesAt(layer, minX, minY, width, height)
 	return layer:rectangle(minX, minY, width, height)
 end
 
+--- Returns the Stage's element layer. Used to generate enemies and other stage elements.
+-- @return The elements layer, as a <a href="https://github.com/Kadoba/Advanced-Tiled-Loader/wiki">Advanced-Tiled-Loader</a> ObjectLayer.
+function Stage:getElementsLayer()
+	return self:getLayer("elements")
+end
+
+
 --- Returns the Stage's collidable layer. Used for tile collisions.
--- @return The collidable layer, as a <a href="https://github.com/Kadoba/Advanced-Tiled-Loader/wiki">Advanced-Tiled-Loader</a> layer.
+-- @return The collidable layer, as a <a href="https://github.com/Kadoba/Advanced-Tiled-Loader/wiki">Advanced-Tiled-Loader</a> TileLayer.
 function Stage:getCollidableLayer() 
 	return self:getLayer("collision")
 end

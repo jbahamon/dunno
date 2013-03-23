@@ -9670,4 +9670,12 @@
    <tile gid="103"/>
   </data>
  </layer>
+ <objectgroup name="elements" width="176" height="27" visible="0">
+  <object type="enemy" x="232" y="280" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+    <property name="name" value="Goomba"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

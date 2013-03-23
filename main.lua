@@ -39,8 +39,8 @@ function love.load()
 
 	manager = WorldManager()
 
-	manager:setStage("TomahawkMan")
-	--manager:setStage("SMB3-1-1")
+	--manager:setStage("TomahawkMan")
+	manager:setStage("SMB3-1-1")
 	--manager:setStage("YoshisIsland3")
 	manager:addPlayer("Scrooge")
 
@@ -50,7 +50,9 @@ end
 
 --- Draw everything on the screen.
 function love.draw()
+
 	manager:draw()
+	print("FPS: " .. tostring(love.timer.getFPS()))
 end
 
 --- Update everything.

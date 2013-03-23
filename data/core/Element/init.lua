@@ -81,6 +81,7 @@ end
 -- or inherits from this class. An Element's position is considered to be its feet's position 
 -- (bottom-center). Elements are animated using <a href="https://github.com/kikito/anim8/">anim8</a>.
 -- They're also collidable: every Element has an active collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape; in particular, a rectangle) at all times.
+-- They can optionally have a hit box, representing an attack.
 -- Finally, Elements are dynamic. Their dynamics depend on their current state.
 -- @type Element
 
@@ -108,6 +109,10 @@ end
 -- @param dx The horizontal displacement.
 -- @param dy The vertical displacement.
 function Element:move(dx, dy)
+	if self.currentHitBox then
+		self.currentHitBox:move(dx, dy)
+	end
+
 	self.currentCollisionBox:move(dx, dy)
 	self.currentState:move(dx, dy)
 end
@@ -121,6 +126,11 @@ function Element:moveTo(x, y)
 	local x1, y1, x2, y2 = self.currentCollisionBox:bbox()
 
 	self.currentCollisionBox:moveTo(x, y - (y2 - y1)/2)
+
+	if self.currentHitBox then
+		self.currentHitBox:moveTo(self.currentHitBox.offset.x + x , self.currentHitBox.offset.y + y - (y2 - y1)/2)
+	end
+
 	self.currentState:moveTo(x, y)
 end
 
@@ -190,6 +200,10 @@ function Element:draw()
     if globals.DEBUG then
         love.graphics.setColor(self.collisionBoxColor)
         self.currentCollisionBox:draw()
+
+        if self.currentHitBox then
+        	self.currentHitBox:draw()
+        end
     end
 
 end
@@ -209,6 +223,12 @@ function Element:start()
 		self:setCollisionBox(self.currentState.collisionBox)
 	else
 		self:setCollisionBox(self.defaultCollisionBox)
+	end
+
+	if self.currentState.hitBox then
+		self:setHitBox(self.currentState.hitBox)
+	else
+		self:setHitBox(self.defaultHitBox)
 	end
 
 	self:moveTo(self.startingPosition:unpack())
@@ -256,10 +276,6 @@ end
 -- collider.
 -- @param state The state to be added.
 function Element:addState(state)
-	if self.states[state.name] and self.states[state.name].collisionBox then
-		self.activeCollider:remove(self.states[state.name])
-		self.tileCollider:remove(self.states[state.name])
-	end
 
 	StateMachine.addState(self, state)
 
@@ -267,6 +283,13 @@ function Element:addState(state)
 		self.activeCollider:addShape(state.collisionBox)
 		self.activeCollider:setGhost(state.collisionBox)
 		self.tileCollider:addElement(state.collisionBox)
+	end
+
+	if state.hitBox then
+		print("holi")
+		self.activeCollider:addShape(state.hitBox)
+		self.activeCollider:setGhost(state.hitBox)
+		self.tileCollider:addElement(state.hitBox)
 	end
 end
 
@@ -278,13 +301,19 @@ end
 -- @param stateName The name of the state to be removed. If there is no state 
 -- with such name in the machine, nothing is done.
 function Element:removeState(stateName)
+	if self.states[stateName] then
+		if self.states[stateName].collisionBox then
+			self.activeCollider:remove(self.states[stateName].collisionBox)
+			self.tileCollider:remove(self.states[stateName].collisionBox)
+		end
 
-	if self.states[state.name] and self.states[state.name].collisionBox then
-		self.activeCollider:remove(self.states[state.name])
-		self.tileCollider:remove(self.states[state.name])
+		if self.states[stateName].hitBox then
+			self.activeCollider:remove(self.states[stateName].hitBox)
+			self.tileCollider:remove(self.states[stateName].hitBox)
+		end
 	end
 
-	StateMachine.removeState(self, state)
+	StateMachine.removeState(self, stateName)
 
 end
 
@@ -297,11 +326,18 @@ end
 -- @param tileCollider The tileCollider to set.
 -- @param activeCollider The activeCollider to set.
 function Element:setColliders(tileCollider, activeCollider)
+
+	-- If we had colliders, we remove ourselves from them.
+
 	if self.activeCollider then
 		self.activeCollider:remove(self.currentCollisionBox)
 		for _, state in pairs(self.states) do
 			if state.collisionBox then
 				self.activeCollider:remove(state.collisionBox)
+			end
+
+			if state.hitBox then
+				self.activeCollider:remove(state.hitBox)
 			end
 		end
 	end
@@ -312,13 +348,21 @@ function Element:setColliders(tileCollider, activeCollider)
 			if state.collisionBox then
 				self.tileCollider:remove(state.collisionBox)
 			end
+
+			if state.collisionBox then
+				self.tileCollider:remove(state.hitBox)
+			end
 		end
 	end
 
+	-- We assign the colliders...
 	self.tileCollider = tileCollider
 	self.activeCollider = activeCollider
 	
+
+	-- We add the default box...
     self.activeCollider:addShape(self.defaultCollisionBox)
+    self.activeCollider:setPassive(self.defaultCollisionBox)
 	self.tileCollider:addElement(self.defaultCollisionBox)
 
 	if self.currentCollisionBox ~= self.defaultCollisionBox then
@@ -326,13 +370,29 @@ function Element:setColliders(tileCollider, activeCollider)
 		self.defaultCollisionBox.active = false
 	end
 
+
+	-- And we add the states' boxes.
 	for _, state in pairs(self.states) do
 		if state.collisionBox then
 			self.activeCollider:addShape(state.collisionBox)
+			self.activeCollider:setPassive(state.collisionBox)
 			self.tileCollider:addElement(state.collisionBox)
+			state.collisionBox.active = true
 
 			if self.currentCollisionBox ~= state.collisionBox then
 				self.activeCollider:setGhost(state.collisionBox)
+				state.collisionBox.active = false
+			end	
+		end
+
+		if state.hitBox then
+			self.activeCollider:addShape(state.hitBox)
+			self.tileCollider:addElement(state.hitBox)
+			state.collisionBox.active = true
+
+			if self.currentHitBox ~= state.hitBox then
+				self.activeCollider:setGhost(state.hitBox)
+				state.hitBox.active = false
 			end
 		end
 	end
@@ -485,7 +545,7 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 		self.collisionFlags.specialEvents.ladder = nil
 	end
 
-	self.pendingCollisions = {}
+	--self.pendingCollisions = {}
 
 end
 
@@ -499,12 +559,7 @@ end
 function Element:setCollisionBox(collisionBox)
 	if self.currentCollisionBox then
 		self.currentCollisionBox.active = false
-
-		--this if should be removed
-		if self.activeCollider then
-			self.activeCollider:setGhost(self.currentCollisionBox)
-		end
-
+		self.activeCollider:setGhost(self.currentCollisionBox)
 	end
 	
 	local x1, y1, x2, y2 = collisionBox:bbox()
@@ -517,13 +572,36 @@ function Element:setCollisionBox(collisionBox)
 	self.currentCollisionBox = collisionBox
 	self.currentCollisionBox.parent = self
 	self.currentCollisionBox.active = true
-
-	--this if should be removed
-	if self.activeCollider then
-		self.activeCollider:setSolid(self.currentCollisionBox)
-	end
+	self.activeCollider:setSolid(self.currentCollisionBox)
 
 end
+
+--- Sets the current hit box for the Element.
+-- @param hitBox The hit box to set, a 
+-- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (in particular, a rectangle).
+-- It must have been added to this Element's collider
+-- (for example, by belonging to a state and having called @{Element:addState})
+-- and must not be currently active.
+-- @see Element:getHitBox
+function Element:setHitBox(hitBox)
+
+	if self.currentHitBox then
+		self.currentHitBox.active = false
+		self.activeCollider:setGhost(self.currentHitBox)
+	end
+
+	if hitBox then
+	
+		hitBox:moveTo(self.currentState.dynamics.position.x + hitBox.offset.x,
+						    self.currentState.dynamics.position.y + hitBox.offset.y)
+		hitBox.parent = self
+		hitBox.active = true
+		self.activeCollider:setSolid(hitBox)
+	end
+
+	self.currentHitBox = hitBox
+end
+
 
 --- Returns the Element's current collision box.
 -- @return The current collision box, as a 
