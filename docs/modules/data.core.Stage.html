@@ -83,7 +83,7 @@
 <h2><a href="#Class_Stage">Class Stage</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Stage:moveTo">Stage:moveTo&nbsp;(x, y)</a></td>
+	<td class="name" nowrap><a href="#Stage:moveTo">Stage:moveTo&nbsp;(newPosition)</a></td>
 	<td class="summary">Centers the map's view in a given position.</td>
 	</tr>
 </table>
@@ -168,6 +168,10 @@
 	<td class="summary">Returns all tiles that touch a given rectangle.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Stage:getElementsLayer">Stage:getElementsLayer&nbsp;()</a></td>
+	<td class="summary">Returns the Stage's element layer.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Stage:getCollidableLayer">Stage:getCollidableLayer&nbsp;()</a></td>
 	<td class="summary">Returns the Stage's collidable layer.</td>
 	</tr>
@@ -247,7 +251,7 @@
     <dl class="function">
     <dt>
     <a name = "Stage:moveTo"></a>
-    <strong>Stage:moveTo&nbsp;(x, y)</strong>
+    <strong>Stage:moveTo&nbsp;(newPosition)</strong>
     </dt>
     <dd>
     Centers the map's view in a given position.
@@ -255,10 +259,8 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-         The vertical coordinate for the new center, in pixels.</li>
-        <li><span class="parameter">y</span>
-         The vertical coordinate for the new center, in pixels.</li>
+        <li><span class="parameter">newPosition</span>
+         The new center, as a vector, in pixels.</li>
     </ul>
 
 
@@ -645,6 +647,24 @@
 
 </dd>
     <dt>
+    <a name = "Stage:getElementsLayer"></a>
+    <strong>Stage:getElementsLayer&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the Stage's element layer.  Used to generate enemies and other stage elements.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The elements layer, as a <a href="https://github.com/Kadoba/Advanced-Tiled-Loader/wiki">Advanced-Tiled-Loader</a> ObjectLayer.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "Stage:getCollidableLayer"></a>
     <strong>Stage:getCollidableLayer&nbsp;()</strong>
     </dt>
@@ -655,7 +675,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        The collidable layer, as a <a href="https://github.com/Kadoba/Advanced-Tiled-Loader/wiki">Advanced-Tiled-Loader</a> layer.
+        The collidable layer, as a <a href="https://github.com/Kadoba/Advanced-Tiled-Loader/wiki">Advanced-Tiled-Loader</a> TileLayer.
     </ol>
 
 

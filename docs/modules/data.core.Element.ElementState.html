@@ -88,11 +88,11 @@
 <h2><a href="#Positioning_and_dynamics">Positioning and dynamics</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#ElementState:move">ElementState:move&nbsp;(dx, dy)</a></td>
+	<td class="name" nowrap><a href="#ElementState:move">ElementState:move&nbsp;(displacement)</a></td>
 	<td class="summary">Moves the Element by a certain amount, in pixels.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ElementState:moveTo">ElementState:moveTo&nbsp;(x, y)</a></td>
+	<td class="name" nowrap><a href="#ElementState:moveTo">ElementState:moveTo&nbsp;(position)</a></td>
 	<td class="summary">Moves the Element to a certain position, in pixels.</td>
 	</tr>
 	<tr>
@@ -202,7 +202,7 @@
     <dl class="function">
     <dt>
     <a name = "ElementState:move"></a>
-    <strong>ElementState:move&nbsp;(dx, dy)</strong>
+    <strong>ElementState:move&nbsp;(displacement)</strong>
     </dt>
     <dd>
     Moves the Element by a certain amount, in pixels.  Called by <a href="../modules/data.core.Element.html#Element:move">Element:move</a>.
@@ -210,10 +210,8 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">dx</span>
-         The horizontal displacement.</li>
-        <li><span class="parameter">dy</span>
-         The vertical displacement.</li>
+        <li><span class="parameter">displacement</span>
+         The displacement to be applied, as a hump vector, in pixels.</li>
     </ul>
 
 
@@ -223,7 +221,7 @@
 </dd>
     <dt>
     <a name = "ElementState:moveTo"></a>
-    <strong>ElementState:moveTo&nbsp;(x, y)</strong>
+    <strong>ElementState:moveTo&nbsp;(position)</strong>
     </dt>
     <dd>
     Moves the Element to a certain position, in pixels.  Called by <a href="../modules/data.core.Element.html#Element:moveTo">Element:moveTo</a>.
@@ -231,10 +229,8 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-         The horizontal position.</li>
-        <li><span class="parameter">y</span>
-         The vertical position.</li>
+        <li><span class="parameter">position</span>
+         The target position, as a hump vector.</li>
     </ul>
 
 
@@ -271,7 +267,7 @@
         <li><span class="parameter">dt</span>
          The current frame's time slice, in seconds</li>
         <li><span class="parameter">frictionForce</span>
-         The friction to apply, in acceleration units (pixels/seconds^2)</li>
+         The friction to apply, as a vector, in acceleration units (pixels/seconds^2)</li>
     </ul>
 
 
@@ -296,7 +292,7 @@
         <li><span class="parameter">dt</span>
          The current frame's time slice, in seconds.</li>
         <li><span class="parameter">acceleration</span>
-         The acceleration to be applied.</li>
+         The acceleration to be applied, as a vector, in pixels/seconds^2.</li>
     </ul>
 
 

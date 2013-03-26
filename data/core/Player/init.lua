@@ -27,8 +27,8 @@ local Player = Class {
 	__includes = Element,
 
 	init =
-		function (self, width, height)
-			Element.init(self, width, height)
+		function (self, size)
+			Element.init(self, size)
 			self.binds, self.control = love.filesystem.load("lib/TLBind.lua")()
 
 			self.binds.keys = {
@@ -137,8 +137,7 @@ function Player:addBasicStates(basicStatesParams)
         function (currentState, collisionFlags)
             local ladder = collisionFlags.specialEvents.standingOnLadder
             if ladder and currentState.owner.control["down"] then
-                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 
-                                        ladder.position.y - currentState.dynamics.position.y)
+                currentState.owner:move(ladder.position - currentState.dynamics.position)
                 return true
             else
                 return false
@@ -156,7 +155,7 @@ function Player:addBasicStates(basicStatesParams)
 		function (currentState, collisionFlags)
 		    local ladder = collisionFlags.specialEvents.ladder
 		    if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-		        currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 0)
+		        currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
 		        return true
 		    else
 		        return false
@@ -308,9 +307,9 @@ function Player.loadBasicFromParams(parameters, folder)
 
 	assert(type(parameters) == "table", "Character configuration file must return a table")
 
-	assert(parameters.size and parameters.size.width and parameters.size.height, "Element size not specified")
+	assert(parameters.size and vector.isvector(parameters.size), "Element size not specified")
 
-	local player = Player(parameters.size.width, parameters.size.height)
+	local player = Player(parameters.size)
 
 	player:setFolder(folder)
 

@@ -90,7 +90,7 @@ function TileCollider:update(dt)
 		        						   y * tileSize.y + tileSize.y/2.0)
 
 		        	if self.sampleTile:collidesWith(elem) then
-						elem.parent:onTileCollide(dt, self.sampleTile, tile, x, y)
+						elem.parent:onTileCollide(dt, self.sampleTile, tile, vector(x, y))
 						elem.color = { 255, 0, 0, 255 }
 					end
 		        end

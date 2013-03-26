@@ -79,7 +79,7 @@ function WorldManager:start()
 	self.camera:setScale(2)
 
 	for i, player in ipairs(self.players) do
-		player:setStartingPosition(startingPosition:unpack())
+		player:setStartingPosition(startingPosition)
 		player:start()
 	end
 
@@ -127,7 +127,7 @@ function WorldManager:draw()
 	love.graphics.setColor(self.fullScreenTint)
 	self.camera:setPosition(self.lookingAt:unpack())
 	self.camera:draw(function (l, t, w, h)
-   						self.stage:moveTo(l, t)
+   						self.stage:moveTo(vector(l, t))
 						self.stage:draw()
 
 						for i, element in ipairs(self.stageElements) do
@@ -183,6 +183,7 @@ function WorldManager:update(dt)
 	    for i, element in ipairs(self.stageElements) do
 			element:checkStateChange()
 		end
+
 	end
 
 	-- camera managing
@@ -202,7 +203,6 @@ end
 function WorldManager:updateCameraFocus() 
 	local snapDistance = 10
 	local cameraMode = self.stage:getCameraMode() or { mode = "default" }
-
 	local cameraFunction = WorldManager.cameraModes[cameraMode.mode]
 	 or WorldManager.cameraModes["default"]
 
@@ -437,27 +437,30 @@ function WorldManager:scrollTransition(player, roomChange)
 
 	-- We get the previous positions
 	prevCameraPos = vector(self.camera:getVisible())
-	prevPlayerPos = player:getPosition()
+	prevPlayerPos = player:getPosition():clone()
 
 	-- We move both the player and the camera to the next room.
 
 	local x1, y1, x2, y2 = roomChange.nextRoom.box:bbox()
 	self.camera:setWorld(x1, y1, x2 - x1, y2 - y1)
 	player:moveIntoCollidingBox(roomChange.nextRoom.box)
+
 	self.camera:setPosition(player:getPosition():unpack())
 
 	-- We get the after-transition positions
 	nextCameraPos = vector(self.camera:getVisible())
-	nextPlayerPos = player:getPosition()
+	nextPlayerPos = player:getPosition():clone()
 
 	-- We revert the changes
 	x1, y1, x2, y2 = roomChange.previousRoom.box:bbox()
+
 	self.camera:setWorld(x1, y1, x2 - x1, y2 - y1)
-	player:moveTo(prevPlayerPos:unpack())
+	player:moveTo(prevPlayerPos)
 	self.camera:setPosition(player:getPosition():unpack())
 	
 	local playerVelocity = (nextPlayerPos - prevPlayerPos)/scrollTime
 	local cameraVelocity = (nextCameraPos - prevCameraPos)/scrollTime
+
 	self:pauseGame(scrollTime)
 
 	if self.currentCameraMovement then
@@ -467,8 +470,7 @@ function WorldManager:scrollTransition(player, roomChange)
 	self.currentCameraMovement = Timer.do_for( scrollTime, 
 		function (dt) 
 			local l, t, w, h
-			player:move((playerVelocity * dt):unpack())
-
+			player:move(playerVelocity * dt)
 			l, t, w, h = self.camera:getVisible()
 			self.camera:setWorld( l + cameraVelocity.x * dt,
 								  t + cameraVelocity.y * dt,
@@ -478,10 +480,11 @@ function WorldManager:scrollTransition(player, roomChange)
 		function()
 			self.stage:setRoom(roomChange.nextRoom)
 			self.camera:setPosition(nextCameraPos:unpack())
-			player:moveTo(nextPlayerPos:unpack())
+			player:moveTo(nextPlayerPos)
 			self.camera:setWorld(self.stage:getBounds())
 			self.currentCameraMovement = nil
 		end )
+
 end
 
 --- A simple room transition that teleports the player and the camera to the next room.

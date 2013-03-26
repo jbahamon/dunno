@@ -39,19 +39,22 @@ local ElementFactory = Class {
 
 			assert(love.filesystem.isFile(sprites), "Spritesheet \'".. sprites .."\' supplied is not a file")	
 
-			assert(parameters.sprites.spriteSizeX and parameters.sprites.spriteSizeY,
+			assert(parameters.sprites.spriteSize and vector.isvector(parameters.sprites.spriteSize),
 				"No sprite size supplied")
 
 			self.sprites = love.graphics.newImage(sprites)
 			self.sprites:setFilter('nearest', 'nearest')
 
-			self.spriteSizeX = parameters.sprites.spriteSizeX
-			self.spriteSizeY = parameters.sprites.spriteSizeY
+			self.spriteSize = parameters.sprites.spriteSize
 
-			self.spriteOffset = parameters.sprites.spriteOffset
+			if parameters.sprites.spriteOffset then
+				self.spriteOffset = parameters.sprites.spriteOffset
+			else
+				self.spriteOffset = vector(0,0)
+			end
 
-			self.spritesGrid = anim8.newGrid(self.spriteSizeX,
-                                         self.spriteSizeY,
+			self.spritesGrid = anim8.newGrid(self.spriteSize.x,
+                                         self.spriteSize.y,
                                          self.sprites:getWidth(),
                                          self.sprites:getHeight())
 
@@ -70,13 +73,11 @@ function ElementFactory:create()
 
 	newElement:setColliders(self.tileCollider, self.activeCollider)
 
-	newElement.spriteSizeX = self.spriteSizeX
-	newElement.spriteSizeY = self.spriteSizeY
+	newElement.spriteSize = self.spriteSize:clone()
 
 	newElement.sprites = self.sprites
 	newElement.spritesGrid = self.spritesGrid
-
-	newElement.spriteOffset = self.spriteOffset
+	newElement.spriteOffset = self.spriteOffset:clone()
 
 	newElement:loadStatesFromParams(self.parameters)
 
@@ -93,8 +94,8 @@ end
 -- @return The newly created Element.
 function ElementFactory:createAt(position, facing)
 	local newElement = self:create()
-	newElement:setStartingPosition(position.x,
-									position.y)
+	
+	newElement:setStartingPosition(position)
 
 	if facing < 0 then
 		newElement:getInitialState():turn()

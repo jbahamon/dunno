@@ -15,8 +15,7 @@ local ElementState = require 'data.core.Element.ElementState'
 --- Builds a new Element with a collision box and no states.
 -- @class function
 -- @name Element
--- @param width The width of the Element's collision box.
--- @param height The height of the Element's collision box.
+-- @param size The size of the Element's collision box, as a vector, in pixels.
 -- @return The newly created Element.
 
 local Element = Class {
@@ -25,17 +24,20 @@ local Element = Class {
 	__includes = StateMachine,
 
 	init =
-		function (self, width, height)
+		function (self, size)
 			StateMachine.init(self)
 
 		    self.defaultCollisionBox = shapes.newPolygonShape(
-		    	- math.floor(width/2), 0,
-		    	  math.ceil(width/2), 0,
-		    	  math.ceil(width/2), - height,
-		    	- math.floor(width/2), - height)
+		    	- math.floor(size.x/2), 0,
+		    	  math.ceil(size.x/2), 0,
+		    	  math.ceil(size.x/2), - size.y,
+		    	- math.floor(size.x/2), - size.y)
 
 			self.collisionBoxColor = {255, 255, 255, 255}
 			self.currentCollisionBox = self.defaultCollisionBox
+
+			local x1, y1, x2, y2 = self.currentCollisionBox:bbox()
+			self.size = vector(x2 - x1, y2 - y1)
 
 		    -- Collision flags
 		    self.collisionFlags = { canMoveLeft = true,
@@ -46,7 +48,7 @@ local Element = Class {
 
 			self.pendingCollisions = {}
 
-			self:setStartingPosition(0,0)
+			self:setStartingPosition(vector(0, 0))
 		end	
 
 }
@@ -67,9 +69,9 @@ function Element.loadBasicFromParams(parameters, folder)
 
 	assert(type(parameters) == "table", "Element configuration file must return a table")
 
-	assert(parameters.size and parameters.size.width and parameters.size.height, "Element size not specified")
+	assert(parameters.size, "Element size not specified")
 
-	local elem = Element(parameters.size.width, parameters.size.height)
+	local elem = Element(parameters.size)
 
 	elem:setFolder(folder)
 
@@ -106,40 +108,37 @@ end
 
 --- Moves the Element by a certain amount, in pixels.
 -- The same displacement is applied Element's collision box.
--- @param dx The horizontal displacement.
--- @param dy The vertical displacement.
-function Element:move(dx, dy)
+-- @param displacement The displacement to be applied, as a hump vector, in pixels.
+function Element:move(displacement)
 	if self.currentHitBox then
-		self.currentHitBox:move(dx, dy)
+		self.currentHitBox:move(displacement:unpack())
 	end
 
-	self.currentCollisionBox:move(dx, dy)
-	self.currentState:move(dx, dy)
+	self.currentCollisionBox:move(displacement:unpack())
+	self.currentState:move(displacement)
 end
 
 --- Moves the Element to a given location, in pixels.
 -- The Element's collision box is moved so that the Element's
 -- new position lies at the bottom-center of the collision box.
--- @param x The horizontal position.
--- @param y The vertical position.
-function Element:moveTo(x, y)
+-- @param newPosition The target position, as a hump vector, in pixels.
+function Element:moveTo(newPosition)
 	local x1, y1, x2, y2 = self.currentCollisionBox:bbox()
 
-	self.currentCollisionBox:moveTo(x, y - (y2 - y1)/2)
+	self.currentCollisionBox:moveTo(newPosition.x, newPosition.y - (y2 - y1)/2)
 
 	if self.currentHitBox then
-		self.currentHitBox:moveTo(self.currentHitBox.offset.x + x , self.currentHitBox.offset.y + y - (y2 - y1)/2)
+		self.currentHitBox:moveTo((self.currentHitBox.offset + newPosition - vector(0, (y2 - y1)/2)):unpack())
 	end
 
-	self.currentState:moveTo(x, y)
+	self.currentState:moveTo(newPosition)
 end
 
 --- Sets the Element's starting position, in pixels. The Element is NOT moved to this position;
--- instead, it will be moved when Element:start is called.
--- @param x The horizontal position.
--- @param y The vertical position.
-function Element:setStartingPosition(x, y)
-	self.startingPosition = vector(x, y)
+-- instead, it will be moved when @{Element:start} is called.
+-- @param startingPosition The starting position, as a vector, in pixels.
+function Element:setStartingPosition(startingPosition)
+	self.startingPosition = startingPosition:clone()
 end
 
 --- Returns the Element's current position, in pixels.
@@ -163,7 +162,7 @@ end
 --- Returns the center of the Element's collision box, in pixels.
 -- @return The center's position, as a vector.
 function Element:center()
-	return self.currentCollisionBox:center()
+	return vector(self.currentCollisionBox:center())
 end
 
 -----------------------------------------------------------------
@@ -173,20 +172,22 @@ end
 --- Sets the Element's sprite data for it to be drawn.
 -- @param sprites The sprite sheet image, as loaded by love.graphics.newImage.
 -- Sprites in the sheet must be arranged in a grid where every cell must have the same size.
--- @param spriteSizeX The width of a sprite's cell in the sheet.
--- @param spriteSizeY The width of a sprite's cell in the sheet.
--- @param offset The sprites' offset as a vector. 
-function Element:setSpriteData(sprites, spriteSizeX, spriteSizeY, offset)
-	self.spriteSizeX = spriteSizeX
-	self.spriteSizeY = spriteSizeY
+-- @param spriteSize The size of a sprite's cell in the sheet, as a hump vector, in pixels.
+-- @param offset The sprites' offset, as a vector, in pixels. 
+function Element:setSpriteData(sprites, spriteSize, offset)
+	self.spriteSize = spriteSize:clone()
 	self.sprites = love.graphics.newImage(sprites)
 	self.sprites:setFilter('nearest', 'nearest')
-	self.spritesGrid = anim8.newGrid(self.spriteSizeX,
-                                         self.spriteSizeY,
+	self.spritesGrid = anim8.newGrid(self.spriteSize.x,
+                                         self.spriteSize.y,
                                          self.sprites:getWidth(),
                                          self.sprites:getHeight())
 
-	self.spriteOffset = offset or vector(0,0)
+	if offset then
+		self.spriteOffset = offset:clone()
+	else
+		self.spriteOffset = vector(0,0)
+	end
 end
 
 --- Draws the Element's current animation. If globals.DEBUG is set to <i>true</i>, 
@@ -231,7 +232,7 @@ function Element:start()
 		self:setHitBox(self.defaultHitBox)
 	end
 
-	self:moveTo(self.startingPosition:unpack())
+	self:moveTo(self.startingPosition)
 
 end
 
@@ -264,6 +265,8 @@ function Element:changeToState(nextState)
 	if self.currentState.collisionBox or
 	 (previousState.collisionBox and (previousState.collisionBox ~= self.defaultCollisionBox)) then
 		self:setCollisionBox(self.currentState.collisionBox or self.defaultCollisionBox)
+		local x1, y1, x2, y2 = self.currentCollisionBox:bbox()
+		self.size = vector(x2 - x1, y2 - y1)
 	end
 
 end
@@ -286,7 +289,6 @@ function Element:addState(state)
 	end
 
 	if state.hitBox then
-		print("holi")
 		self.activeCollider:addShape(state.hitBox)
 		self.activeCollider:setGhost(state.hitBox)
 		self.tileCollider:addElement(state.hitBox)
@@ -411,7 +413,7 @@ function Element:moveIntoCollidingBox(box)
 		return
 	end
 
-	local elementCenter = vector(self:center())
+	local elementCenter = self:center()
 	local boxCenter = vector(box:center())
 
 	local displacement, direction
@@ -423,7 +425,7 @@ function Element:moveIntoCollidingBox(box)
 			direction = -1
 		end
 
-		displacement = vector((self.width - math.abs(dx)) + 1, 0)
+		displacement = vector((self.size.x - math.abs(dx)) + 1, 0)
 	else
 
 		if elementCenter.y < boxCenter.y then
@@ -432,10 +434,10 @@ function Element:moveIntoCollidingBox(box)
 			direction = -1
 		end
 
-		displacement = vector(0, (self.height - math.abs(dy)) + 1)
+		displacement = vector(0, (self.size.y - math.abs(dy)) + 1)
 	end
 
-	self:move((displacement * direction):unpack())
+	self:move(displacement * direction)
 
 end
 
@@ -457,14 +459,13 @@ end
 -- @param dt The time slice for the collision frame.
 -- @param tileElement A sample tile that can be used to recreate the collision (should be removed).
 -- @param tile The tile Element with which the Element is colliding.
--- @param x the horizontal position of the colliding tile, measured in tiles
--- @param y the vertical position of the colliding tile, measured in tiles
+-- @param position The position of the colliding tile, measured in tiles, as a hump vector.
 -- @see Element:resolveTileCollisions, Element:resetCollisionFlags
-function Element:onTileCollide(dt, tileElement, tile, x, y)
+function Element:onTileCollide(dt, tileElement, tile, position)
 
 	if tile.properties.solid or tile.properties.oneWayPlatform or tile.properties.ladder then
 		
-		local collisionEvent = { x = x, y = y, tile = tile }
+		local collisionEvent = { position = position:clone(), tile = tile }
 
 		collisionEvent.area = GeometryUtils.getCollisionArea(tileElement, self:getCollisionBox())
 
@@ -491,15 +492,14 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 	for idx, event in pairs(self.pendingCollisions) do
 	-- FIXME - this should be improved
 
-		sampleTile:moveTo(event.x * tileSize.x + tileSize.x/2.0,
-						  event.y * tileSize.y + tileSize.y/2.0)
+		sampleTile:moveTo((event.position:permul(tileSize) + tileSize/2.0):unpack())
 
 		collides, dx, dy = self.currentCollisionBox:collidesWith(sampleTile)
 
 		if collides then
 
 			if event.tile.properties.solid then 
-				self:move(dx, dy)
+				self:move(vector(dx, dy))
 				if math.abs(dx) > math.abs(dy) then
 					if dx > 0 then 
 						self.collisionFlags.canMoveLeft = false
@@ -516,14 +516,15 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 				end
 			elseif event.tile.properties.oneWayPlatform then
 				
-				local verticalDisplacement = event.y * tileSize.y - self:getPosition().y
+				local verticalDisplacement = event.position.y * tileSize.y - self:getPosition().y
 				
-				if event.y * tileSize.y >= self:getLastPosition().y then
-					self:move(0, verticalDisplacement)
+				if event.position.y * tileSize.y >= self:getLastPosition().y then
+					self:move(vector(0, verticalDisplacement))
 					self.collisionFlags.canMoveDown = false
 				end
+				
 			elseif event.tile.properties.ladder then
-				if (not highestLadderEvent) or highestLadderEvent.y > event.y then
+				if (not highestLadderEvent) or highestLadderEvent.position.y > event.position.y then
 					highestLadderEvent = event
 				end
 
@@ -539,8 +540,8 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 		end
 	end
 				
-	if highestLadderEvent and highestLadderEvent.y * tileSize.y >= self:getLastPosition().y then
-		self:move(0, highestLadderEvent.y * tileSize.y - self:getPosition().y)
+	if highestLadderEvent and highestLadderEvent.position.y * tileSize.y >= self:getLastPosition().y then
+		self:move(vector(0, highestLadderEvent.position.y * tileSize.y - self:getPosition().y))
 		self.collisionFlags.canMoveDown = false
 		self.collisionFlags.specialEvents.standingOnLadder = self.collisionFlags.specialEvents.ladder
 		self.collisionFlags.specialEvents.ladder = nil
@@ -565,11 +566,9 @@ function Element:setCollisionBox(collisionBox)
 	
 	local x1, y1, x2, y2 = collisionBox:bbox()
 	
-	self.width = x2 - x1
-	self.height = y2 - y1
+	self.size = vector(x2 - x1, y2 - y1)
 
-	collisionBox:moveTo(self.currentState.dynamics.position.x,
-					    self.currentState.dynamics.position.y - self.height/2)
+	collisionBox:moveTo((self.currentState.dynamics.position - vector(0, self.size.y/2)):unpack())
 	self.currentCollisionBox = collisionBox
 	self.currentCollisionBox.parent = self
 	self.currentCollisionBox.active = true
@@ -593,8 +592,7 @@ function Element:setHitBox(hitBox)
 
 	if hitBox then
 	
-		hitBox:moveTo(self.currentState.dynamics.position.x + hitBox.offset.x,
-						    self.currentState.dynamics.position.y + hitBox.offset.y)
+		hitBox:moveTo((self.currentState.dynamics.position + hitBox.offset):unpack())
 		hitBox.parent = self
 		hitBox.active = true
 		self.activeCollider:setSolid(hitBox)
@@ -668,10 +666,10 @@ function Element:loadSpritesFromParams(parameters)
 
 	assert(love.filesystem.isFile(sprites), "Spritesheet \'".. sprites .."\' supplied is not a file")	
 
-	assert(parameters.sprites.spriteSizeX and parameters.sprites.spriteSizeY,
+	assert(parameters.sprites.spriteSize and vector.isvector(parameters.sprites.spriteSize),
 		"No sprite size supplied")
 
-	self:setSpriteData(sprites, parameters.sprites.spriteSizeX, parameters.sprites.spriteSizeY)
+	self:setSpriteData(sprites, parameters.sprites.spriteSize)
 
 end
 

@@ -6,17 +6,12 @@ local enemyTypes = {
 	{ 
 		name = "Goomba",
 
-		size = {
-			width = 14,
-			height = 14
-		},
+		size = vector(14, 14),
 		
 		sprites = {
 			sheet = "enemies/Goomba.png",
-			spriteSizeX = 16,
-			spriteSizeY = 16,
+			spriteSize = vector(16, 16),
 			spriteOffset = vector(0, 1)
-
 		},
 
 		states = {

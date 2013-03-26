@@ -4,15 +4,11 @@ local params = {
 	
 	includeBasicStates = true,
 
-	size = { 
-		width =  16,
-		height = 20 
-	},
+	size = vector(16, 20),
 
 	sprites = {
 		sheet = "Sprites.png",
-		spriteSizeX = 33,
-		spriteSizeY = 34
+		spriteSize = vector(33, 34)
 	},
 
 	states = {
@@ -54,7 +50,7 @@ local params = {
 			    	    function (currentState, collisionFlags)
 				            local ladder = collisionFlags.specialEvents.ladder
 				            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-				                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 0)
+				                currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
 				                return true
 				            else
 				                return false
@@ -97,7 +93,7 @@ local params = {
 			    	    function (currentState, collisionFlags)
 				            local ladder = collisionFlags.specialEvents.ladder
 				            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-				                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 0)
+				                currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
 				                return true
 				            else
 				                return false
@@ -209,7 +205,7 @@ local params = {
 			    	    function (currentState, collisionFlags)
 				            local ladder = collisionFlags.specialEvents.ladder
 				            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-				                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 0)
+				                currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
 				                return true
 				            else
 				                return false

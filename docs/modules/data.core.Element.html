@@ -73,7 +73,7 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Element">Element&nbsp;(width, height)</a></td>
+	<td class="name" nowrap><a href="#Element">Element&nbsp;(size)</a></td>
 	<td class="summary">Builds a new Element with a collision box and no states.</td>
 	</tr>
 	<tr>
@@ -95,15 +95,15 @@
 <h2><a href="#Positioning__dynamics">Positioning, dynamics</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Element:move">Element:move&nbsp;(dx, dy)</a></td>
+	<td class="name" nowrap><a href="#Element:move">Element:move&nbsp;(displacement)</a></td>
 	<td class="summary">Moves the Element by a certain amount, in pixels.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Element:moveTo">Element:moveTo&nbsp;(x, y)</a></td>
+	<td class="name" nowrap><a href="#Element:moveTo">Element:moveTo&nbsp;(newPosition)</a></td>
 	<td class="summary">Moves the Element to a given location, in pixels.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Element:setStartingPosition">Element:setStartingPosition&nbsp;(x, y)</a></td>
+	<td class="name" nowrap><a href="#Element:setStartingPosition">Element:setStartingPosition&nbsp;(startingPosition)</a></td>
 	<td class="summary">Sets the Element's starting position, in pixels.</td>
 	</tr>
 	<tr>
@@ -126,7 +126,7 @@
 <h2><a href="#Drawing">Drawing</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Element:setSpriteData">Element:setSpriteData&nbsp;(sprites, spriteSizeX, spriteSizeY, offset)</a></td>
+	<td class="name" nowrap><a href="#Element:setSpriteData">Element:setSpriteData&nbsp;(sprites, spriteSize, offset)</a></td>
 	<td class="summary">Sets the Element's sprite data for it to be drawn.</td>
 	</tr>
 	<tr>
@@ -173,7 +173,7 @@
 	<td class="summary">Resets the Element's collision flags.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Element:onTileCollide">Element:onTileCollide&nbsp;(dt, tileElement, tile, x, y)</a></td>
+	<td class="name" nowrap><a href="#Element:onTileCollide">Element:onTileCollide&nbsp;(dt, tileElement, tile, position)</a></td>
 	<td class="summary">Called when colliding with a tile from the stage's collision layer.</td>
 	</tr>
 	<tr>
@@ -183,6 +183,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#Element:setCollisionBox">Element:setCollisionBox&nbsp;(collisionBox)</a></td>
 	<td class="summary">Sets the current collision box for the Element.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:setHitBox">Element:setHitBox&nbsp;(hitBox)</a></td>
+	<td class="summary">Sets the current hit box for the Element.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Element:getCollisionBox">Element:getCollisionBox&nbsp;(collisionBox)</a></td>
@@ -229,17 +233,15 @@
     <dl class="function">
     <dt>
     <a name = "Element"></a>
-    <strong>Element&nbsp;(width, height)</strong>
+    <strong>Element&nbsp;(size)</strong>
     </dt>
     <dd>
     Builds a new Element with a collision box and no states.
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">width</span>
-         The width of the Element's collision box.</li>
-        <li><span class="parameter">height</span>
-         The height of the Element's collision box.</li>
+        <li><span class="parameter">size</span>
+         The size of the Element's collision box, as a vector, in pixels.</li>
     </ul>
 
     <h3>Returns:</h3>
@@ -285,6 +287,7 @@
  or inherits from this class. An Element's position is considered to be its feet's position
  (bottom-center). Elements are animated using <a href="https://github.com/kikito/anim8/">anim8</a>.
  They're also collidable: every Element has an active collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape; in particular, a rectangle) at all times.
+ They can optionally have a hit box, representing an attack.
  Finally, Elements are dynamic. Their dynamics depend on their current state.
     <dl class="function">
     <dt>
@@ -339,7 +342,7 @@
     <dl class="function">
     <dt>
     <a name = "Element:move"></a>
-    <strong>Element:move&nbsp;(dx, dy)</strong>
+    <strong>Element:move&nbsp;(displacement)</strong>
     </dt>
     <dd>
     Moves the Element by a certain amount, in pixels.
@@ -347,10 +350,8 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">dx</span>
-         The horizontal displacement.</li>
-        <li><span class="parameter">dy</span>
-         The vertical displacement.</li>
+        <li><span class="parameter">displacement</span>
+         The displacement to be applied, as a hump vector, in pixels.</li>
     </ul>
 
 
@@ -360,7 +361,7 @@
 </dd>
     <dt>
     <a name = "Element:moveTo"></a>
-    <strong>Element:moveTo&nbsp;(x, y)</strong>
+    <strong>Element:moveTo&nbsp;(newPosition)</strong>
     </dt>
     <dd>
     Moves the Element to a given location, in pixels.
@@ -369,10 +370,8 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-         The horizontal position.</li>
-        <li><span class="parameter">y</span>
-         The vertical position.</li>
+        <li><span class="parameter">newPosition</span>
+         The target position, as a hump vector, in pixels.</li>
     </ul>
 
 
@@ -382,18 +381,16 @@
 </dd>
     <dt>
     <a name = "Element:setStartingPosition"></a>
-    <strong>Element:setStartingPosition&nbsp;(x, y)</strong>
+    <strong>Element:setStartingPosition&nbsp;(startingPosition)</strong>
     </dt>
     <dd>
     Sets the Element's starting position, in pixels.  The Element is NOT moved to this position;
- instead, it will be moved when Element:start is called.
+ instead, it will be moved when <a href="../modules/data.core.Element.html#Element:start">Element:start</a> is called.
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-         The horizontal position.</li>
-        <li><span class="parameter">y</span>
-         The vertical position.</li>
+        <li><span class="parameter">startingPosition</span>
+         The starting position, as a vector, in pixels.</li>
     </ul>
 
 
@@ -479,7 +476,7 @@
     <dl class="function">
     <dt>
     <a name = "Element:setSpriteData"></a>
-    <strong>Element:setSpriteData&nbsp;(sprites, spriteSizeX, spriteSizeY, offset)</strong>
+    <strong>Element:setSpriteData&nbsp;(sprites, spriteSize, offset)</strong>
     </dt>
     <dd>
     Sets the Element's sprite data for it to be drawn.
@@ -489,12 +486,10 @@
         <li><span class="parameter">sprites</span>
          The sprite sheet image, as loaded by love.graphics.newImage.
  Sprites in the sheet must be arranged in a grid where every cell must have the same size.</li>
-        <li><span class="parameter">spriteSizeX</span>
-         The width of a sprite's cell in the sheet.</li>
-        <li><span class="parameter">spriteSizeY</span>
-         The width of a sprite's cell in the sheet.</li>
+        <li><span class="parameter">spriteSize</span>
+         The size of a sprite's cell in the sheet, as a hump vector, in pixels.</li>
         <li><span class="parameter">offset</span>
-         The sprites' offset as a vector.</li>
+         The sprites' offset, as a vector, in pixels.</li>
     </ul>
 
 
@@ -687,7 +682,7 @@
 </dd>
     <dt>
     <a name = "Element:onTileCollide"></a>
-    <strong>Element:onTileCollide&nbsp;(dt, tileElement, tile, x, y)</strong>
+    <strong>Element:onTileCollide&nbsp;(dt, tileElement, tile, position)</strong>
     </dt>
     <dd>
     Called when colliding with a tile from the stage's collision layer. <br/>
@@ -703,10 +698,8 @@
          A sample tile that can be used to recreate the collision (should be removed).</li>
         <li><span class="parameter">tile</span>
          The tile Element with which the Element is colliding.</li>
-        <li><span class="parameter">x</span>
-         the horizontal position of the colliding tile, measured in tiles</li>
-        <li><span class="parameter">y</span>
-         the vertical position of the colliding tile, measured in tiles</li>
+        <li><span class="parameter">position</span>
+         The position of the colliding tile, measured in tiles, as a hump vector.</li>
     </ul>
 
 
@@ -769,6 +762,31 @@
     <h3>see also:</h3>
     <ul>
          <a href="../modules/data.core.Element.html#Element:getCollisionBox">Element:getCollisionBox</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:setHitBox"></a>
+    <strong>Element:setHitBox&nbsp;(hitBox)</strong>
+    </dt>
+    <dd>
+    Sets the current hit box for the Element.
+ <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (in particular, a rectangle).
+ It must have been added to this Element's collider
+ (for example, by belonging to a state and having called <a href="../modules/data.core.Element.html#Element:addState">Element:addState</a>)
+ and must not be currently active.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">hitBox</span>
+         The hit box to set, a </li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
     </ul>
 
 

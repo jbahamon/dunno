@@ -93,11 +93,10 @@ end
 
 --- Centers the map's view in a given position.
 -- This means the stage's drar method will center itself in the given coordinates.
--- @param x The vertical coordinate for the new center, in pixels.
--- @param y The vertical coordinate for the new center, in pixels.
-function Stage:moveTo(x, y)
-	self.map.viewX = x
-	self.map.viewY = y
+-- @param newPosition The new center, as a vector, in pixels.
+function Stage:moveTo(newPosition)
+	self.map.viewX = newPosition.x
+	self.map.viewY = newPosition.y
 end
 
 
@@ -108,7 +107,10 @@ end
 --- Retrieves the Stage's camera tension setting.
 -- @return A vector containing the stage's camera tension. 
 function Stage:getTension()
-	return self.tension or vector(0,0)
+	if not self.tension then
+		self.tension = vector(0,0)
+	end
+	return self.tension
 end
 
 --- Sets the Stage's base folder for loading sprites and other files.
@@ -126,7 +128,7 @@ end
 --- Sets the Stage's starting position.
 -- @param position The new starting position for the Stage, as a vector, in tile coordinates.
 function Stage:setStartingPosition(position)
-	self.startingPosition = position
+	self.startingPosition = position:clone()
 end
 
 --- Returns the Stage's starting position.
@@ -138,16 +140,14 @@ end
 --- Returns the Stage's starting position, in pixel coordinates.
 -- @return The starting position for the Stage, as a vector, in pixels.
 function Stage:getPixelStartingPosition()
-	return self.startingPosition * self.tileWidth +
-		vector(self.tileWidth, self.tileHeight )
+	return self.startingPosition:permul(self.tileSize) + self.tileSize
 end
 
 --- Returns the camera's starting center for the stage..
 -- @return The camera's starting position for the Stage, as a vector, in pixels.
 function Stage:getPixelStartingFocus()
 	if self.startingFocus then
-		return self.startingFocus * self.tileWidth +
-			vector(self.tileWidth, self.tileHeight )
+		return self.startingFocus:permul(self.tileSize) + self.tileSize
 	else
 		return self:getPixelStartingPosition()
 	end
@@ -156,14 +156,13 @@ end
 --- Returns the Stage's size.
 -- @return The Stage's size, as a vector, in pixels.
 function Stage:getPixelSize()
-	return vector(self.map.width * self.tileWidth,
-				  self.map.height * self.tileHeight)
+	return vector(self.map.width, self.map.height):permul(self.tileSize)
 end
 
 --- Returns the Stage's tile size.
 -- @return The Stage's tile size, as a vector, in pixels.
 function Stage:getTileSize()
-	return vector(self.tileWidth, self.tileHeight)
+	return self.tileSize
 end
 
 -----------------------------------------------------------------
@@ -175,14 +174,16 @@ end
 -- @param roomParams The room's parameters. It must include the room's top left and bottom right 
 -- tile coordinates as topLeft and bottomRight fields. Any other field will be preserved.
 function Stage:addRoom(roomParams)
-	local topLeft =  roomParams.topLeft 
-	local bottomRight =  roomParams.bottomRight + vector(1,1)
+	local topLeft =  roomParams.topLeft:permul(self.tileSize)
+	local bottomRight =  (roomParams.bottomRight + vector(1,1)):permul(self.tileSize)
 
-	roomParams.box = shapes.newPolygonShape( topLeft.x * self.tileWidth, topLeft.y * self.tileHeight,
-									 	 bottomRight.x * self.tileWidth, topLeft.y * self.tileHeight,
-										 bottomRight.x * self.tileWidth, bottomRight.y * self.tileHeight,
-										 topLeft.x * self.tileWidth, bottomRight.y * self.tileHeight )
 
+	roomParams.box = shapes.newPolygonShape( topLeft.x, topLeft.y,
+									 	 bottomRight.x, topLeft.y,
+										 bottomRight.x, bottomRight.y,
+										 topLeft.x, bottomRight.y)
+
+	-- FIXME: Why do we do this?
 	roomParams.topLeft = nil
 	roomParams.bottomRight = nil
 
@@ -278,9 +279,7 @@ function Stage:setMap(mapPath)
 			self.loader.path = 'stages/'
 			self.map = self.loader.load(mapPath)
 			self.map:setDrawRange(0,0,love.graphics.getWidth(), love.graphics.getHeight())
-
-			self.tileWidth = self.map.tileWidth 
-			self.tileHeight = self.map.tileHeight 
+			self.tileSize = vector(self.map.tileWidth, self.map.tileHeight)
 			
 end
 

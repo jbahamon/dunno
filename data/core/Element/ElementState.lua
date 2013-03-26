@@ -31,12 +31,12 @@ local ElementState = Class {
 			self.facing = 1
 			self.animation = animation
 			self.transitions = {}
-			if self.dynamics.width and self.dynamics.height then
+			if self.dynamics.size then
 				self.collisionBox = shapes.newPolygonShape(
-							    	- math.floor(self.dynamics.width/2), 0,
-							    	  math.ceil(self.dynamics.width/2), 0,
-							    	  math.ceil(self.dynamics.width/2), - self.dynamics.height,
-							    	- math.floor(self.dynamics.width/2), - self.dynamics.height)
+							    	- math.floor(self.dynamics.size.x/2), 0,
+							    	  math.ceil(self.dynamics.size.x/2), 0,
+							    	  math.ceil(self.dynamics.size.x/2), - self.dynamics.size.y,
+							    	- math.floor(self.dynamics.size.x/2), - self.dynamics.size.y)
 			end
 		end
 }
@@ -49,8 +49,8 @@ local ElementState = Class {
 -- The image is aligned so that the ElementState's position lies at the bottom-center of the sprite.
 function ElementState:draw()
 	self.animation:draw(self.owner.sprites,
-	                    self.dynamics.position.x - self.owner.spriteSizeX/2 + self.owner.spriteOffset.x,
-                       	self.dynamics.position.y - self.owner.spriteSizeY + self.owner.spriteOffset.y,
+	                    self.dynamics.position.x - self.owner.spriteSize.x/2 + self.owner.spriteOffset.x,
+                       	self.dynamics.position.y - self.owner.spriteSize.y + self.owner.spriteOffset.y,
                        	0, 1, 1)
 end
 
@@ -73,18 +73,16 @@ end
 
 --- Moves the Element by a certain amount, in pixels. Called by @{data.core.Element.Element:move|Element:move}.
 -- The ElementState's collision box, if any, is not moved.
--- @param dx The horizontal displacement.
--- @param dy The vertical displacement.
-function ElementState:move(dx, dy)
-	self.dynamics.position = self.dynamics.position + vector(dx, dy)
+-- @param displacement The displacement to be applied, as a hump vector, in pixels.
+function ElementState:move(displacement)
+	self.dynamics.position = self.dynamics.position + displacement
 end
 
 --- Moves the Element to a certain position, in pixels. Called by @{data.core.Element.Element:moveTo|Element:moveTo}.
 -- The ElementState's collision box, if any, is not moved.
--- @param x The horizontal position.
--- @param y The vertical position.
-function ElementState:moveTo(x, y)
-	self.dynamics.position = vector(x, y)
+-- @param position The target position, as a hump vector.
+function ElementState:moveTo(position)
+	self.dynamics.position = position:clone()
 end
 
 --- Flips the Element horizontally, reversing its velocity.
@@ -98,7 +96,7 @@ end
 -- A friction force is always dissipative: it will never cause 
 -- the element to reverse its velocity.
 -- @param dt The current frame's time slice, in seconds
--- @param frictionForce The friction to apply, in acceleration units (pixels/seconds^2)
+-- @param frictionForce The friction to apply, as a vector, in acceleration units (pixels/seconds^2)
 -- This means that every Element has the same mass, for the time being.
 function ElementState:applyFriction(dt, frictionForce)
 	local friction = frictionForce * dt
@@ -128,7 +126,7 @@ end
 -- This function should not be called alone: instead, it is called from
 -- ElementState:update.
 -- @param dt The current frame's time slice, in seconds.
--- @param acceleration The acceleration to be applied.
+-- @param acceleration The acceleration to be applied, as a vector, in pixels/seconds^2.
 function ElementState:stepDynamics(dt, acceleration)
 
 	self.displacement = self.dynamics.velocity * (dt / 2.0)
@@ -145,8 +143,7 @@ function ElementState:stepDynamics(dt, acceleration)
 
 	self.displacement = self.displacement + self.dynamics.velocity * (dt / 2.0)
 
-
-	self.owner:move(self.displacement:unpack())
+	self.owner:move(self.displacement)
    	
 end
 
@@ -167,7 +164,6 @@ end
 function ElementState:getCurrentAcceleration(dt)
 	local acceleration = self.dynamics.defaultAcceleration:permul(vector(self.facing, 1)) + self.dynamics.gravity
 	return acceleration
-
 end
 
 
