@@ -1,5 +1,6 @@
 TODO:
 
+- Element interaction. Default is getting hit.
 - Slopes
 - Efficient stage elements (enemies and others) (re)spawning and despawning.
 - Defition of the way dunno will use object layers in .tmx maps, in relation to stage element spawning.

@@ -39,8 +39,8 @@ function love.load()
 
 	manager = WorldManager()
 
-	--manager:setStage("TomahawkMan")
-	manager:setStage("SMB3-1-1")
+	manager:setStage("TomahawkMan")
+	--manager:setStage("SMB3-1-1")
 	--manager:setStage("YoshisIsland3")
 	manager:addPlayer("Scrooge")
 
@@ -64,7 +64,6 @@ function love.update(dt)
 	if dt > 0.3 then
 		return 
 	end
-	print("FPS: " .. tostring(love.timer.getFPS()))
 	globals.Timer.update(dt)
 	manager:update(dt)
 

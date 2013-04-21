@@ -9671,11 +9671,7 @@
   </data>
  </layer>
  <objectgroup name="elements" width="176" height="27" visible="0">
-  <object type="enemy" x="232" y="280" width="16" height="16">
-   <properties>
-    <property name="facing" value="-1"/>
-    <property name="name" value="Goomba"/>
-   </properties>
-  </object>
+  <object name="Goomba1" type="Goomba" x="271" y="395" width="16" height="16"/>
+  <object name="Goomba1" type="Goomba" x="184" y="332" width="16" height="16"/>
  </objectgroup>
 </map>

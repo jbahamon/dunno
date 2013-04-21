@@ -166,6 +166,13 @@ function ElementState:getCurrentAcceleration(dt)
 	return acceleration
 end
 
+function ElementState:addDynamics(dynamics) 
+	for k, v in pairs(dynamics) done
+		self.dynamic[k] = v
+	end
+
+
+end
 
 -----------------------------------------------------------------
 --- Transition handling

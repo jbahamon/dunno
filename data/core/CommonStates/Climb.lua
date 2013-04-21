@@ -1,3 +1,5 @@
+local _NAME = (...)
+
 local Class = require 'lib.hump.class'
 local PlayerState = require 'data.core.Player.PlayerState'
 
@@ -7,10 +9,10 @@ local Climb = Class {
 	__includes = PlayerState,
 
 	function(self, name, dynamics, animation)
-		PlayerState.init(self, name, dynamics, animation)
-		
+		PlayerState.init(self, name, dynamics, animation)		
 	end
 }
+
 
 function Climb:update(dt)
 	PlayerState.update(self, dt)

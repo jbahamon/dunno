@@ -20,9 +20,9 @@ local stageParameters ={
 ]]
 
 	--[[defaultCameraMode = { mode = "lock",
-									verticalLock = 26,
-									tension = vector(8, 0)}
-]]
+											verticalLock = 26,
+											tension = vector(8, 0)}]]
+
 
 	--[[defaultCameraMode = { mode = "folllowPlayer",
 									tension = vector(8, 0)}

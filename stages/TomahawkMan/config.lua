@@ -71,7 +71,7 @@ local stageParameters ={
 
 		},
 
-	roomTransitionMode = "scrolling", 
+	roomTransitionMode = "fading", 
 
 	--startingPosition = vector(198, 51),
 	startingPosition = vector(124, 21),
@@ -80,11 +80,11 @@ local stageParameters ={
 
 	additionalParameters = {},
 
-	defaultCameraMode = { mode = "followPlayer",
-						  tension = vector(8, 0)}
+	--defaultCameraMode = { mode = "followPlayer",
+	--					  tension = vector(8, 0)}
 
-	--defaultCameraMode = { mode = "snap",
-	--						vertical = {}, horizontal = {} }
+	defaultCameraMode = { mode = "snap",
+							vertical = {}, horizontal = {} }
 
 }
 

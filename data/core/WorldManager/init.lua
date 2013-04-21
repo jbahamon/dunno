@@ -309,20 +309,21 @@ end
 -- @param cameraMode The cameraMode parameters. Check the stage documentation to see 
 -- the details on this parameter.
 function WorldManager:lockCameraMode(player, stage, cameraMode)
-	local targetPosition 
+	local targetPosition
+
 	-- if we have to follow the player in one direction, then we do that first
 	if not (cameraMode.verticalLock and cameraMode.horizontalLock) then 
-		targetPosition = self:followCameraMode(player, stage, cameraMode)
-	else 
-		targetPosition = self.lookingAt:clone()
+		self:followCameraMode(player, stage, cameraMode)
 	end
 
+	targetPosition = self.lookingAt:clone()
+
 	if cameraMode.horizontalLock then
-		targetPosition.x = cameraMode.horizontalLock * self.stage.tileWidth
+		targetPosition.x = cameraMode.horizontalLock * self.stage.tileSize.x
 	end
 
 	if cameraMode.verticalLock then
-		targetPosition.y = cameraMode.verticalLock * self.stage.tileHeight
+		targetPosition.y = cameraMode.verticalLock * self.stage.tileSize.y
 	end
 
 	self.lookingAt = targetPosition
@@ -362,13 +363,13 @@ function WorldManager:platformCameraMode(player, stage, cameraMode)
 	-- This is the behavior observed in Super Mario World's "Yoshi's Island 3" stage.
 
 	if player:getStateFlags()["grounded"] then
-		local oldLock = cameraMode.verticalLock	or math.floor(player:getPosition().y /  self.stage.tileHeight)
+		local oldLock = cameraMode.verticalLock	or math.floor(player:getPosition().y /  self.stage.tileSize.y)
 
-		cameraMode.verticalLock = math.floor(player:getPosition().y /  self.stage.tileHeight)
+		cameraMode.verticalLock = math.floor(player:getPosition().y /  self.stage.tileSize.y)
 
 		if cameraMode.verticalLock < oldLock and not cameraMode._scrolling then
 
-			targetPosition.y = cameraMode.verticalLock * self.stage.tileHeight
+			targetPosition.y = cameraMode.verticalLock * self.stage.tileSize.y
 
 			self:scrollCameraWithSpeed(cameraMode.snapSpeed,
 										targetPosition,
@@ -421,7 +422,7 @@ function WorldManager:fadingTransition(player, roomChange)
 	    	self.camera:setWorld(self.stage:getBounds())
 	    	
 	    end)
-	Timer.add(rampTime + blackTime, function () self:fadeToColor(rampTime, {255, 255, 255, 255}) end )
+	Timer.add(rampTime + blackTime, function () self:fadeToColor(rampTime, {255, 255, 255, 255}, 5) end )
 
 end
 

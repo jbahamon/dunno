@@ -236,7 +236,7 @@ function Player:loadBasicStates(parameters, folder)
 		assert(states.stand.animation and states.walk.animation and states.jump.animation and states.fall.animation and states.climb.animation,
 				"All five basic state animations must be specified for basic state inclusion")
 
-		local statesData = {stand = {}, walk = {}, jump = {}, fall = {}, climb = {}}
+		local statesData = {stand = {}, walk = {}, jump = {}, fall = {}, climb = {}, hit = {} }
 
 		for stateName, state in pairs(statesData) do
 			assert(states[stateName].animation and states[stateName].animation.mode and states[stateName].animation.frames 
@@ -260,7 +260,7 @@ function Player:loadBasicStates(parameters, folder)
 
 			assert(love.filesystem.isFile(folder .. "/" .. states[stateName].dynamics), "Dynamics file \'".. folder .. "/" .. states[stateName].dynamics .. "\'does not exist")
 
-			state.dynamics = love.filesystem.load(folder .. "/" .. states[stateName].dynamics)()
+			state.addDynamics(love.filesystem.load(folder .. "/" .. states[stateName].dynamics)())
 
 		end
 

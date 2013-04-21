@@ -5,6 +5,7 @@
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 
+local SpatialHash = require 'lib.HardonCollider.spatialhash'
 local shapes = require 'lib.HardonCollider.shapes'
 local GeometryUtils = require 'lib.GeometryUtils'
 
@@ -281,6 +282,21 @@ function Stage:setMap(mapPath)
 			self.map:setDrawRange(0,0,love.graphics.getWidth(), love.graphics.getHeight())
 			self.tileSize = vector(self.map.tileWidth, self.map.tileHeight)
 			
+			self.objects = common.instance(SpatialHash, 100)
+
+			if self.map["objects"] and self.map["objects"].objects then
+				for i, object in self.map["objects"].objects do
+
+					self.objects:insert(object,
+						object.x,
+						object.y, 
+						object.x + object.width * self.tileSize.x,
+						object.y + object.height * self.tileSize.y )
+
+				end
+			end
+			
+
 end
 
 --- Returns a given layer from the Stage's map, or nil if it doesn't exist.
