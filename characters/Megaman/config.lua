@@ -4,23 +4,20 @@ local params = {
 	
 	includeBasicStates = true,
 
-	size = { 
-		width =  16,
-		height = 20 
-	},
+	size = vector(16, 20),
 
 	sprites = {
 		sheet = "Sprites.png",
-		spriteSizeX = 64,
-		spriteSizeY = 64
+		spriteSize = vector(31, 32),
+		spriteOffset = vector(0, 1)
 	},
 
-	states = {
+	basicStates = {
 		jump = {
 			dynamics = "States/jump.dyn",
 			animation = { 
 				mode = 'once',
-				frames = '2,3',
+				frames = '1,3',
 				defaultDelay = 0.2 
 			},
 			class = "States/Jump.lua",
@@ -43,9 +40,18 @@ local params = {
 			dynamics = "States/stand.dyn",
 			animation = { 
 				mode = 'loop',
-				frames = '2,1-2',
-				defaultDelay = 0.1,
-				delays = {2, 0.1} 
+				frames = '1-2,1',
+				defaultDelay = 0.2, 
+				delays = {2, 0.2} 
+			}
+		},
+
+		climb = {
+			dynamics = "States/stand.dyn",
+			animation = { 
+				mode = 'loop',
+				frames = '1-2,5',
+				defaultDelay = 0.5,
 			}
 		},
 
@@ -53,7 +59,7 @@ local params = {
 			dynamics = "States/walk.dyn",
 			animation = { 
 				mode = 'loop',
-				frames = '1,1-4',
+				frames = '1-4,2',
 				defaultDelay = 0.2 
 			}
 
@@ -63,11 +69,22 @@ local params = {
 			dynamics = "States/fall.dyn",
 			animation = { 
 				mode = 'once',
-				frames = '2,3',
+				frames = '1,3',
 				defaultDelay = 0.2 
+			}
+		},
+
+		hit = {
+			dynamics = "States/fall.dyn",
+			animation = { 
+				mode = 'loop',
+				frames = '1-2,6',
+				defaultDelay = 2/60.0 
 			}
 		}
 	},	
+
+	states = {},
 
 	initialState = "stand"
 }

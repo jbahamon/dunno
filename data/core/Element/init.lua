@@ -360,7 +360,6 @@ function Element:setColliders(tileCollider, activeCollider)
 	-- We assign the colliders...
 	self.tileCollider = tileCollider
 	self.activeCollider = activeCollider
-	
 
 	-- We add the default box...
     self.activeCollider:addShape(self.defaultCollisionBox)
@@ -669,7 +668,7 @@ function Element:loadSpritesFromParams(parameters)
 	assert(parameters.sprites.spriteSize and vector.isvector(parameters.sprites.spriteSize),
 		"No sprite size supplied")
 
-	self:setSpriteData(sprites, parameters.sprites.spriteSize)
+	self:setSpriteData(sprites, parameters.sprites.spriteSize, parameters.sprites.spriteOffset)
 
 end
 
@@ -683,7 +682,7 @@ function Element:loadStatesFromParams(parameters)
 	-- States
 	--==================================
 
-	assert(parameters.states and type(parameters.states) == "table" and next(parameters.states) ~= nil,
+	assert(parameters.states and type(parameters.states) == "table",
 		 "\'states\' parameter must not be empty.")
 
 	local states = parameters.states
@@ -748,7 +747,7 @@ function Element:addSingleStateFromParams(stateName, stateParams, folder)
 
 	local dynamics = dynamicsFile()
 
-	newState = CustomState(stateName, dynamics, animation)
+	newState = CustomState(stateName, animation, dynamics)
 
 	self:addState(newState)
 

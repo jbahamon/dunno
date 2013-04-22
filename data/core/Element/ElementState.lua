@@ -1,4 +1,4 @@
---- Element state implementation.
+		--- Element state implementation.
 -- @class module
 -- @name data.core.Element.ElementState
 
@@ -22,15 +22,32 @@ local ElementState = Class {
 	__includes = State,
 	
 	init =
-		function(self, name, dynamics, animation)
+		function(self, name, animation, dynamics)
 			State.init(self, name)
-			self.dynamics = dynamics
+			self.dynamics = {}
 			self.dynamics.velocity = vector(0, 0)
 			self.dynamics.position = vector(0, 0)
 			self.nextState = nil
 			self.facing = 1
 			self.animation = animation
 			self.transitions = {}
+
+			self.dynamics.size = nil
+
+			-- Velocities
+			self.dynamics.maxVelocity = vector(0, 0)
+
+			-- Accelerations    
+			self.dynamics.friction = vector(0, 0)
+			self.dynamics.noInputFriction = vector(0, math.huge)
+			self.dynamics.defaultAcceleration = vector(0, 0)
+			self.dynamics.inputAcceleration = vector(0, math.huge)
+			self.dynamics.gravity = vector(0, 0)
+
+			if dynamics then
+				self:addDynamics(dynamics)
+			end
+			
 			if self.dynamics.size then
 				self.collisionBox = shapes.newPolygonShape(
 							    	- math.floor(self.dynamics.size.x/2), 0,
@@ -167,11 +184,9 @@ function ElementState:getCurrentAcceleration(dt)
 end
 
 function ElementState:addDynamics(dynamics) 
-	for k, v in pairs(dynamics) done
-		self.dynamic[k] = v
+	for k, v in pairs(dynamics) do
+		self.dynamics[k] = v
 	end
-
-
 end
 
 -----------------------------------------------------------------

@@ -13,7 +13,6 @@ local params = {
 
 	states = {
 
-		
 		pogoJump = {
 			dynamics = "States/PogoJump.dyn",
 			animation = {
@@ -247,7 +246,16 @@ local params = {
 				frames = "1-2,13",
 				defaultDelay = 8/60.0
 			},
-		}
+		},
+
+		hit = {
+			dynamics = "States/Climb.dyn",
+			animation = {
+				mode = "once",
+				frames = "1,7",
+				defaultDelay = 1/60.0
+			}
+		},
 
 	},
 

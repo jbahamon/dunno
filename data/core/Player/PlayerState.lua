@@ -22,8 +22,8 @@ local PlayerState = Class {
 	__includes = ElementState,
 	
 	init =
-		function(self, name, dynamics, animation)
-			ElementState.init(self, name, dynamics, animation)
+		function(self, name, animation, dynamics)
+			ElementState.init(self, name, animation, dynamics)
 			self.hasControl = true
 		end
 }

@@ -72,11 +72,11 @@ function Player:addBasicStates(basicStatesParams)
 
     local walk, stand, fall, jump 
 
-    stand = PlayerState("stand", standParams.dynamics, anim8.newAnimation(unpack(standParams.animationData)))
-    walk = PlayerState("walk", walkParams.dynamics, anim8.newAnimation(unpack(walkParams.animationData)))
-    jump = Jump("jump", jumpParams.dynamics, anim8.newAnimation(unpack(jumpParams.animationData)))
-    fall = PlayerState("fall", fallParams.dynamics, anim8.newAnimation(unpack(fallParams.animationData)))
-    climb = Climb("climb", climbParams.dynamics, anim8.newAnimation(unpack(climbParams.animationData)))
+    stand = PlayerState("stand", anim8.newAnimation(unpack(standParams.animationData)), standParams.dynamics)
+    walk = PlayerState("walk", anim8.newAnimation(unpack(walkParams.animationData)), walkParams.dynamics)
+    jump = Jump("jump", anim8.newAnimation(unpack(jumpParams.animationData)), jumpParams.dynamics)
+    fall = PlayerState("fall", anim8.newAnimation(unpack(fallParams.animationData)), fallParams.dynamics)
+    climb = Climb("climb", anim8.newAnimation(unpack(climbParams.animationData)), climbParams.dynamics)
 
 
     stand:addFlag("grounded")
@@ -228,13 +228,28 @@ function Player:loadBasicStates(parameters, folder)
 
 	if states then
 		
-		assert(states.stand and states.walk and states.jump and states.fall and states.climb,
-			"All five basic states must be specified for basic state inclusion")
+		assert(states.stand and 
+               states.walk and 
+               states.jump and 
+               states.fall and 
+               states.climb and
+               states.hit,
+			"All six basic states must be specified for basic state inclusion")
 
-		assert(states.stand.dynamics and states.walk.dynamics and states.jump.dynamics and states.fall.dynamics and states.climb.dynamics,
-			"All five basic state dynamics must be specified for basic state inclusion")
-		assert(states.stand.animation and states.walk.animation and states.jump.animation and states.fall.animation and states.climb.animation,
-				"All five basic state animations must be specified for basic state inclusion")
+		assert(states.stand.dynamics and
+               states.walk.dynamics and
+               states.jump.dynamics and 
+               states.fall.dynamics and 
+               states.climb.dynamics and
+               states.hit.dynamics,
+			"All six basic state dynamics must be specified for basic state inclusion")
+		assert(states.stand.animation and 
+               states.walk.animation and 
+               states.jump.animation and 
+               states.fall.animation and 
+               states.climb.animation and
+               states.hit.animation,
+				"All six basic state animations must be specified for basic state inclusion")
 
 		local statesData = {stand = {}, walk = {}, jump = {}, fall = {}, climb = {}, hit = {} }
 
@@ -259,8 +274,8 @@ function Player:loadBasicStates(parameters, folder)
 			}
 
 			assert(love.filesystem.isFile(folder .. "/" .. states[stateName].dynamics), "Dynamics file \'".. folder .. "/" .. states[stateName].dynamics .. "\'does not exist")
-
-			state.addDynamics(love.filesystem.load(folder .. "/" .. states[stateName].dynamics)())
+            
+            state.dynamics = love.filesystem.load(folder .. "/" .. states[stateName].dynamics)()
 
 		end
 
