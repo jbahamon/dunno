@@ -1,9 +1,9 @@
+
 --- WorldManager implementation.
 -- @class module
 -- @name data.core.WorldManager
 
 local Class = require 'lib.hump.class'
-local Timer = require 'lib.hump.timer'
 
 local Player = require 'data.core.Player'
 local Stage = require 'data.core.Stage'
@@ -104,16 +104,16 @@ function WorldManager:addPlayer(playerName)
 
 	local player = Player.loadBasicFromParams(parameters, Player.characterFolder .. '/' .. playerName )
 
-	player:setColliders(self.tileCollider, self.activeCollider)
+	if self.stage then 
+		player:setColliders(self.tileCollider, self.activeCollider)
+	end
+	
 	player:loadSpritesFromParams(parameters)
 	player:loadBasicStates(parameters)
 	player:loadStatesFromParams(parameters)
 
 	table.insert(self.players, player)
 	
-	if self.stage then 
-		player:setColliders(self.tileCollider, self.activeCollider)
-	end
 end
 
 
@@ -166,7 +166,6 @@ function WorldManager:update(dt)
 		
 	    -- Collisions between dynamic objects are
 	    -- handled by HardonCollider
-
 	    self.activeCollider:update(dt)
 		
 	    -- We check for state changes after everything is done.
@@ -592,8 +591,18 @@ function WorldManager:fadeToColor(rampTime, color, numSteps)
 
 end
 
-function WorldManager.onDynamicCollide (dt, shapeA, shapeB)
-   
+--- Called when two active elements collide. 
+-- If the collision needs to be resolved in a particular order, this should be the 
+-- place to decide it. For now there is no guarantee on which of the two objects is the first to
+-- resolve the collision.
+-- @param dt The time slice for the frame when the collision is detected
+-- @param shapeA The first colliding shape, as a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+-- @param shapeB The second colliding shape, as a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+function WorldManager.onDynamicCollide(dt, shapeA, shapeB)
+   	if shapeA.parent and shapeB.parent then
+   		shapeA.parent:onDynamicCollide(dt, shapeA, shapeB.parent)
+   		shapeB.parent:onDynamicCollide(dt, shapeB, shapeA.parent)
+   	end
 end
 
 --- Loads a Player's parameters from a file.

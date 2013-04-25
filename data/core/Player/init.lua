@@ -10,6 +10,7 @@ local Element = require 'data.core.Element'
 local PlayerState = require 'data.core.Player.PlayerState'
 local Jump = require 'data.core.CommonStates.Jump'
 local Climb = require 'data.core.CommonStates.Climb'
+local Hit = require 'data.core.CommonStates.Hit'
 
 local anim8 = require 'lib.anim8'
 
@@ -69,21 +70,29 @@ function Player:addBasicStates(basicStatesParams)
     local jumpParams = basicStatesParams["jump"]
     local fallParams = basicStatesParams["fall"]
     local climbParams = basicStatesParams["climb"]
+    local hitParams = basicStatesParams["hit"]
 
-    local walk, stand, fall, jump 
+    local walk, stand, fall, jump, hit
 
     stand = PlayerState("stand", anim8.newAnimation(unpack(standParams.animationData)), standParams.dynamics)
     walk = PlayerState("walk", anim8.newAnimation(unpack(walkParams.animationData)), walkParams.dynamics)
     jump = Jump("jump", anim8.newAnimation(unpack(jumpParams.animationData)), jumpParams.dynamics)
     fall = PlayerState("fall", anim8.newAnimation(unpack(fallParams.animationData)), fallParams.dynamics)
     climb = Climb("climb", anim8.newAnimation(unpack(climbParams.animationData)), climbParams.dynamics)
-
+    hit = Hit("hit", anim8.newAnimation(unpack(hitParams.animationData)), hitParams.dynamics)
 
     stand:addFlag("grounded")
     walk:addFlag("grounded")
     jump:addFlag("air")
     fall:addFlag("air")
     climb:addFlag("climb")
+
+
+    walk:addTransition(
+        function (currentState, collisionFlags)
+            return collisionFlags.hit
+        end,
+        "hit")
 
     walk:addTransition( 
     	function(currentState, collisionFlags) 
@@ -145,11 +154,23 @@ function Player:addBasicStates(basicStatesParams)
         end,   
         "climb")
 
+    stand:addTransition(
+        function (currentState, collisionFlags)
+            return collisionFlags.hit
+        end,
+        "hit")
+
 	fall:addTransition( 
     	function(currentState, collisionFlags) 
     		return not collisionFlags.canMoveDown
     	end,
     	"stand")
+
+    fall:addTransition(
+        function (currentState, collisionFlags)
+            return collisionFlags.hit
+        end,
+        "hit")
 
 	fall:addTransition(
 		function (currentState, collisionFlags)
@@ -162,6 +183,12 @@ function Player:addBasicStates(basicStatesParams)
 		    end
 		end,   
 		"climb")
+    
+    jump:addTransition(
+        function (currentState, collisionFlags)
+            return collisionFlags.hit
+        end,
+        "hit")
 
     jump:addTransition( 
         function(currentState, collisionFlags) 
@@ -187,9 +214,22 @@ function Player:addBasicStates(basicStatesParams)
         end,   
         "climb")
 
+
+    climb:addTransition(
+        function (currentState, collisionFlags)
+            return collisionFlags.hit
+        end,
+        "hit")
+
     climb:addTransition(
         function (currentState, collisionFlags)
             return currentState.owner.control.tap["jump"] or not collisionFlags.specialEvents.ladder
+        end,
+        "fall")
+
+    hit:addTransition(
+        function (currentState, collisionFlags)
+            return currentState.hasControl
         end,
         "fall")
 
@@ -198,8 +238,9 @@ function Player:addBasicStates(basicStatesParams)
     self:addState(fall)
     self:addState(jump)
     self:addState(climb)
+    self:addState(hit)
 
-    return walk, stand, jump, fall, climb
+    return walk, stand, jump, fall, climb, hit
 end
 
 --- Returns the Player's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).

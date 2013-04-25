@@ -53,13 +53,14 @@ end
 -- Override this if you want special things to happen due to user input (e.g. shooting)
 -- @param dt The current frame's time slice, in seconds.
 function PlayerState:handleInput()
-	if (self.owner.control["left"] and not self.owner.control["right"]
-			and self.facing > 0)  or 
-	   (self.owner.control["right"] and not self.owner.control["left"]
-	   		and self.facing < 0) then
-		self.facing = -self.facing
+	if self.hasControl then
+		if (self.owner.control["left"] and not self.owner.control["right"]
+				and self.facing > 0)  or 
+		   (self.owner.control["right"] and not self.owner.control["left"]
+		   		and self.facing < 0) then
+			self.facing = -self.facing
+		end
 	end
-	
 end
 
 --- Returns the acceleration to be applied to the Player.

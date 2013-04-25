@@ -75,7 +75,7 @@ local params = {
 		},
 
 		hit = {
-			dynamics = "States/fall.dyn",
+			dynamics = "States/hit.dyn",
 			animation = { 
 				mode = 'loop',
 				frames = '1-2,6',

@@ -7,6 +7,10 @@ local originalFrameRate = 60
 
 local scale = originalFrameRate
 
+
+-- Hitbox
+dynamics.damagesOnContact = true
+
 -- Positions
 
 dynamics.facing = 1

@@ -23,6 +23,7 @@ local Stage = Class {
 			self:setMap(mapPath)
 			self.rooms = {}
 			self.defaultRoom = "_defaultRoom"
+			self.elementFactories = {}
 		end
 }
 

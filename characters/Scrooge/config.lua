@@ -249,7 +249,7 @@ local params = {
 		},
 
 		hit = {
-			dynamics = "States/Climb.dyn",
+			dynamics = "States/Hit.dyn",
 			animation = {
 				mode = "once",
 				frames = "1,7",

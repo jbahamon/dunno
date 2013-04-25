@@ -33,8 +33,8 @@ local Element = Class {
 		    	  math.ceil(size.x/2), - size.y,
 		    	- math.floor(size.x/2), - size.y)
 
-			self.collisionBoxColor = {255, 255, 255, 255}
 			self.currentCollisionBox = self.defaultCollisionBox
+			self.currentCollisionBox.parent = self
 
 			local x1, y1, x2, y2 = self.currentCollisionBox:bbox()
 			self.size = vector(x2 - x1, y2 - y1)
@@ -49,6 +49,8 @@ local Element = Class {
 			self.pendingCollisions = {}
 
 			self:setStartingPosition(vector(0, 0))
+
+			self.drawTimer = 0
 		end	
 
 }
@@ -141,6 +143,11 @@ function Element:setStartingPosition(startingPosition)
 	self.startingPosition = startingPosition:clone()
 end
 
+--- Turns the element around.
+function Element:turn()
+	self.currentState:turn()
+end
+
 --- Returns the Element's current position, in pixels.
 -- @return The Element's position, as a vector.
 function Element:getPosition()
@@ -159,10 +166,22 @@ function Element:getVelocity()
 	return self.currentState.dynamics.velocity
 end
 
+--- Returns the Element's facing. 
+-- @return The Element's facing. A facing > 0 indicates right; < 0 indicates left.
+function Element:getFacing()
+	return self.currentState.facing
+end
+
 --- Returns the center of the Element's collision box, in pixels.
 -- @return The center's position, as a vector.
 function Element:center()
 	return vector(self.currentCollisionBox:center())
+end
+
+function Element:update(dt)
+	StateMachine.update(self, dt)
+	self.drawTimer = (self.drawTimer + 60 * dt) % 60
+
 end
 
 -----------------------------------------------------------------
@@ -194,16 +213,18 @@ end
 -- The collision box is drawn over the Element's sprite.
 function Element:draw()
 
-	if self.currentState.draw then
-		self.currentState:draw()
-	end	
+	if self.hittable or math.floor(self.drawTimer) % 4 ~= 0 then
+		if self.currentState.draw then
+			self.currentState:draw()
+		end	
+	end
 
     if globals.DEBUG then
-        love.graphics.setColor(self.collisionBoxColor)
-        self.currentCollisionBox:draw()
-
+        love.graphics.setColor(globals.debugSettings.collisionBoxColor)
+        self.currentCollisionBox:draw('fill')
+		love.graphics.setColor(globals.debugSettings.hitBoxColor)
         if self.currentHitBox then
-        	self.currentHitBox:draw()
+        	self.currentHitBox:draw('fill')
         end
     end
 
@@ -225,6 +246,8 @@ function Element:start()
 	else
 		self:setCollisionBox(self.defaultCollisionBox)
 	end
+
+	self.hittable = true
 
 	if self.currentState.hitBox then
 		self:setHitBox(self.currentState.hitBox)
@@ -330,7 +353,6 @@ end
 function Element:setColliders(tileCollider, activeCollider)
 
 	-- If we had colliders, we remove ourselves from them.
-
 	if self.activeCollider then
 		self.activeCollider:remove(self.currentCollisionBox)
 		for _, state in pairs(self.states) do
@@ -363,7 +385,12 @@ function Element:setColliders(tileCollider, activeCollider)
 
 	-- We add the default box...
     self.activeCollider:addShape(self.defaultCollisionBox)
-    self.activeCollider:setPassive(self.defaultCollisionBox)
+    
+    -- TODO: When should an element be passive?
+    if false then 
+    	self.activeCollider:setPassive(self.defaultCollisionBox)
+    end
+
 	self.tileCollider:addElement(self.defaultCollisionBox)
 
 	if self.currentCollisionBox ~= self.defaultCollisionBox then
@@ -545,9 +572,46 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 		self.collisionFlags.specialEvents.standingOnLadder = self.collisionFlags.specialEvents.ladder
 		self.collisionFlags.specialEvents.ladder = nil
 	end
+end
+
+--- Called when colliding with an active element in the world (interactive element, enemy, etc)
+-- @param dt The time slice for the collision frame.
+-- @param tileElement A sample tile that can be used to recreate the collision (should be removed).
+-- @param tile The tile Element with which the Element is colliding.
+-- @param position The position of the colliding tile, measured in tiles, as a hump vector.
+-- @see Element:resolveTileCollisions, Element:resetCollisionFlags
+function Element:onDynamicCollide(dt, box, otherElement)
+	if otherElement == self then
+		return
+	end
+
+	if self.hitBox == box then
+		otherElement.collisionFlags["hit"] = true
+	end
+
+	if self.currentCollisionBox == box and 
+		self.currentState.dynamics.damagesOnContact then
+		otherElement:getHitBy(self)
+	end
+end
+
+--- Called when damaged by another element. Life reduction, transformations and death should 
+-- be dealt with in this method.
+-- @param otherElement The Element hitting this one.
+function Element:getHitBy(otherElement)
+	if not self.hittable then
+		return
+	end
 
 	
+	if (self:getFacing() > 0 and
+		otherElement:getPosition().x < self:getPosition().x) or
+		(self:getFacing() < 0 and
+		otherElement:getPosition().x > self:getPosition().x)  then
+		self:turn()
+	end
 
+	self.collisionFlags["hit"] = true
 end
 
 --- Sets the current collision box for the Element.
@@ -760,7 +824,6 @@ function Element:addSingleStateFromParams(stateName, stateParams, folder)
 			self.states[stateName]:addTransition(transition.condition, transition.targetState)
 		end
 	end
-
 
 	if stateParams.flags then
 		for _, flag in ipairs(stateParams.flags) do

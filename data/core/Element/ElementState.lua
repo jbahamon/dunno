@@ -48,6 +48,16 @@ local ElementState = Class {
 				self:addDynamics(dynamics)
 			end
 			
+			if self.dynamics.hitBox and self.dynamics.hitBox.size then
+				self.hitBox = shapes.newPolygonShape(
+							    	- math.floor(self.dynamics.hitBox.size.x/2), 0,
+							    	  math.ceil(self.dynamics.hitBox.size.x/2), 0,
+							    	  math.ceil(self.dynamics.hitBox.size.x/2), - self.dynamics.hitBox.size.y,
+							    	- math.floor(self.dynamics.hitBox.size.x/2), - self.dynamics.hitBox.size.y)
+
+				self.hitBox.offset = self.dynamics.hitBox.offset or vector(0,0)
+			end
+
 			if self.dynamics.size then
 				self.collisionBox = shapes.newPolygonShape(
 							    	- math.floor(self.dynamics.size.x/2), 0,

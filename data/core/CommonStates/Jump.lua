@@ -7,8 +7,8 @@ local Jump = Class {
 	__includes = PlayerState,
 
 	init =
-		function(self, name, dynamics, animationData)
-			PlayerState.init(self, name, dynamics, animationData)
+		function(self, name, animationData, dynamics)
+			PlayerState.init(self, name, animationData, dynamics)
 		end
 }
 

@@ -1,15 +1,13 @@
-local _NAME = (...)
-
 local Class = require 'lib.hump.class'
 local PlayerState = require 'data.core.Player.PlayerState'
 
 local Climb = Class {
-	name = "ScroogeClimb",
+	name = "Climb",
 
 	__includes = PlayerState,
 
-	function(self, name, dynamics, animation)
-		PlayerState.init(self, name, dynamics, animation)		
+	function(self, name, animation, dynamics)
+		PlayerState.init(self, name, animation, dynamics)	
 	end
 }
 

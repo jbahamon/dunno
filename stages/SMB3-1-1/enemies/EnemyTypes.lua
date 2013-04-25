@@ -6,6 +6,8 @@ local enemyTypes = {
 	{ 
 		name = "Goomba",
 
+		elementType = "Enemy",
+
 		size = vector(14, 14),
 		
 		sprites = {
