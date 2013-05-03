@@ -9,6 +9,8 @@ local SpatialHash = require 'lib.HardonCollider.spatialhash'
 local shapes = require 'lib.HardonCollider.shapes'
 local GeometryUtils = require 'lib.GeometryUtils'
 
+local ElementFactory = require 'data.core.ElementFactory'
+
 --- Builds a new empty Stage, given the stage's map file.
 -- @class function
 -- @name Stage
@@ -20,10 +22,17 @@ local Stage = Class {
 	init = 
 		function (self, mapPath) 
 			self.loader = require 'lib.AdvTileLoader.Loader'
+			
+			self.elementFactories = {}
+			self.elementLocations = {}
+			self.elementTypes = {}
+			self.activeElements = {}
+
 			self:setMap(mapPath)
 			self.rooms = {}
 			self.defaultRoom = "_defaultRoom"
-			self.elementFactories = {}
+
+
 		end
 }
 
@@ -79,10 +88,6 @@ function Stage.loadFromFolder(folderName)
 		stage.elementTypes = parameters.elementTypes
 	end
 
-	if parameters.elementLocations then
-		stage.elementLocations = parameters.elementLocations
-	end
-	
 	stage:setFolder(folder)
 
 	return stage
@@ -278,26 +283,33 @@ end
 -- @param mapPath The Stage's map subfolder. The base folder is always "stages/".
 function Stage:setMap(mapPath)
 			
-			self.loader.path = 'stages/'
-			self.map = self.loader.load(mapPath)
-			self.map:setDrawRange(0,0,love.graphics.getWidth(), love.graphics.getHeight())
-			self.tileSize = vector(self.map.tileWidth, self.map.tileHeight)
+	self.loader.path = 'stages/'
+	self.map = self.loader.load(mapPath)
+	self.map:setDrawRange(0,0, love.graphics.getWidth(), love.graphics.getHeight())
+	self.tileSize = vector(self.map.tileWidth, self.map.tileHeight)
+		
+	self.elementLocations = {}	
+	if self.map.layers.elementLocations then
+		for _, location in ipairs(self.map.layers.elementLocations.objects) do
+			local newLocation = {}
 			
-			self.objects = common.instance(SpatialHash, 100)
+			location.visible = false
 
-			if self.map["objects"] and self.map["objects"].objects then
-				for i, object in self.map["objects"].objects do
+			newLocation.name = location.type
+			newLocation.position = vector(location.x + location.width/2, location.y + location.height)
 
-					self.objects:insert(object,
-						object.x,
-						object.y, 
-						object.x + object.width * self.tileSize.x,
-						object.y + object.height * self.tileSize.y )
+			newLocation.facing = location.properties.facing or -1
+			newLocation.enabled = true
 
-				end
-			end
-			
+			newLocation.shape = shapes.newPolygonShape(
+				location.x, location.y,
+				location.x + math.floor(location.width), location.y,
+				location.x + math.floor(location.width), location.y + math.floor(location.height),
+				location.x, location.y + math.floor(location.height))
 
+			table.insert(self.elementLocations, newLocation)
+		end
+	end
 end
 
 --- Returns a given layer from the Stage's map, or nil if it doesn't exist.
@@ -334,7 +346,7 @@ end
 
 -----------------------------------------------------------------
 -- Camera and drawing
--- @section ledraw
+-- @section draw
 
 --- Returns the current camera mode for the Stage.
 -- @return The current camera mode, as a string.
@@ -361,6 +373,95 @@ end
 --- Draws the Stage.
 function Stage:draw() 
 	self.map:draw()
+
+	for _, elem in ipairs(self.activeElements) do
+		elem:draw()
+	end
+
+end
+
+
+-----------------------------------------------------------------
+-- Element spawning
+-- @section elems
+
+--- Initializes element spawning for the stage.
+
+function Stage:initialize(tileCollider, activeCollider, topLeft, bottomRight)
+	for _, elementType in ipairs(self.elementTypes) do
+		self.elementFactories[elementType.name] = ElementFactory(elementType, tileCollider, activeCollider, self:getFolder())
+	end
+
+	self.map:setDrawRange( topLeft.x,
+						   topLeft.y,
+						   bottomRight.x, 
+						   bottomRight.y)
+
+end
+
+--- Updates the stage. This means updating every active element on the 
+-- stage.
+-- @param dt The time slice for the update.
+function Stage:update(dt)
+	for _, elem in ipairs(self.activeElements) do
+		elem:update(dt)
+	end
+end
+
+function Stage:checkStateChanges()
+    for _, element in ipairs(self.activeElements) do
+		element:checkStateChange()
+	end
+end
+
+function Stage:refreshElementSpawning(topLeft, bottomRight) 
+
+	for i, elem in ipairs(self.activeElements) do
+		if not GeometryUtils.isBoxInRange(elem:getCollisionBox(), topLeft -  vector(32, 32), bottomRight +  vector(32, 32)) then
+			
+			if elem.elementLocation.onExitScreen then
+				elem.elementLocation.onExitScreen(elem)
+			end
+			elem:destroySelf()
+			table.remove(self.activeElements, i)
+		end
+	end
+
+	for _, elementLocation in ipairs(self.elementLocations) do
+				
+		if elementLocation.enabled then
+
+			if (not elementLocation.onScreen) and 
+				GeometryUtils.isBoxInRange(elementLocation.shape, topLeft, bottomRight) then
+				self:elementLocationOnScreen(elementLocation)
+
+			end
+
+			if elementLocation.onScreen and 
+				(not GeometryUtils.isBoxInRange(elementLocation.shape, topLeft, bottomRight)) then
+
+				self:elementLocationOffScreen(elementLocation)
+
+			end
+		end
+	end
+end
+
+--respawns and lureable
+-- a spawning point is a point that CAN eventually spawn more stuff
+function Stage:elementLocationOnScreen(elementLocation)
+	elementLocation.onScreen = true
+	newElem = self.elementFactories[elementLocation.name]:createAt(elementLocation.position, elementLocation.facing)
+	newElem.elementLocation = elementLocation
+
+	table.insert(self.activeElements, newElem)
+	newElem.name = elementLocation.name
+	newElem:start()
+	elementLocation.enabled = false
+end
+
+function Stage:elementLocationOffScreen(elementLocation)
+	elementLocation.onScreen = false
 end
 
 return Stage

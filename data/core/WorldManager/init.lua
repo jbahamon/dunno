@@ -26,13 +26,13 @@ local WorldManager = Class {
 	name = "WorldManager",
 
 	init = 
-		function (self)
+		function (self, topLeft, bottomRight)
+			self.topLeft = topLeft
+			self.bottomRight = bottomRight
 			self.players = {}
 			self.fullScreenTint = {255, 255, 255, 255}
 			self.paused = false
 			self.lookingAt = vector(0,0)
-			self.elementFactories = {}
-			self.stageElements = {}
 		end
 
 }
@@ -59,13 +59,8 @@ function WorldManager:setStage(stageName)
 		player:setColliders(self.tileCollider, self.activeCollider)
 	end
 
-	self.stage.elementTypes = self.stage.elementTypes or {}
+	self.stage:initialize(self.tileCollider, self.activeCollider, self.topLeft, self.bottomRight)
 
-	for _, elementType in ipairs(self.stage.elementTypes) do
-		self.elementFactories[elementType.name] = ElementFactory(elementType, self.tileCollider, self.activeCollider, self.stage:getFolder())
-	end
-
-	self.stage.elementLocations = self.stage.elementLocations or {}
 end
 
 --- Starts the WorldManager and all of its elements (player, enemies, etc)
@@ -75,20 +70,17 @@ function WorldManager:start()
 
 	self.lookingAt = self.stage:getPixelStartingFocus()
 
-	self.camera = Camera.new(self.stage:getBounds())	
-	self.camera:setScale(2)
+	self.camera = Camera.new(self.stage:getBounds())
+	self.camera:setWindow(self.topLeft.x, 
+						  self.topLeft.y, 
+						  self.bottomRight.x - self.topLeft.x,
+						  self.bottomRight.y - self.topLeft.y)	
+
+	self.camera:setScale(globals.scale)
 
 	for i, player in ipairs(self.players) do
 		player:setStartingPosition(startingPosition)
 		player:start()
-	end
-
-
-	for _, element in ipairs(self.stage.elementLocations) do 
-		local facing = element.facing or 1
-		local elem = self.elementFactories[element.name]:createAt(element.position, element.facing)
-		table.insert(self.stageElements, elem)
-		elem:start()
 	end
 
 	self.paused = false
@@ -130,15 +122,18 @@ function WorldManager:draw()
    						self.stage:moveTo(vector(l, t))
 						self.stage:draw()
 
-						for i, element in ipairs(self.stageElements) do
-							element:draw()
-							love.graphics.setColor(self.fullScreenTint)
-						end
-
 						for i, player in ipairs(self.players) do
 							player:draw()
 							love.graphics.setColor(self.fullScreenTint)
 						end
+
+
+					    if globals.DEBUG then
+					        love.graphics.setColor(globals.debugSettings.collisionBoxColor)
+					        for _, shape in ipairs(self.tileCollider.elements) do
+								shape:draw('fill')
+					        end
+					    end
 
 					end)
 end
@@ -146,6 +141,7 @@ end
 
 --- Updates all of the Elements managed by the WorldManager, as well as the colliders
 -- and the camera.
+-- @param dt The time slice for the update.
 function WorldManager:update(dt)
 
 	if not self.paused then
@@ -154,9 +150,7 @@ function WorldManager:update(dt)
 			player:update(dt)
 		end
 
-		for i, element in ipairs(self.stageElements) do
-			element:update(dt)
-		end
+		self.stage:update(dt)
 
 		
 		-- Collisions between a dynamic object and
@@ -179,9 +173,7 @@ function WorldManager:update(dt)
 		    end
 	    end
 
-	    for i, element in ipairs(self.stageElements) do
-			element:checkStateChange()
-		end
+		self.stage:checkStateChanges()
 
 	end
 
@@ -206,6 +198,10 @@ function WorldManager:updateCameraFocus()
 	 or WorldManager.cameraModes["default"]
 
 	cameraFunction(self, self.players[1], self.stage, cameraMode)
+
+	local l, t, w, h = self.camera:getVisible()
+
+	self.stage:refreshElementSpawning(vector(l, t), vector(l + w, t + h))
 	
 --[[	if (targetPosition - self.lookingAt):len2() > snapDistance then
 		if not self.currentCameraMovement then

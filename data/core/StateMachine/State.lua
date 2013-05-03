@@ -71,4 +71,6 @@ end
 function State:update(dt)
 end
 
+function State:destroySelf()
+end
 return State

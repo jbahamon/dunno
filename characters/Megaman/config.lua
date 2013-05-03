@@ -37,6 +37,7 @@ local params = {
 		},
 
 		stand = {
+			vulnerable = true,
 			dynamics = "States/stand.dyn",
 			animation = { 
 				mode = 'loop',
@@ -47,11 +48,11 @@ local params = {
 		},
 
 		climb = {
-			dynamics = "States/stand.dyn",
+			dynamics = "States/Climb.dyn",
 			animation = { 
 				mode = 'loop',
 				frames = '1-2,5',
-				defaultDelay = 0.5,
+				defaultDelay = 10/60.0,
 			}
 		},
 

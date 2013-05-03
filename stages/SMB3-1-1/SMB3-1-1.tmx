@@ -4438,7 +4438,7 @@
    <tile gid="39"/>
    <tile gid="65"/>
    <tile gid="54"/>
-   <tile gid="54"/>
+   <tile gid="55"/>
    <tile gid="54"/>
    <tile gid="54"/>
    <tile gid="54"/>
@@ -9670,8 +9670,76 @@
    <tile gid="103"/>
   </data>
  </layer>
- <objectgroup name="elements" width="176" height="27">
-  <object name="Goomba1" type="Goomba" x="271" y="395" width="16" height="16"/>
-  <object name="Goomba1" type="Goomba" x="184" y="332" width="16" height="16"/>
+ <objectgroup name="elementLocations" width="176" height="27">
+  <object name="Goomba1" type="Goomba" x="224" y="400" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="Goomba2" type="Goomba" x="528" y="400" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="RedKoopa1" type="RedKoopa" x="576" y="352" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="Goomba3" type="Goomba" x="832" y="384" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="Goomba4" type="Goomba" x="880" y="384" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="RedParaGoomba1" type="Goomba" x="944" y="384" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="ParaKoopa1" type="GreenParaKoopa" x="1328" y="304" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="ParaKoopa2" type="GreenParaKoopa" x="1376" y="304" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="ParaKoopa3" type="GreenParaKoopa" x="1424" y="304" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="RedKoopa2" type="GreenKoopa" x="1472" y="400" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="PiranhaPlant2" type="Goomba" x="1792" y="384" width="32" height="32" visible="0">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="PiranhaPlant3" type="Goomba" x="1856" y="368" width="32" height="32" visible="0">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="RedKoopa3" type="RedKoopa" x="2096" y="368" width="16" height="16">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="PiranhaPlant1" type="Goomba" x="352" y="368" width="32" height="32" visible="0">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

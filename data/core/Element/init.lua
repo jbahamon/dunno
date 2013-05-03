@@ -218,16 +218,6 @@ function Element:draw()
 			self.currentState:draw()
 		end	
 	end
-
-    if globals.DEBUG then
-        love.graphics.setColor(globals.debugSettings.collisionBoxColor)
-        self.currentCollisionBox:draw('fill')
-		love.graphics.setColor(globals.debugSettings.hitBoxColor)
-        if self.currentHitBox then
-        	self.currentHitBox:draw('fill')
-        end
-    end
-
 end
 
 -----------------------------------------------------------------
@@ -255,6 +245,7 @@ function Element:start()
 		self:setHitBox(self.defaultHitBox)
 	end
 
+	self.currentState.dynamics.oldPosition = self.startingPosition:clone()
 	self:moveTo(self.startingPosition)
 
 end
@@ -470,11 +461,14 @@ end
 
 --- Resets the Element's collision flags. 
 function Element:resetCollisionFlags()
-	self.collisionFlags.canMoveLeft = true
-	self.collisionFlags.canMoveRight = true
-	self.collisionFlags.canMoveUp = true
-	self.collisionFlags.canMoveDown = true
-	self.collisionFlags.specialEvents = {}
+	self.collisionFlags = {
+		canMoveLeft = true,
+		canMoveRight = true,
+		canMoveUp = true,
+		canMoveDown = true,
+		specialEvents = {}
+	}
+
 	self.pendingCollisions = {}
 end
 
@@ -525,6 +519,7 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 		if collides then
 
 			if event.tile.properties.solid then 
+
 				self:move(vector(dx, dy))
 				if math.abs(dx) > math.abs(dy) then
 					if dx > 0 then 
@@ -540,6 +535,13 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 						self.collisionFlags.canMoveDown = false
 					end
 				end
+
+				local centerX, centerY = self.currentCollisionBox:center()
+
+				if sampleTile:intersectsRay(centerX, centerY, 0, 200) then
+					self.collisionFlags.standingOnSolid = true
+				end
+
 			elseif event.tile.properties.oneWayPlatform then
 				
 				local verticalDisplacement = event.position.y * tileSize.y - self:getPosition().y
@@ -547,8 +549,14 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 				if event.position.y * tileSize.y >= self:getLastPosition().y then
 					self:move(vector(0, verticalDisplacement))
 					self.collisionFlags.canMoveDown = false
+
+					local centerX, centerY = self.currentCollisionBox:center()
+
+					if sampleTile:intersectsRay(centerX, centerY, 0, 200) then
+						self.collisionFlags.standingOnSolid = true
+					end
 				end
-				
+
 			elseif event.tile.properties.ladder then
 				if (not highestLadderEvent) or highestLadderEvent.position.y > event.position.y then
 					highestLadderEvent = event
@@ -601,14 +609,6 @@ end
 function Element:getHitBy(otherElement)
 	if not self.hittable then
 		return
-	end
-
-	
-	if (self:getFacing() > 0 and
-		otherElement:getPosition().x < self:getPosition().x) or
-		(self:getFacing() < 0 and
-		otherElement:getPosition().x > self:getPosition().x)  then
-		self:turn()
 	end
 
 	self.collisionFlags["hit"] = true
@@ -669,7 +669,7 @@ end
 -- @return The current collision box, as a 
 -- <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (in particular, a rectangle).
 -- @see Element:setCollisionBox
-function Element:getCollisionBox(collisionBox)
+function Element:getCollisionBox()
 	return self.currentCollisionBox
 end
 
@@ -831,6 +831,30 @@ function Element:addSingleStateFromParams(stateName, stateParams, folder)
 			self.states[stateName]:addFlag(flag)
 		end
 	end
+end
+
+
+function Element:destroySelf()
+
+	self.tileCollider:remove(self.defaultCollisionBox)
+	self.activeCollider:remove(self.defaultCollisionBox)
+	for name, state in pairs(self.states) do
+		state.owner = nil
+
+		if state.collisionBox then
+			state.collisionBox.parent = nil
+			self.tileCollider:remove(state.collisionBox)
+			self.activeCollider:remove(state.collisionBox)
+		end
+
+		if state.hitBox then
+			state.hitBox.parent = nil
+			self.tileCollider:remove(state.hitBox)
+			self.activeCollider:remove(state.hitBox)
+		end
+	end
+
+	StateMachine.destroySelf(self)
 end
 
 return Element

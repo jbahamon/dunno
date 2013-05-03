@@ -16,7 +16,7 @@ dynamics.damagesOnContact = true
 dynamics.facing = 1
 
 -- Velocities
-dynamics.maxVelocity = vector(0.5, 2) * scale
+dynamics.maxVelocity = vector(0.5, 3) * scale
 
 -- Accelerations    
 dynamics.friction = vector(0, 0)

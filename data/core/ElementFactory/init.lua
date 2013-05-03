@@ -5,7 +5,7 @@
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 local anim8 = require 'lib.anim8'
-
+local shapes = require 'lib.HardonCollider.shapes'
 local Element = require 'data.core.Element'
 
 --- Builds a new ElementFactory.
@@ -29,6 +29,15 @@ local ElementFactory = Class {
 			self.tileCollider = tileCollider
 			self.activeCollider = activeCollider
 			self.folder = folder
+
+			assert(parameters.size and vector.isvector(parameters.size), "Element factory size not specified.")
+
+			self.shape = shapes.newPolygonShape(
+		    	- math.floor(parameters.size.x/2), 0,
+		    	  math.ceil(parameters.size.x/2), 0,
+		    	  math.ceil(parameters.size.x/2), - parameters.size.y,
+		    	- math.floor(parameters.size.x/2), - parameters.size.y)
+
 
 			assert(parameters.sprites,"No sprite info supplied")
 			assert(parameters.sprites.sheet, "No spritesheet info supplied" )
@@ -94,7 +103,7 @@ end
 -- @return The newly created Element.
 function ElementFactory:createAt(position, facing)
 	local newElement = self:create()
-	
+
 	newElement:setStartingPosition(position)
 
 	if facing < 0 then
@@ -103,5 +112,6 @@ function ElementFactory:createAt(position, facing)
 
 	return newElement
 end
+
 
 return ElementFactory

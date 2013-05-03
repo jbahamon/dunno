@@ -349,6 +349,21 @@ function Player:loadBasicStates(parameters, folder)
 	end
 end
 
+function Player:getHitBy(otherElement)
+    Element.getHitBy(self, otherElement)
+
+    if not self.hittable then
+        return
+    end
+    
+    if (self:getFacing() > 0 and
+        otherElement:getPosition().x < self:getPosition().x) or
+        (self:getFacing() < 0 and
+        otherElement:getPosition().x > self:getPosition().x)  then
+        self:turn()
+    end
+
+end
 
 --=====================================
 -- Static functions
@@ -368,7 +383,7 @@ function Player.loadBasicFromParams(parameters, folder)
 	local player = Player(parameters.size)
 
 	player:setFolder(folder)
-
+    player.name = folder
 	return player
 end
 

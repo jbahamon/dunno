@@ -10,7 +10,7 @@
 -- See <a href="http://vrld.github.com/hump/">hump's documentation</a> for 
 -- more info on its use and behavior.
 globals = {
-	
+	scale = 2,
 	DEBUG = false,
 	debugSettings = {
 		collisionBoxColor = {0, 0, 255, 100},
@@ -20,7 +20,8 @@ globals = {
 }
 
 local WorldManager = require 'data.core.WorldManager'
-local manager
+local vector = require 'lib.hump.vector'
+local manager, manager2
 
 --- Clamp number between two values.
 -- Returns input if it is between min_val and max_val; max_val if it is 
@@ -40,7 +41,7 @@ end
 -- Starts a WorldManager for each view, stages and players.
 function love.load()
 
-	manager = WorldManager()
+	manager = WorldManager(vector(0, 0), vector(512, 480))
 
 	--manager:setStage("TomahawkMan")
 	manager:setStage("SMB3-1-1")
@@ -50,13 +51,18 @@ function love.load()
 
 	manager:start()
 
+
+	--manager2 = WorldManager(vector(512, 0), vector(1024, 480))
+	--manager2:setStage("SMB3-1-1")
+	--manager2:addPlayer("Megaman")
+	--manager2:start()
+
 end
 
 --- Draw everything on the screen.
 function love.draw()
-
 	manager:draw()
-
+	--manager2:draw()
 end
 
 --- Update everything.
@@ -65,10 +71,11 @@ end
 -- dragging the screen around or temporary drops in frame rate.
 -- @param dt Time elapsed since the last update, in seconds.
 function love.update(dt)
-	if dt > 0.3 then
+	if dt > 0.1 then
 		return 
 	end
 	globals.Timer.update(dt)
 	manager:update(dt)
+	--manager2:update(dt)
 
 end

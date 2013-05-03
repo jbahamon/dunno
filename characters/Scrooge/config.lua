@@ -25,6 +25,11 @@ local params = {
         	flags = {"air"},
 
 			transitions = {
+				{	condition = 
+						function (currentState, collisionFlags)
+				            return collisionFlags.hit 
+				        end,
+        			targetState = "hit" },
  				{	condition =
 			    	    function (currentState, collisionFlags)
             				return currentState.owner.control["attack"] and not collisionFlags.canMoveDown 
@@ -73,6 +78,11 @@ local params = {
 			flags = {"air"},
 			
 			transitions = {
+				{	condition = 
+						function (currentState, collisionFlags)
+				            return collisionFlags.hit 
+				        end,
+        			targetState = "hit" },
  				{	condition =
 			    	    function (currentState, collisionFlags)
             				return not currentState.owner.control["attack"]
@@ -118,9 +128,16 @@ local params = {
 			transitions = {
 				{	condition = 
 						function (currentState, collisionFlags)
+				            return collisionFlags.hit 
+				        end,
+        			targetState = "hit" },
+
+				{	condition = 
+						function (currentState, collisionFlags)
 				            return (not currentState.owner.control["down"])
 				        end,
         			targetState = "stand" },
+
 
 				{	condition = 
 						function (currentState, collisionFlags)

@@ -119,4 +119,13 @@ function StateMachine:start(position)
 	self.currentState = self.initialState
 end
 
+function StateMachine:destroySelf()
+	for stateName, state in pairs(self.states) do
+		state:destroySelf()
+	end
+
+	self.states = {}
+end
+
+
 return StateMachine

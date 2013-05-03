@@ -2,7 +2,7 @@
 
 --- Configuration function.  See <a href="https://love2d.org/wiki/Config_Files">LOVE's documentation</a>.
 -- @param t The configuration table.
-function love.conf(t)
+love.conf = function (t)
     t.title = "Dunno"        -- The title of the window the game is in (string)
     t.author = "SilentProtagonist"        -- The author of the game (string)
     t.url = nil                 -- The website of the game (string)
@@ -10,7 +10,6 @@ function love.conf(t)
     t.version = "0.8.0"         -- The LÖVE version this game was made for (string)
     t.console = true           -- Attach a console (boolean, Windows only)
     t.release = false           -- Enable release mode (boolean)
-    
     t.screen.width = 512        -- The window width (number)
     t.screen.height = 480       -- The window height (number)
     t.screen.fullscreen = false -- Enable fullscreen (boolean)

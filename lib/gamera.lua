@@ -94,7 +94,6 @@ function gamera:setWindow(l,t,w,h)
   checkAABB(l,t,w,h)
 
   self.l, self.t, self.w, self.h, self.w2, self.h2 = l,t,w,h, w*0.5, h*0.5
-
   adjustPosition(self)
 end
 
