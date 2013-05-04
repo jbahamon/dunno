@@ -43,8 +43,8 @@ function love.load()
 
 	manager = WorldManager(vector(0, 0), vector(512, 480))
 
-	--manager:setStage("TomahawkMan")
-	manager:setStage("SMB3-1-1")
+	manager:setStage("TomahawkMan")
+	--manager:setStage("SMB3-1-1")
 	--manager:setStage("YoshisIsland3")
 	manager:addPlayer("Megaman")
 	--manager:addPlayer("Scrooge")

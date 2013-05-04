@@ -38,11 +38,13 @@
 <li><a href="#Room_Handling">Room Handling</a></li>
 <li><a href="#Map__layers_and_tiles">Map, layers and tiles</a></li>
 <li><a href="#Camera_and_drawing">Camera and drawing</a></li>
+<li><a href="#Element_spawning">Element spawning</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul>
+  <li><a href="../modules/data.core.CameraManager.html">data.core.CameraManager</a></li>
   <li><a href="../modules/data.core.Element.html">data.core.Element</a></li>
   <li><a href="../modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
   <li><a href="../modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
@@ -189,6 +191,17 @@
 	<tr>
 	<td class="name" nowrap><a href="#Stage:draw">Stage:draw&nbsp;()</a></td>
 	<td class="summary">Draws the Stage.</td>
+	</tr>
+</table>
+<h2><a href="#Element_spawning">Element spawning</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Stage:initialize">Stage:initialize&nbsp;(tileCollider, activeCollider, topLeft, bottomRight)</a></td>
+	<td class="summary">Initializes element spawning for the stage.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Stage:update">Stage:update&nbsp;(dt)</a></td>
+	<td class="summary">Updates the stage.</td>
 	</tr>
 </table>
 
@@ -730,6 +743,61 @@
     <dd>
     Draws the Stage.
 
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Element_spawning"></a>Element spawning</h2>
+        Element spawning
+    <dl class="function">
+    <dt>
+    <a name = "Stage:initialize"></a>
+    <strong>Stage:initialize&nbsp;(tileCollider, activeCollider, topLeft, bottomRight)</strong>
+    </dt>
+    <dd>
+    Initializes element spawning for the stage.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tileCollider</span>
+
+
+</li>
+        <li><span class="parameter">activeCollider</span>
+
+
+</li>
+        <li><span class="parameter">topLeft</span>
+
+
+</li>
+        <li><span class="parameter">bottomRight</span>
+
+
+</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Stage:update"></a>
+    <strong>Stage:update&nbsp;(dt)</strong>
+    </dt>
+    <dd>
+    Updates the stage.  This means updating every active element on the
+ stage.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The time slice for the update.</li>
+    </ul>
 
 
 

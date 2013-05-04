@@ -35,14 +35,13 @@
 <li><a href="#Functions">Functions</a></li>
 <li><a href="#World_building">World building</a></li>
 <li><a href="#Drawing_and_updating">Drawing and updating</a></li>
-<li><a href="#Camera_modes_and_focusing">Camera modes and focusing</a></li>
-<li><a href="#Room_Transitions">Room Transitions</a></li>
 <li><a href="#Effects">Effects</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul>
+  <li><a href="../modules/data.core.CameraManager.html">data.core.CameraManager</a></li>
   <li><a href="../modules/data.core.Element.html">data.core.Element</a></li>
   <li><a href="../modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
   <li><a href="../modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
@@ -103,56 +102,6 @@
  and the camera.</td>
 	</tr>
 </table>
-<h2><a href="#Camera_modes_and_focusing">Camera modes and focusing</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#WorldManager:updateCameraFocus">WorldManager:updateCameraFocus&nbsp;()</a></td>
-	<td class="summary">Sets the point to where the camera should point to (i.e.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#WorldManager:scrollCameraWithSpeed">WorldManager:scrollCameraWithSpeed&nbsp;(speed, pointB, postFunction)</a></td>
-	<td class="summary">Scrolls the camera from the current position to a target position, with
- the given speed.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#WorldManager:scrollCameraWithTime">WorldManager:scrollCameraWithTime&nbsp;(time, pointB, postFunction)</a></td>
-	<td class="summary">Scrolls the camera from the current position to a target position, such that the scrolling
- lasts a given time.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#WorldManager:followCameraMode">WorldManager:followCameraMode&nbsp;(player, stage, cameraMode)</a></td>
-	<td class="summary">Camera mode that follows the given player.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#WorldManager:lockCameraMode">WorldManager:lockCameraMode&nbsp;(player, stage, cameraMode)</a></td>
-	<td class="summary">Camera mode that locks to a position in zero, one or more axes,
- and follows the given player in the remaining axes.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#WorldManager:platformCameraMode">WorldManager:platformCameraMode&nbsp;(player, stage, cameraMode)</a></td>
-	<td class="summary">Camera mode that locks to the platform where the player is standing as the player
- goes up, and follows the player if it's going down.</td>
-	</tr>
-</table>
-<h2><a href="#Room_Transitions">Room Transitions</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#WorldManager:roomTransition">WorldManager:roomTransition&nbsp;(player, roomChange, mode)</a></td>
-	<td class="summary">Executes a transition between two rooms, moving the camera as needed.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#WorldManager:fadingTransition">WorldManager:fadingTransition&nbsp;(player, roomChange)</a></td>
-	<td class="summary">A transition that fades the screen to black and back as the player switches rooms.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#WorldManager:scrollTransition">WorldManager:scrollTransition&nbsp;(player, roomChange)</a></td>
-	<td class="summary">A transition that scrolls both the player and the camera to the next room.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#WorldManager:instantTransition">WorldManager:instantTransition&nbsp;(player, roomChange)</a></td>
-	<td class="summary">A simple room transition that teleports the player and the camera to the next room.</td>
-	</tr>
-</table>
 <h2><a href="#Effects">Effects</a></h2>
 <table class="function_list">
 	<tr>
@@ -164,8 +113,8 @@
 	<td class="summary">Unpauses the game.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#WorldManager:fadeToColor">WorldManager:fadeToColor&nbsp;(rampTime, color, numSteps)</a></td>
-	<td class="summary">Fades the screen to a solid tint.</td>
+	<td class="name" nowrap><a href="#onDynamicCollide">onDynamicCollide&nbsp;(dt, shapeA, shapeB)</a></td>
+	<td class="summary">Called when two active elements collide.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#WorldManager:loadPlayerParameters">WorldManager:loadPlayerParameters&nbsp;(path, rootFolder)</a></td>
@@ -280,241 +229,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">dt</span>
-
-
-</li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
-    <h2><a name="Camera_modes_and_focusing"></a>Camera modes and focusing</h2>
-        Camera modes and focusing
-    <dl class="function">
-    <dt>
-    <a name = "WorldManager:updateCameraFocus"></a>
-    <strong>WorldManager:updateCameraFocus&nbsp;()</strong>
-    </dt>
-    <dd>
-    Sets the point to where the camera should point to (i.e.  the camera's focus).
- The focus is set depending on the current camera mode.
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "WorldManager:scrollCameraWithSpeed"></a>
-    <strong>WorldManager:scrollCameraWithSpeed&nbsp;(speed, pointB, postFunction)</strong>
-    </dt>
-    <dd>
-    Scrolls the camera from the current position to a target position, with
- the given speed.
- scrolling finished.
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">speed</span>
-         The speed (in pixels/second) to give to the camera</li>
-        <li><span class="parameter">pointB</span>
-         The target position (in pixels) for the camera.</li>
-        <li><span class="parameter">postFunction</span>
-         (Optional) A function that receives no parameters, to be executed after the</li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "WorldManager:scrollCameraWithTime"></a>
-    <strong>WorldManager:scrollCameraWithTime&nbsp;(time, pointB, postFunction)</strong>
-    </dt>
-    <dd>
-    Scrolls the camera from the current position to a target position, such that the scrolling
- lasts a given time.
- scrolling finished.
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">time</span>
-         The time for the scrolling to last, in seconds.</li>
-        <li><span class="parameter">pointB</span>
-         The target position (in pixels) for the camera.</li>
-        <li><span class="parameter">postFunction</span>
-         (Optional) A function that receives no parameters, to be executed after the</li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "WorldManager:followCameraMode"></a>
-    <strong>WorldManager:followCameraMode&nbsp;(player, stage, cameraMode)</strong>
-    </dt>
-    <dd>
-    Camera mode that follows the given player.
- the details on this parameter.
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">player</span>
-         The player to follow.</li>
-        <li><span class="parameter">stage</span>
-         The world's stage.</li>
-        <li><span class="parameter">cameraMode</span>
-         The cameraMode parameters. Check the stage documentation to see </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "WorldManager:lockCameraMode"></a>
-    <strong>WorldManager:lockCameraMode&nbsp;(player, stage, cameraMode)</strong>
-    </dt>
-    <dd>
-    Camera mode that locks to a position in zero, one or more axes,
- and follows the given player in the remaining axes.  It is not recommended to use this
- mode if you're aiming to follow the player in both axes: followPlayer (and by extension</p>
-<pre><code>&lt;a href="../modules/data.core.WorldManager.html#WorldManager:followCameraMode"&gt;WorldManager:followCameraMode&lt;/a&gt;) is more efficient and achieves this.
-</code></pre>
-<p> the details on this parameter.
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">player</span>
-         The player to follow.</li>
-        <li><span class="parameter">stage</span>
-         The world's stage.</li>
-        <li><span class="parameter">cameraMode</span>
-         The cameraMode parameters. Check the stage documentation to see </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "WorldManager:platformCameraMode"></a>
-    <strong>WorldManager:platformCameraMode&nbsp;(player, stage, cameraMode)</strong>
-    </dt>
-    <dd>
-    Camera mode that locks to the platform where the player is standing as the player
- goes up, and follows the player if it's going down.  It follows the player in the horizontal
- axis.
- the details on this parameter.
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">player</span>
-         The player to follow.</li>
-        <li><span class="parameter">stage</span>
-         The world's stage.</li>
-        <li><span class="parameter">cameraMode</span>
-         The cameraMode parameters. Check the stage documentation to see </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
-    <h2><a name="Room_Transitions"></a>Room Transitions</h2>
-        Room Transitions
-    <dl class="function">
-    <dt>
-    <a name = "WorldManager:roomTransition"></a>
-    <strong>WorldManager:roomTransition&nbsp;(player, roomChange, mode)</strong>
-    </dt>
-    <dd>
-    Executes a transition between two rooms, moving the camera as needed.
- the transition uses the default mode.
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">player</span>
-         The player that will transition between rooms.</li>
-        <li><span class="parameter">roomChange</span>
-         The room transition parameters. It includes two fields: previousRoom and nextRoom.
- A room includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary</li>
-        <li><span class="parameter">mode</span>
-         The transition mode. If there isn't a transition mode with this name, </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "WorldManager:fadingTransition"></a>
-    <strong>WorldManager:fadingTransition&nbsp;(player, roomChange)</strong>
-    </dt>
-    <dd>
-    A transition that fades the screen to black and back as the player switches rooms.
- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">player</span>
-         The player that will transition between rooms.</li>
-        <li><span class="parameter">roomChange</span>
-         The room transition parameters. It includes two fields: previousRoom and nextRoom.</li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "WorldManager:scrollTransition"></a>
-    <strong>WorldManager:scrollTransition&nbsp;(player, roomChange)</strong>
-    </dt>
-    <dd>
-    A transition that scrolls both the player and the camera to the next room.
- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">player</span>
-         The player that will scroll between rooms.</li>
-        <li><span class="parameter">roomChange</span>
-         The room transition parameters. It includes two fields: previousRoom and nextRoom.</li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "WorldManager:instantTransition"></a>
-    <strong>WorldManager:instantTransition&nbsp;(player, roomChange)</strong>
-    </dt>
-    <dd>
-    A simple room transition that teleports the player and the camera to the next room.
- Each includes a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (specifically, a rectangle) that represents the room and a tags dictionary
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">player</span>
-         The player that will scroll between rooms.</li>
-        <li><span class="parameter">roomChange</span>
-         The room transition parameters. It includes two fields: previousRoom and nextRoom.</li>
+         The time slice for the update.</li>
     </ul>
 
 
@@ -560,22 +275,23 @@
 
 </dd>
     <dt>
-    <a name = "WorldManager:fadeToColor"></a>
-    <strong>WorldManager:fadeToColor&nbsp;(rampTime, color, numSteps)</strong>
+    <a name = "onDynamicCollide"></a>
+    <strong>onDynamicCollide&nbsp;(dt, shapeA, shapeB)</strong>
     </dt>
     <dd>
-    Fades the screen to a solid tint.
- having discrete intermediate values. If omitted, the transition is done as smoothly as possible.
+    Called when two active elements collide. <br/>
+ If the collision needs to be resolved in a particular order, this should be the
+ place to decide it. For now there is no guarantee on which of the two objects is the first to
+ resolve the collision.
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">rampTime</span>
-         The time (in seconds) for the screen to get to the tint's full intensity.</li>
-        <li><span class="parameter">color</span>
-         The color to apply to all elements, as an array (not a dictionary) of four values,
- corresponding to red, green, blue, and alpha, in that order.</li>
-        <li><span class="parameter">numSteps</span>
-         (Optional) The number of steps for the ramp. Use this to give the fading a "retro" look, </li>
+        <li><span class="parameter">dt</span>
+         The time slice for the frame when the collision is detected</li>
+        <li><span class="parameter">shapeA</span>
+         The first colliding shape, as a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.</li>
+        <li><span class="parameter">shapeB</span>
+         The second colliding shape, as a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.</li>
     </ul>
 
 

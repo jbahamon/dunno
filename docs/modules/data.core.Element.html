@@ -44,6 +44,7 @@
 
 <h2>Modules</h2>
 <ul>
+  <li><a href="../modules/data.core.CameraManager.html">data.core.CameraManager</a></li>
   <li><strong>data.core.Element</strong></li>
   <li><a href="../modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
   <li><a href="../modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
@@ -107,6 +108,10 @@
 	<td class="summary">Sets the Element's starting position, in pixels.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Element:turn">Element:turn&nbsp;()</a></td>
+	<td class="summary">Turns the element around.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Element:getPosition">Element:getPosition&nbsp;()</a></td>
 	<td class="summary">Returns the Element's current position, in pixels.</td>
 	</tr>
@@ -117,6 +122,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#Element:getVelocity">Element:getVelocity&nbsp;()</a></td>
 	<td class="summary">Returns the Element's velocity, in pixels/second.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:getFacing">Element:getFacing&nbsp;()</a></td>
+	<td class="summary">Returns the Element's facing.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Element:center">Element:center&nbsp;()</a></td>
@@ -181,6 +190,14 @@
 	<td class="summary">Resolves collisions with tiles.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Element:onDynamicCollide">Element:onDynamicCollide&nbsp;(dt, box, otherElement)</a></td>
+	<td class="summary">Called when colliding with an active Element in the world (interactive element, enemy, etc).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:getHitBy">Element:getHitBy&nbsp;(otherElement)</a></td>
+	<td class="summary">Called when damaged by another element.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Element:setCollisionBox">Element:setCollisionBox&nbsp;(collisionBox)</a></td>
 	<td class="summary">Sets the current collision box for the Element.</td>
 	</tr>
@@ -189,7 +206,7 @@
 	<td class="summary">Sets the current hit box for the Element.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Element:getCollisionBox">Element:getCollisionBox&nbsp;(collisionBox)</a></td>
+	<td class="name" nowrap><a href="#Element:getCollisionBox">Element:getCollisionBox&nbsp;()</a></td>
 	<td class="summary">Returns the Element's current collision box.</td>
 	</tr>
 	<tr>
@@ -399,6 +416,19 @@
 
 </dd>
     <dt>
+    <a name = "Element:turn"></a>
+    <strong>Element:turn&nbsp;()</strong>
+    </dt>
+    <dd>
+    Turns the element around.
+
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "Element:getPosition"></a>
     <strong>Element:getPosition&nbsp;()</strong>
     </dt>
@@ -446,6 +476,24 @@
     <ol>
 
         The Element's position from the last frame, as a vector.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:getFacing"></a>
+    <strong>Element:getFacing&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the Element's facing.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The Element's facing. A facing > 0 indicates right; &lt; 0 indicates left.
     </ol>
 
 
@@ -741,6 +789,48 @@
 
 </dd>
     <dt>
+    <a name = "Element:onDynamicCollide"></a>
+    <strong>Element:onDynamicCollide&nbsp;(dt, box, otherElement)</strong>
+    </dt>
+    <dd>
+    Called when colliding with an active Element in the world (interactive element, enemy, etc).
+ Currently calls getHitBy on the other Element if this Element damages on contact.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The time slice for the collision frame.</li>
+        <li><span class="parameter">box</span>
+         This Element's colliding box.</li>
+        <li><span class="parameter">otherElement</span>
+         The Element that is colliding with this one.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:getHitBy"></a>
+    <strong>Element:getHitBy&nbsp;(otherElement)</strong>
+    </dt>
+    <dd>
+    Called when damaged by another element.  Life reduction, transformations and death should
+ be dealt with in this method.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">otherElement</span>
+         The Element hitting this one.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "Element:setCollisionBox"></a>
     <strong>Element:setCollisionBox&nbsp;(collisionBox)</strong>
     </dt>
@@ -785,27 +875,17 @@
 
 
 
-    <h3>see also:</h3>
-    <ul>
-    </ul>
 
 
 </dd>
     <dt>
     <a name = "Element:getCollisionBox"></a>
-    <strong>Element:getCollisionBox&nbsp;(collisionBox)</strong>
+    <strong>Element:getCollisionBox&nbsp;()</strong>
     </dt>
     <dd>
     Returns the Element's current collision box.
  <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape (in particular, a rectangle).
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">collisionBox</span>
-
-
-</li>
-    </ul>
 
     <h3>Returns:</h3>
     <ol>

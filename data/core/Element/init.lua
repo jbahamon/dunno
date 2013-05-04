@@ -582,12 +582,11 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 	end
 end
 
---- Called when colliding with an active element in the world (interactive element, enemy, etc)
+--- Called when colliding with an active Element in the world (interactive element, enemy, etc).
+-- Currently calls getHitBy on the other Element if this Element damages on contact.
 -- @param dt The time slice for the collision frame.
--- @param tileElement A sample tile that can be used to recreate the collision (should be removed).
--- @param tile The tile Element with which the Element is colliding.
--- @param position The position of the colliding tile, measured in tiles, as a hump vector.
--- @see Element:resolveTileCollisions, Element:resetCollisionFlags
+-- @param box This Element's colliding box.
+-- @param otherElement The Element that is colliding with this one.
 function Element:onDynamicCollide(dt, box, otherElement)
 	if otherElement == self then
 		return
@@ -645,7 +644,6 @@ end
 -- It must have been added to this Element's collider
 -- (for example, by belonging to a state and having called @{Element:addState})
 -- and must not be currently active.
--- @see Element:getHitBox
 function Element:setHitBox(hitBox)
 
 	if self.currentHitBox then

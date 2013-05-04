@@ -134,7 +134,7 @@ function Player:addBasicStates(basicStatesParams)
         function (currentState, collisionFlags)
             local ladder = collisionFlags.specialEvents.ladder
             if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 0)
+                currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
                 return true
             else
                 return false
@@ -206,7 +206,7 @@ function Player:addBasicStates(basicStatesParams)
         function (currentState, collisionFlags)
             local ladder = collisionFlags.specialEvents.ladder
             if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-                currentState.owner:move(ladder.position.x - currentState.dynamics.position.x, 0)
+                currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
                 return true
             else
                 return false
