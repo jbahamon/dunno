@@ -73,8 +73,8 @@ local stageParameters ={
 
 	roomTransitionMode = "scrolling", 
 
-	--startingPosition = vector(198, 51),
-	startingPosition = vector(124, 21),
+	startingPosition = vector(7, 23),
+	--startingPosition = vector(169, 57),
 
 	--{ stageElements = {}}
 

@@ -9,7 +9,7 @@ local params = {
 	sprites = {
 		sheet = "Sprites.png",
 		spriteSize = vector(31, 32),
-		spriteOffset = vector(0, 1)
+		spriteOffset = vector(0, 0)
 	},
 
 	basicStates = {

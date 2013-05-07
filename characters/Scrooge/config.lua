@@ -37,7 +37,7 @@ local params = {
         			targetState = "pogoJump" },
         		{	condition =
 			    	    function (currentState, collisionFlags)
-							return currentState.jumpTimer > currentState.dynamics.jumpTime
+							return currentState.stateTime > currentState.dynamics.jumpTime
         				end,
         			targetState = "pogoFall" },
         		{	condition =
@@ -230,7 +230,7 @@ local params = {
 	    			targetState = "climb" },
 				{ 	condition = 
 			        	function(currentState, collisionFlags) 
-			            	return (not currentState.owner.control["jump"]) or (currentState.jumpTimer > currentState.dynamics.jumpTime)
+			            	return (not currentState.owner.control["jump"]) or (currentState.stateTime > currentState.dynamics.jumpTime)
 			        	end,
 			        targetState = "fall" },
 

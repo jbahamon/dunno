@@ -2,8 +2,8 @@ local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 local ElementState = require 'data.core.Element.ElementState'
 
-local Jump = Class {
-	name = "Jump",
+local PiranhaPlantMoving = Class {
+	name = "PiranhaPlantMoving",
 	__includes = ElementState,
 
 	init =
@@ -12,11 +12,10 @@ local Jump = Class {
 		end
 }
 
-function Jump:onEnterFrom(previousState)
+function PiranhaPlantMoving:onEnterFrom(previousState)
 	ElementState.onEnterFrom(self, previousState)
-
-	self.dynamics.velocity.y = self.dynamics.jumpVelocity
-	print("boing")
+	self.dynamics.velocity = self.dynamics.defaultVelocity:clone()
+	
 end
 
-return Jump
+return PiranhaPlantMoving

@@ -6,17 +6,24 @@ local originalFrameRate = 60
 
 local scale = originalFrameRate
 
+
+-- Hitbox
+dynamics.damagesOnContact = true
+
 -- Positions
+
 dynamics.facing = 1
 
+
 -- Velocities
-dynamics.maxVelocity = vector(2, 1) * scale
+dynamics.defaultVelocity = vector(0, 0.5) * scale
+dynamics.maxVelocity = vector(0, 0.5) * scale
 
 -- Accelerations    
 dynamics.friction = vector(0, 0)
-dynamics.noInputFriction = vector(math.huge, 0)
 dynamics.defaultAcceleration = vector(0,0)
-dynamics.inputAcceleration = vector(math.huge, 0)
-dynamics.gravity = vector(0, 0.211) * scale * scale
+dynamics.gravity = vector(0, 0)
 
-return dynamics
+dynamics.maxStateTime = 64/60
+
+return dynamics	

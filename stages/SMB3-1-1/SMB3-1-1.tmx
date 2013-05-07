@@ -9683,7 +9683,7 @@
   </object>
   <object name="RedKoopa1" type="RedKoopa" x="576" y="352" width="16" height="16">
    <properties>
-    <property name="facing" value="-1"/>
+    <property name="facing" value="1"/>
    </properties>
   </object>
   <object name="Goomba3" type="Goomba" x="832" y="384" width="16" height="16">
@@ -9696,7 +9696,7 @@
     <property name="facing" value="-1"/>
    </properties>
   </object>
-  <object name="RedParaGoomba1" type="Goomba" x="944" y="384" width="16" height="16">
+  <object name="RedParaGoomba1" type="RedParaGoomba" x="944" y="384" width="16" height="16">
    <properties>
     <property name="facing" value="-1"/>
    </properties>
@@ -9737,6 +9737,21 @@
    </properties>
   </object>
   <object name="PiranhaPlant1" type="Goomba" x="352" y="368" width="32" height="32" visible="0">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="PiranhaPlant1" type="GreenPiranhaPlant" x="352" y="368" width="32" height="32">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="PiranhaPlant1" type="GreenPiranhaPlant" x="1856" y="368" width="32" height="32">
+   <properties>
+    <property name="facing" value="-1"/>
+   </properties>
+  </object>
+  <object name="PiranhaPlant1" type="GreenPiranhaPlant" x="1792" y="384" width="32" height="32">
    <properties>
     <property name="facing" value="-1"/>
    </properties>

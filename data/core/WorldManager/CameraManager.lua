@@ -71,6 +71,7 @@ function CameraManager:draw(players)
 
 	love.graphics.setColor(self.fullScreenTint)
 	self:setPosition(self.lookingAt)
+	
 	self.camera:draw(function (l, t, w, h)
    						self.stage:moveTo(vector(l, t))
 						self.stage:draw()
@@ -178,6 +179,8 @@ end
 function CameraManager:followCameraMode(player, stage, cameraMode)
 
 	local targetPosition = self.lookingAt:clone()
+	--print("antes")
+	--print(self.lookingAt)
 
 	if cameraMode.tension then
 		local tension = cameraMode.tension
@@ -185,21 +188,18 @@ function CameraManager:followCameraMode(player, stage, cameraMode)
 		local playerPos = player:getPosition()
 		local lastPlayerPos = player:getLastPosition()
 		
-
 		-- horizontal following
-		if playerPos.x > (self.lookingAt.x + tension.x) or
-			playerPos.x < (self.lookingAt.x - tension.x) then 
-
-			targetPosition.x = targetPosition.x + (playerPos.x - lastPlayerPos.x)
-
+		if playerPos.x > (targetPosition.x + tension.x) then
+			targetPosition.x = playerPos.x - tension.x
+		elseif playerPos.x < (targetPosition.x - tension.x) then 
+			targetPosition.x = (playerPos.x + tension.x)
 		end
 
-		-- horizontal following
-		if playerPos.y > (self.lookingAt.y + tension.y) or
-			playerPos.y < (self.lookingAt.y - tension.y) then 
-
-			targetPosition.y =  targetPosition.y + (playerPos.y - lastPlayerPos.y)
-
+		-- vertical following
+		if playerPos.y > (targetPosition.y + tension.y) then
+			targetPosition.y =  playerPos.y - tension.y
+		elseif playerPos.y < (targetPosition.y - tension.y) then 
+			targetPosition.y =  playerPos.y + tension.y
 		end
 
 	else 
@@ -208,6 +208,7 @@ function CameraManager:followCameraMode(player, stage, cameraMode)
 	end
 
 	self.lookingAt = targetPosition
+	--print("despues")
 end
 
 --- Camera mode that locks to a position in zero, one or more axes, 
@@ -253,31 +254,38 @@ function CameraManager:platformCameraMode(player, stage, cameraMode)
 	local playerPos = player:getPosition()
 	local lastPlayerPos = player:getLastPosition()
 
-	-- horizontal following
-	if playerPos.x > (self.lookingAt.x + tension.x) or
-		playerPos.x < (self.lookingAt.x - tension.x) then 
-
-		self.lookingAt.x = self.lookingAt.x + (playerPos.x - lastPlayerPos.x)
-
-	end
-
-	--vertical following
-	if playerPos.y > (self.lookingAt.y + tension.y) or cameraMode._scrolling then
-		self.lookingAt.y = self.lookingAt.y + (playerPos.y - lastPlayerPos.y)
-	end
-
-
 	local targetPosition = self.lookingAt:clone()
 
+	-- horizontal following
+
+	if playerPos.x > (targetPosition.x + tension.x) then
+		targetPosition.x = playerPos.x - tension.x
+	elseif playerPos.x < (targetPosition.x - tension.x) then 
+		targetPosition.x = (playerPos.x + tension.x)
+	end
+
+
+	--vertical following
+	if playerPos.y > (targetPosition.y + tension.y) then
+		targetPosition.y =  playerPos.y - tension.y
+	elseif playerPos.y < (targetPosition.y - tension.y) then 
+		targetPosition.y =  playerPos.y + tension.y
+	end
+
+	self.lookingAt.x = targetPosition.x
+
+	
 	-- Snapping to a platform. We only snap to the platform if the player gets to a higher platform.
 	-- This is the behavior observed in Super Mario World's "Yoshi's Island 3" stage.
 
-	if player:getStateFlags()["grounded"] then
-		local oldLock = cameraMode.verticalLock	or math.floor(player:getPosition().y /  self.stage.tileSize.y)
+	-- First, we check if we are standing on something
+	if player:getStateFlags()["grounded"] and not cameraMode._scrolling then
+		
+		local oldLock = cameraMode.verticalLock	or math.floor(playerPos.y /  self.stage.tileSize.y)
 
-		cameraMode.verticalLock = math.floor(player:getPosition().y /  self.stage.tileSize.y)
+		cameraMode.verticalLock = math.floor(playerPos.y /  self.stage.tileSize.y)
 
-		if cameraMode.verticalLock < oldLock and not cameraMode._scrolling then
+		if cameraMode.verticalLock < oldLock then
 
 			targetPosition.y = cameraMode.verticalLock * self.stage.tileSize.y
 
@@ -289,7 +297,13 @@ function CameraManager:platformCameraMode(player, stage, cameraMode)
 
 			cameraMode._scrolling = self.currentCameraMovement
 		end
+	elseif targetPosition.y > self.lookingAt.y then
+		self.lookingAt.y = targetPosition.y
+		if self.currentCameraMovement then
+			Timer.cancel(self.currentCameraMovement)
+		end
 	end
+
 end
 
 CameraManager.cameraModes = {
@@ -332,7 +346,9 @@ function CameraManager:fadingTransition(player, roomChange, worldManager)
 	    	player:moveIntoCollidingBox(roomChange.nextRoom.box)
 	    	self.stage:setRoom(roomChange.nextRoom)
 	    	self.camera:setWorld(self.stage:getBounds())
-	    	
+	    end,
+	    function ()
+	    	self:updateCameraFocus({player}) 
 	    end)
 	Timer.add(rampTime + blackTime, function () self:fadeToColor(rampTime, {255, 255, 255, 255}, 5) end )
 
@@ -384,7 +400,9 @@ function CameraManager:scrollTransition(player, roomChange, worldManager)
 		function (dt) 
 			local l, t, w, h
 			player:move(playerVelocity * dt)
+			player.currentState.animation:update(dt)
 			l, t, w, h = self.camera:getVisible()
+
 			self.camera:setWorld( l + cameraVelocity.x * dt,
 								  t + cameraVelocity.y * dt,
 								  w,
@@ -392,9 +410,9 @@ function CameraManager:scrollTransition(player, roomChange, worldManager)
 		end,
 		function()
 			self.stage:setRoom(roomChange.nextRoom)
-			self:setPosition(nextCameraPos)
-			player:moveTo(nextPlayerPos)
 			self:setWorld(self.stage:getBounds())
+			self:setPosition(nextCameraPos)
+			player:moveTo(nextPlayerPos)			
 			self.currentCameraMovement = nil
 		end )
 
@@ -409,6 +427,7 @@ function CameraManager:instantTransition(player, roomChange, worldManager)
 	player:moveIntoCollidingBox(roomChange.nextRoom.box)
 	self.stage:setRoom(roomChange.nextRoom)
 	self.camera:setWorld(self.stage:getBounds())
+	self:updateCameraFocus({player}) 
 end
 
 CameraManager.transitions = {

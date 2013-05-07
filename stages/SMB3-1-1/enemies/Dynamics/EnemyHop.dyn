@@ -14,8 +14,6 @@ dynamics.damagesOnContact = true
 
 dynamics.facing = 1
 
--48
-
 -- Velocities
 dynamics.maxVelocity = vector(0.5, 3) * scale
 
@@ -25,7 +23,7 @@ dynamics.defaultAcceleration = vector(math.huge,0)
 dynamics.gravity = vector(0, 0.115) * scale * scale 
 
 -- Other Properties, Counters and Flags
-dynamics.jumpVelocity = - 2.77 * scale 
+dynamics.jumpVelocity = - 1.2 * scale 
 
 
 return dynamics	

@@ -1,4 +1,4 @@
-		--- Element state implementation.
+--- Element state implementation.
 -- @class module
 -- @name data.core.Element.ElementState
 
@@ -31,6 +31,7 @@ local ElementState = Class {
 			self.facing = 1
 			self.animation = animation
 			self.transitions = {}
+			self.stateTime = 0
 
 			self.dynamics.size = nil
 
@@ -77,20 +78,21 @@ local ElementState = Class {
 function ElementState:draw()
 	self.animation:draw(self.owner.sprites,
 	                    self.dynamics.position.x - self.owner.spriteSize.x/2 + self.owner.spriteOffset.x,
-                       	self.dynamics.position.y - self.owner.spriteSize.y + self.owner.spriteOffset.y,
-                       	0, 1, 1)
+                       	self.dynamics.position.y - self.owner.spriteSize.y + self.owner.spriteOffset.y)
 end
 
 --- Updates the ElementState.
 -- Movement is done here.
 -- @param dt The current frame's time slice, in seconds.
 function ElementState:update(dt)
+
+	self.stateTime = self.stateTime + dt
+
 	self.animation.flippedH = self.facing < 0
 	-- Animation
 	self.animation:update(dt)
 
 	-- Process Dynamics
-	self.dynamics.oldPosition = self.dynamics.position
 	self:stepDynamics(dt, self:getCurrentAcceleration(dt))
 end
 
@@ -102,6 +104,7 @@ end
 -- The ElementState's collision box, if any, is not moved.
 -- @param displacement The displacement to be applied, as a hump vector, in pixels.
 function ElementState:move(displacement)
+	self.dynamics.oldPosition = self.dynamics.position
 	self.dynamics.position = self.dynamics.position + displacement
 end
 
@@ -109,6 +112,7 @@ end
 -- The ElementState's collision box, if any, is not moved.
 -- @param position The target position, as a hump vector.
 function ElementState:moveTo(position)
+	self.dynamics.oldPosition = self.dynamics.position
 	self.dynamics.position = position:clone()
 end
 
@@ -199,6 +203,9 @@ function ElementState:addDynamics(dynamics)
 	end
 end
 
+function ElementState:getHitBy(otherElement)
+end
+
 -----------------------------------------------------------------
 --- Transition handling
 -- @section transition
@@ -211,7 +218,7 @@ function ElementState:onEnterFrom(previousState)
 
 	previousState.animation:pause()
 	self.facing = previousState.facing
-
+	self.stateTime = 0
 	self.animation.flippedH = self.facing < 0
 	self.dynamics.velocity = previousState.dynamics.velocity
 	self.dynamics.position = previousState.dynamics.position

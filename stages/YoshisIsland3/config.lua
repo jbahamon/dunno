@@ -12,7 +12,7 @@ local stageParameters ={
 
 	defaultCameraMode = { mode = "snapToPlatform",
 						  snapSpeed = 260,
-						  tension = vector(8, 0)}
+						  tension = vector(0, 0)}
 
 	--[[defaultCameraMode = { mode = "lock",
 									verticalLock = 26,

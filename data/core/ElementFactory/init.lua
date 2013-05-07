@@ -79,7 +79,7 @@ local ElementFactory = Class {
 -- @return The newly created Element.
 function ElementFactory:create()
 	local newElement = Element.loadBasicFromParams(self.parameters, self.folder)
-
+	
 	newElement:setColliders(self.tileCollider, self.activeCollider)
 
 	newElement.spriteSize = self.spriteSize:clone()

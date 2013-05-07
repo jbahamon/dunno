@@ -23,14 +23,9 @@ local stageParameters ={
 	
 	--enemies = enemiesFile
 	defaultCameraMode = { mode = "followPlayer",
-									tension = vector(8, 0)},
+									tension = vector(8, 10)},
 
-	elementTypes = love.filesystem.load('stages/SMB3-1-1/enemies/EnemyTypes.lua')(),
-
-	elementLocations = { 
-						{ name = "Goomba", position = vector(256, 400), facing = -1, enabled = true }
-						
-						}
+	elementTypes = love.filesystem.load('stages/SMB3-1-1/enemies/EnemyTypes.lua')()
 
 }
 

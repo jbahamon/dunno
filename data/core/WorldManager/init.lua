@@ -33,9 +33,7 @@ local WorldManager = Class {
 			self.bottomRight = bottomRight
 			self.players = {}
 			self.paused = false
-			
 		end
-
 }
 
 

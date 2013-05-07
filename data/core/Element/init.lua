@@ -27,6 +27,8 @@ local Element = Class {
 		function (self, size)
 			StateMachine.init(self)
 
+			self.helperAnimations = {}
+
 		    self.defaultCollisionBox = shapes.newPolygonShape(
 		    	- math.floor(size.x/2), 0,
 		    	  math.ceil(size.x/2), 0,
@@ -73,8 +75,41 @@ function Element.loadBasicFromParams(parameters, folder)
 
 	assert(parameters.size, "Element size not specified")
 
-	local elem = Element(parameters.size)
+	local elem
 
+	if parameters.class then 
+		local ok, classFile = pcall(love.filesystem.load, folder ..  '/' .. parameters.class)
+		assert(ok, "Element state class file has syntax errors: " .. tostring(classFile))
+		elem = classFile()(parameters.size)
+
+	else
+		elem = Element(parameters.size)
+	end
+
+	if parameters.helperAnimations then
+		for name, helper in pairs(parameters.helperAnimations) do
+			local newAnimation = {}
+
+			newAnimation.sprites = love.graphics.newImage( folder .. '/' .. helper.sprites.sheet )
+			newAnimation.sprites:setFilter('nearest', 'nearest')
+			newAnimation.spriteSize = helper.sprites.spriteSize
+
+			newAnimation.grid = anim8.newGrid(newAnimation.spriteSize.x,
+                                newAnimation.spriteSize.y,
+                                newAnimation.sprites:getWidth(),
+                                newAnimation.sprites:getHeight())
+
+			newAnimation.animation = anim8.newAnimation( helper.animation.mode, 
+											newAnimation.grid(helper.animation.frames),
+											helper.animation.defaultDelay,
+											helper.animation.delays or {},
+											helper.animation.flippedH or false,
+											helper.animation.flippedV or false )
+				
+			elem.helperAnimations[name] = newAnimation
+		end
+	end
+	
 	elem:setFolder(folder)
 
 	return elem
@@ -605,10 +640,13 @@ end
 --- Called when damaged by another element. Life reduction, transformations and death should 
 -- be dealt with in this method.
 -- @param otherElement The Element hitting this one.
+-- @see ElementState:getHitBy
 function Element:getHitBy(otherElement)
 	if not self.hittable then
 		return
 	end
+
+	self.currentState:getHitBy(otherElement)
 
 	self.collisionFlags["hit"] = true
 end
