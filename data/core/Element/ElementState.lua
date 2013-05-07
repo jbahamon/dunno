@@ -78,7 +78,8 @@ local ElementState = Class {
 function ElementState:draw()
 	self.animation:draw(self.owner.sprites,
 	                    self.dynamics.position.x - self.owner.spriteSize.x/2 + self.owner.spriteOffset.x,
-                       	self.dynamics.position.y - self.owner.spriteSize.y + self.owner.spriteOffset.y)
+                       	self.dynamics.position.y - self.owner.spriteSize.y + self.owner.spriteOffset.y,
+                       	0, 1, 1)
 end
 
 --- Updates the ElementState.

@@ -61,7 +61,7 @@ end
 -- @param nextState The target state.
 function StateMachine:changeToState(nextState)
 
-	print("from " .. self.currentState.name .. " to " .. nextState.name)
+	--print("from " .. self.currentState.name .. " to " .. nextState.name)
 	if self.currentState.onExitTo then
 		self.currentState:onExitTo(nextState)
 	end

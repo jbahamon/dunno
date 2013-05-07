@@ -46,8 +46,8 @@ function love.load()
 	--manager:setStage("TomahawkMan")
 	manager:setStage("SMB3-1-1")
 	--manager:setStage("YoshisIsland3")
-	--manager:addPlayer("Megaman")
-	manager:addPlayer("Scrooge")
+	manager:addPlayer("Megaman")
+	--manager:addPlayer("Scrooge")
 
 	manager:start()
 

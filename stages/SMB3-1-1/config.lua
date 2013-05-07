@@ -4,7 +4,7 @@ local stageParameters ={
 	
 	map = "SMB3-1-1.tmx",
 
-	startingPosition = vector(3, 25),
+	startingPosition = vector(4, 26),
 
 	--{ stageElements = {}}
 
@@ -24,6 +24,12 @@ local stageParameters ={
 	--enemies = enemiesFile
 	defaultCameraMode = { mode = "followPlayer",
 									tension = vector(8, 10)},
+
+	rooms = 
+		{
+			{ 	topLeft = vector(1, 1),
+				bottomRight = vector(176, 27) },
+		},
 
 	elementTypes = love.filesystem.load('stages/SMB3-1-1/enemies/EnemyTypes.lua')()
 
