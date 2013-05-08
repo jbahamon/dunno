@@ -1,0 +1,4 @@
+montage foo.png bar.png ... baz.png -geometry "maxHxmaxY>+0+0" -gravity South -tile x1 
+
+x1-> horizontal
+1x ->vertical

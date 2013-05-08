@@ -1,0 +1,922 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><strong>Element</strong></li>
+  <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
+  <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>Element</code></h1>
+
+<p>An element implementation.</p>
+<p> Extends StateMachine.
+ Every dynamic element of a stage (players, enemies, interactive objects) is an Element
+ or inherits from this class. Elements are currently animated using <a href="https://github.com/kikito/anim8/">anim8</a>
+ and have a collision box (a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape).
+ An Element's position is considered to be its feet's position (bottom-center).
+<br /></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Element">Element&nbsp;(width, height)</a></td>
+	<td class="summary">Builds a new Element with a collision box and no states.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:setFolder">Element:setFolder&nbsp;(path)</a></td>
+	<td class="summary">Sets the folder from where the Element may load parameters.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:getFolder">Element:getFolder&nbsp;()</a></td>
+	<td class="summary">Gets the folder from where the Element may load parameters.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:setSpriteData">Element:setSpriteData&nbsp;(sprites, spriteSizeX, spriteSizeY, offset)</a></td>
+	<td class="summary">Sets the Element's sprite data for it to be drawn.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:draw">Element:draw&nbsp;()</a></td>
+	<td class="summary">Draws the Element's current animation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:move">Element:move&nbsp;(dx, dy)</a></td>
+	<td class="summary">Moves the Element by a certain amount, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:moveTo">Element:moveTo&nbsp;(x, y)</a></td>
+	<td class="summary">Moves the Element to a given location, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:setStartingPosition">Element:setStartingPosition&nbsp;(x, y)</a></td>
+	<td class="summary">Sets the Element's starting position, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:getPosition">Element:getPosition&nbsp;()</a></td>
+	<td class="summary">Returns the Element's current position, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:getLastPosition">Element:getLastPosition&nbsp;()</a></td>
+	<td class="summary">Returns the Element's position from the last frame, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:getVelocity">Element:getVelocity&nbsp;()</a></td>
+	<td class="summary">Returns the Element's velocity, in pixels/second.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:center">Element:center&nbsp;()</a></td>
+	<td class="summary">Returns the center of the Element's collision box, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:start">Element:start&nbsp;()</a></td>
+	<td class="summary">Starts the Element.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:checkStateChange">Element:checkStateChange&nbsp;()</a></td>
+	<td class="summary">Checks for conditions and executes any possible state change.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:changeToState">Element:changeToState&nbsp;(nextState)</a></td>
+	<td class="summary">Executes a transition to a specified state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:addState">Element:addState&nbsp;(state)</a></td>
+	<td class="summary">Adds a state to the Element.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:removeState">Element:removeState&nbsp;(stateName)</a></td>
+	<td class="summary">Removes a state from the machine, leaving it with no owner.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:setColliders">Element:setColliders&nbsp;(tileCollider, activeCollider)</a></td>
+	<td class="summary">Sets the colliders for this Element, adding every collision box
+ (the default collision box and the states' collision boxes, if any) to them.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:moveIntoCollidingBox">Element:moveIntoCollidingBox&nbsp;(box)</a></td>
+	<td class="summary">Moves the Element into a colliding box.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:resetCollisionFlags">Element:resetCollisionFlags&nbsp;()</a></td>
+	<td class="summary">Resets the Element's collision flags.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:onTileCollide">Element:onTileCollide&nbsp;(dt, tileElement, tile, x, y)</a></td>
+	<td class="summary">Called when colliding with a tile from the stage's collision layer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:resolveTileCollisions">Element:resolveTileCollisions&nbsp;(sampleTile, tileSize)</a></td>
+	<td class="summary">Resolves collisions with tiles.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:setCollisionBox">Element:setCollisionBox&nbsp;(collisionBox)</a></td>
+	<td class="summary">Sets the current collision box for the Element.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:getCollisionBox">Element:getCollisionBox&nbsp;(collisionBox)</a></td>
+	<td class="summary">Returns the Element's current collision box.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:disableTileCollisions">Element:disableTileCollisions&nbsp;()</a></td>
+	<td class="summary">Disables the Element's collisions against tiles.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:enableTileCollisions">Element:enableTileCollisions&nbsp;()</a></td>
+	<td class="summary">Enables the Element's collisions against tiles.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:getDefaultCollisionBox">Element:getDefaultCollisionBox&nbsp;(collisionBox)</a></td>
+	<td class="summary">Returns the Element's default collision box.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:getDefaultStateClass">Element:getDefaultStateClass&nbsp;()</a></td>
+	<td class="summary">Returns the Element's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:loadSpritesFromParams">Element:loadSpritesFromParams&nbsp;(parameters)</a></td>
+	<td class="summary">Loads sprite info (sprite sheet and sprite size) from a parameter table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:loadStatesFromParams">Element:loadStatesFromParams&nbsp;(parameters)</a></td>
+	<td class="summary">Creates and adds states from a parameter table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Element:addSingleStateFromParams">Element:addSingleStateFromParams&nbsp;(stateName, stateParams, folder)</a></td>
+	<td class="summary">Creates and adds a single state from a parameter table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#loadBasicFromParams">loadBasicFromParams&nbsp;(parameters, folder)</a></td>
+	<td class="summary">Creates a minimal Element from a parameter table.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "Element"></a>
+    <strong>Element&nbsp;(width, height)</strong>
+    </dt>
+    <dd>
+    Builds a new Element with a collision box and no states.  The collision box of an Element is
+ a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+ Extends StateMachine.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">width</span>
+         The width of the Element's collision box.</li>
+        <li><span class="parameter">height</span>
+         The height of the Element's collision box.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created Element.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:setFolder"></a>
+    <strong>Element:setFolder&nbsp;(path)</strong>
+    </dt>
+    <dd>
+    Sets the folder from where the Element may load parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+         The folder path to assign.</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="../modules/Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
+         <li><a href="../modules/Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:getFolder"></a>
+    <strong>Element:getFolder&nbsp;()</strong>
+    </dt>
+    <dd>
+    Gets the folder from where the Element may load parameters.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The Element's folder path.
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="../modules/Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
+         <li><a href="../modules/Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:setSpriteData"></a>
+    <strong>Element:setSpriteData&nbsp;(sprites, spriteSizeX, spriteSizeY, offset)</strong>
+    </dt>
+    <dd>
+    Sets the Element's sprite data for it to be drawn.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">sprites</span>
+         The sprite sheet image, as loaded by love.graphics.newImage.
+ Sprites in the sheet must be arranged in a grid where every cell must have the same size.</li>
+        <li><span class="parameter">spriteSizeX</span>
+         The width of a sprite's cell in the sheet.</li>
+        <li><span class="parameter">spriteSizeY</span>
+         The width of a sprite's cell in the sheet.</li>
+        <li><span class="parameter">offset</span>
+         The sprites' offset as a vector.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:draw"></a>
+    <strong>Element:draw&nbsp;()</strong>
+    </dt>
+    <dd>
+    Draws the Element's current animation.  If globals.DEBUG is set to <i>true</i>,
+ The collision box is drawn over the Element's sprite.
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:move"></a>
+    <strong>Element:move&nbsp;(dx, dy)</strong>
+    </dt>
+    <dd>
+    Moves the Element by a certain amount, in pixels.
+ The same displacement is applied Element's collision box.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dx</span>
+         The horizontal displacement.</li>
+        <li><span class="parameter">dy</span>
+         The vertical displacement.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:moveTo"></a>
+    <strong>Element:moveTo&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Moves the Element to a given location, in pixels.
+ The Element's collision box is moved so that the Element's
+ new position lies at the bottom-center of the collision box.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         The horizontal position.</li>
+        <li><span class="parameter">y</span>
+         The vertical position.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:setStartingPosition"></a>
+    <strong>Element:setStartingPosition&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Sets the Element's starting position, in pixels.  The Element is NOT moved to this position;
+ instead, it will be moved when Element:start is called.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         The horizontal position.</li>
+        <li><span class="parameter">y</span>
+         The vertical position.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:getPosition"></a>
+    <strong>Element:getPosition&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the Element's current position, in pixels.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The Element's position, as a vector.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:getLastPosition"></a>
+    <strong>Element:getLastPosition&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the Element's position from the last frame, in pixels.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The Element's position from the last frame, as a vector.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:getVelocity"></a>
+    <strong>Element:getVelocity&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the Element's velocity, in pixels/second.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The Element's position from the last frame, as a vector.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:center"></a>
+    <strong>Element:center&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the center of the Element's collision box, in pixels.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The center's position, as a vector.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:start"></a>
+    <strong>Element:start&nbsp;()</strong>
+    </dt>
+    <dd>
+    Starts the Element.
+ In particular, sets the initial state, the initial collision box, and moves the Element
+ to its initial position.
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/Element.html#Element:setStartingPosition">Element:setStartingPosition</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:checkStateChange"></a>
+    <strong>Element:checkStateChange&nbsp;()</strong>
+    </dt>
+    <dd>
+    Checks for conditions and executes any possible state change.
+ If two or more transitions are possible, the one with higher priority
+ is taken (or the one that was added first, if there is more than one transition with the
+	same priority). <br /> Element conditions can use an additional parameter: the collision flags.
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/Element.html#Element:changeToState">Element:changeToState</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:changeToState"></a>
+    <strong>Element:changeToState&nbsp;(nextState)</strong>
+    </dt>
+    <dd>
+    Executes a transition to a specified state.
+ The current state's onExitTo and the target state's onEnterFrom
+ are executed, if found. The Element's collision box is adjusted if the next
+ state has a different box from the current one.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">nextState</span>
+         The target state.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:addState"></a>
+    <strong>Element:addState&nbsp;(state)</strong>
+    </dt>
+    <dd>
+    Adds a state to the Element.
+ A state can only belong to a single machine at a time: it should not belong
+ to another state machine when this method is called.
+ Call removeState on the other machine first.
+ If the new state has a collision box, its information is added to the Element's
+ collider.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">state</span>
+         The state to be added.</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/Element.html#Element:removeState">Element:removeState</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:removeState"></a>
+    <strong>Element:removeState&nbsp;(stateName)</strong>
+    </dt>
+    <dd>
+    Removes a state from the machine, leaving it with no owner.
+ If the state had a collision box, it will be removed from the colliders.
+ Therefore, it is NOT recommended to use the same collision box in different
+ Elements: use copies instead.
+ with such name in the machine, nothing is done.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">stateName</span>
+         The name of the state to be removed. If there is no state </li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/Element.html#Element:addState">Element:addState</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:setColliders"></a>
+    <strong>Element:setColliders&nbsp;(tileCollider, activeCollider)</strong>
+    </dt>
+    <dd>
+    Sets the colliders for this Element, adding every collision box
+ (the default collision box and the states' collision boxes, if any) to them.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tileCollider</span>
+         The tileCollider to set.</li>
+        <li><span class="parameter">activeCollider</span>
+         The activeCollider to set.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:moveIntoCollidingBox"></a>
+    <strong>Element:moveIntoCollidingBox&nbsp;(box)</strong>
+    </dt>
+    <dd>
+    Moves the Element into a colliding box.
+ The movement is performed in the axis with the smallest distance to the target
+ box. Useful for room transitions, for example.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">box</span>
+         The collision box to move the Element into.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:resetCollisionFlags"></a>
+    <strong>Element:resetCollisionFlags&nbsp;()</strong>
+    </dt>
+    <dd>
+    Resets the Element's collision flags.
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:onTileCollide"></a>
+    <strong>Element:onTileCollide&nbsp;(dt, tileElement, tile, x, y)</strong>
+    </dt>
+    <dd>
+    Called when colliding with a tile from the stage's collision layer.
+ Essentially, adds the collision event to the pendingCollisions field.
+ This function should not be overriden; if you want to implement your own collision
+ resolution for tiles, override Element:resolveTileCollisions.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The time slice for the collision frame.</li>
+        <li><span class="parameter">tileElement</span>
+         A sample tile that can be used to recreate the collision (should be removed).</li>
+        <li><span class="parameter">tile</span>
+         The tile Element with which the Element is colliding.</li>
+        <li><span class="parameter">x</span>
+         the horizontal position of the colliding tile, measured in tiles</li>
+        <li><span class="parameter">y</span>
+         the vertical position of the colliding tile, measured in tiles</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="../modules/Element.html#Element:resolveTileCollisions">Element:resolveTileCollisions</a></li>
+         <li><a href="../modules/Element.html#Element:resetCollisionFlags">Element:resetCollisionFlags</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:resolveTileCollisions"></a>
+    <strong>Element:resolveTileCollisions&nbsp;(sampleTile, tileSize)</strong>
+    </dt>
+    <dd>
+    Resolves collisions with tiles.
+ Iterates over the registered collision events and resolves them appropriately.
+ This function can be overriden to implement custom tile collision resolution.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">sampleTile</span>
+         A tile of the appropriate size that can be moved around to simulate
+ the collisions.</li>
+        <li><span class="parameter">tileSize</span>
+         A vector that contains the size of the stage's tiles, in pixels.</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="../modules/Element.html#Element:onTileCollide">Element:onTileCollide</a></li>
+         <li><a href="../modules/Element.html#Element:resetCollisionFlags">Element:resetCollisionFlags</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:setCollisionBox"></a>
+    <strong>Element:setCollisionBox&nbsp;(collisionBox)</strong>
+    </dt>
+    <dd>
+    Sets the current collision box for the Element.
+ <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+ It must have been added to this Element's collider
+ (for example, by belonging to a state and having called element:addState)
+ and must not be active.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">collisionBox</span>
+         The collision box to set, a </li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/Element.html#Element:getCollisionBox">Element:getCollisionBox</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:getCollisionBox"></a>
+    <strong>Element:getCollisionBox&nbsp;(collisionBox)</strong>
+    </dt>
+    <dd>
+    Returns the Element's current collision box.
+ <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">collisionBox</span>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The current collision box, as a
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/Element.html#Element:setCollisionBox">Element:setCollisionBox</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:disableTileCollisions"></a>
+    <strong>Element:disableTileCollisions&nbsp;()</strong>
+    </dt>
+    <dd>
+    Disables the Element's collisions against tiles.
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/Element.html#Element:enableTileCollisions">Element:enableTileCollisions</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:enableTileCollisions"></a>
+    <strong>Element:enableTileCollisions&nbsp;()</strong>
+    </dt>
+    <dd>
+    Enables the Element's collisions against tiles.
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/Element.html#Element:disableTileCollisions">Element:disableTileCollisions</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:getDefaultCollisionBox"></a>
+    <strong>Element:getDefaultCollisionBox&nbsp;(collisionBox)</strong>
+    </dt>
+    <dd>
+    Returns the Element's default collision box.
+ <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">collisionBox</span>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The default collision box, as a
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:getDefaultStateClass"></a>
+    <strong>Element:getDefaultStateClass&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the Element's default state class (a <a href="http://vrld.github.com/hump/#hump.class"> hump class</a>).
+ This method is used when building a character from a file, to determine the class used when no state class is specified.
+ For an Element, it's ElementState; override this method if you want to create a character with a custom base state.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The hump class to be used in the construction of this Element's states when no class is specified.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Element:loadSpritesFromParams"></a>
+    <strong>Element:loadSpritesFromParams&nbsp;(parameters)</strong>
+    </dt>
+    <dd>
+    Loads sprite info (sprite sheet and sprite size) from a parameter table.
+ See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parameters</span>
+         The parameter table.</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="../modules/Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
+         <li><a href="../modules/Element.html#Element:addSingleStateFromParams">Element:addSingleStateFromParams</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:loadStatesFromParams"></a>
+    <strong>Element:loadStatesFromParams&nbsp;(parameters)</strong>
+    </dt>
+    <dd>
+    Creates and adds states from a parameter table.
+ See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parameters</span>
+         The parameter table.</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="../modules/Element.html#Element:addSingleStateFromParams">Element:addSingleStateFromParams</a></li>
+         <li><a href="../modules/Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Element:addSingleStateFromParams"></a>
+    <strong>Element:addSingleStateFromParams&nbsp;(stateName, stateParams, folder)</strong>
+    </dt>
+    <dd>
+    Creates and adds a single state from a parameter table.
+ See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">stateName</span>
+         The name to give to the new state.</li>
+        <li><span class="parameter">stateParams</span>
+         The parameter table.</li>
+        <li><span class="parameter">folder</span>
+         (Optional) the specific folder to load the state from. If omitted, the Element's folder is used.</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="../modules/Element.html#Element:loadStatesFromParams">Element:loadStatesFromParams</a></li>
+         <li><a href="../modules/Element.html#Element:loadSpritesFromParams">Element:loadSpritesFromParams</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "loadBasicFromParams"></a>
+    <strong>loadBasicFromParams&nbsp;(parameters, folder)</strong>
+    </dt>
+    <dd>
+    Creates a minimal Element from a parameter table.
+ See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parameters</span>
+         The parameter table.</li>
+        <li><span class="parameter">folder</span>
+         The folder where the Element's parameters are found.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created Element.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

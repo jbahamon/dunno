@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_State">Class State</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/data.core.CameraManager.html">data.core.CameraManager</a></li>
+  <li><a href="../modules/data.core.Element.html">data.core.Element</a></li>
+  <li><a href="../modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
+  <li><a href="../modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
+  <li><a href="../modules/data.core.Player.html">data.core.Player</a></li>
+  <li><a href="../modules/data.core.Player.PlayerState.html">data.core.Player.PlayerState</a></li>
+  <li><a href="../modules/data.core.Stage.html">data.core.Stage</a></li>
+  <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
+  <li><strong>data.core.StateMachine.State</strong></li>
+  <li><a href="../modules/data.core.WorldManager.html">data.core.WorldManager</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">lib.GeometryUtils</a></li>
+  <li><a href="../modules/lib.TileCollider.html">lib.TileCollider</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>data.core.StateMachine.State</code></h1>
+
+<p>State machine's state implementation</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#State">State&nbsp;(name)</a></td>
+	<td class="summary">Builds a new State.</td>
+	</tr>
+</table>
+<h2><a href="#Class_State">Class State</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#State:addTransition">State:addTransition&nbsp;(condition, targetState, position)</a></td>
+	<td class="summary">Adds a transition to the state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#State:addFlag">State:addFlag&nbsp;(flag)</a></td>
+	<td class="summary">Sets a state's flag as on.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#State:removeFlag">State:removeFlag&nbsp;(flag)</a></td>
+	<td class="summary">Sets a state's flag as off.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#State:getFlags">State:getFlags&nbsp;()</a></td>
+	<td class="summary">Retrieves a state's flags.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#State:clearFlags">State:clearFlags&nbsp;(flag)</a></td>
+	<td class="summary">Sets all of a state's flag to off.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#State:update">State:update&nbsp;(dt)</a></td>
+	<td class="summary">Updates the state</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "State"></a>
+    <strong>State&nbsp;(name)</strong>
+    </dt>
+    <dd>
+    Builds a new State.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         The state's name.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created State.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_State"></a>Class State</h2>
+        A StateMachine's state implementation.
+ It is the base for all other states.
+    <dl class="function">
+    <dt>
+    <a name = "State:addTransition"></a>
+    <strong>State:addTransition&nbsp;(condition, targetState, position)</strong>
+    </dt>
+    <dd>
+    Adds a transition to the state.
+ position indicates the priority of the transition with respect to the others.
+ (1 meaning the new transition will be checked before all those added before)
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">condition</span>
+
+
+</li>
+        <li><span class="parameter">targetState</span>
+
+
+</li>
+        <li><span class="parameter">position</span>
+
+
+</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "State:addFlag"></a>
+    <strong>State:addFlag&nbsp;(flag)</strong>
+    </dt>
+    <dd>
+    Sets a state's flag as on.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flag</span>
+         The name of the flag to turn on.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "State:removeFlag"></a>
+    <strong>State:removeFlag&nbsp;(flag)</strong>
+    </dt>
+    <dd>
+    Sets a state's flag as off.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flag</span>
+         The name of the flag to turn off.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "State:getFlags"></a>
+    <strong>State:getFlags&nbsp;()</strong>
+    </dt>
+    <dd>
+    Retrieves a state's flags.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The state's flags. as a table
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> foo = state:getFlags()
+<span class="global">assert</span>(foo[<span class="string">"someStateFlag"</span>], <span class="string">"The 'someStateFlag' flag is not set"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "State:clearFlags"></a>
+    <strong>State:clearFlags&nbsp;(flag)</strong>
+    </dt>
+    <dd>
+    Sets all of a state's flag to off.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flag</span>
+
+
+</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "State:update"></a>
+    <strong>State:update&nbsp;(dt)</strong>
+    </dt>
+    <dd>
+    Updates the state
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         Time since the last update, in seconds.</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

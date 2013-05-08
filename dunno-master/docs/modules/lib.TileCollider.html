@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/data.core.CameraManager.html">data.core.CameraManager</a></li>
+  <li><a href="../modules/data.core.Element.html">data.core.Element</a></li>
+  <li><a href="../modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
+  <li><a href="../modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
+  <li><a href="../modules/data.core.Player.html">data.core.Player</a></li>
+  <li><a href="../modules/data.core.Player.PlayerState.html">data.core.Player.PlayerState</a></li>
+  <li><a href="../modules/data.core.Stage.html">data.core.Stage</a></li>
+  <li><a href="../modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
+  <li><a href="../modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
+  <li><a href="../modules/data.core.WorldManager.html">data.core.WorldManager</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">lib.GeometryUtils</a></li>
+  <li><strong>lib.TileCollider</strong></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>lib.TileCollider</code></h1>
+
+<p>Tile Collider implementation</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#State">State&nbsp;(stage)</a></td>
+	<td class="summary">Builds a new TileCollider with no elements, based on a given Stage.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileCollider:addElement">TileCollider:addElement&nbsp;(element)</a></td>
+	<td class="summary">Adds an Element to the TileCollider.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileCollider:remove">TileCollider:remove&nbsp;(element)</a></td>
+	<td class="summary">Removes an Element from the TileCollider.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileCollider:update">TileCollider:update&nbsp;(dt)</a></td>
+	<td class="summary">Updates and checks tile collisions for all elements.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "State"></a>
+    <strong>State&nbsp;(stage)</strong>
+    </dt>
+    <dd>
+    Builds a new TileCollider with no elements, based on a given Stage.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">stage</span>
+         The Stage object that represents the collidable world.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created TileCollider.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileCollider:addElement"></a>
+    <strong>TileCollider:addElement&nbsp;(element)</strong>
+    </dt>
+    <dd>
+    Adds an Element to the TileCollider.  The TileCollider is NOT added in any way
+ to the Element. Nothing is done if the Element was already added to the TileCollider.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">element</span>
+         The Element object to be added to the TileCollider.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileCollider:remove"></a>
+    <strong>TileCollider:remove&nbsp;(element)</strong>
+    </dt>
+    <dd>
+    Removes an Element from the TileCollider.  The TileCollider is NOT removed in any way
+ to the Element. Nothing is done if the Element was not added to the TileCollider previously.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">element</span>
+         The Element object to be removed from the TileCollider.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileCollider:update"></a>
+    <strong>TileCollider:update&nbsp;(dt)</strong>
+    </dt>
+    <dd>
+    Updates and checks tile collisions for all elements.
+ <a href="../modules/data.core.Element.html#Element:onTileCollide">Element:onTileCollide</a>
+ (or the appropriate override) is called for each element touching a
+ tile, for every tile it is colliding with.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         Time since the last update, in seconds.</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
