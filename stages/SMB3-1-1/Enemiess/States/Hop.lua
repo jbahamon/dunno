@@ -2,6 +2,7 @@ local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 local ElementState = require 'data.core.Element.ElementState'
 
+--Hopping
 local Hop = Class {
 	name = "Hop",
 	__includes = ElementState,
