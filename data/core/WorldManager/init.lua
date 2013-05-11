@@ -94,6 +94,10 @@ function WorldManager:addPlayer(playerName)
 	player:loadBasicStates(parameters)
 	player:loadStatesFromParams(parameters)
 
+	if parameters.postBuild then
+		parameters.postBuild(player)
+	end
+
 	table.insert(self.players, player)
 	
 end

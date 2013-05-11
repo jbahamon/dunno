@@ -1,0 +1,23 @@
+local vector = require 'lib.hump.vector'
+
+local dynamics = {}
+
+local originalFrameRate = 60
+
+local scale = originalFrameRate
+
+-- Positions
+
+dynamics.facing = 1
+
+-- Velocities
+dynamics.maxVelocity = vector(1.5, 1) * scale
+
+-- Accelerations    
+dynamics.friction = vector(0, 0)
+dynamics.noInputFriction = vector(0.25, 0) * scale * scale
+dynamics.defaultAcceleration = vector(0,0)
+dynamics.inputAcceleration = vector(0.25, 0) * scale * scale
+dynamics.gravity = vector(0, 0.25) * scale * scale
+
+return dynamics

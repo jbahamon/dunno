@@ -81,14 +81,6 @@ function CameraManager:draw(players)
 							love.graphics.setColor(self.fullScreenTint)
 						end
 
-
-					    if globals.DEBUG then
-					        love.graphics.setColor(globals.debugSettings.collisionBoxColor)
-					        for _, shape in ipairs(self.tileCollider.elements) do
-								shape:draw('fill')
-					        end
-					    end
-
 					end)
 end
 

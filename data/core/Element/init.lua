@@ -99,8 +99,16 @@ function Element.loadBasicFromParams(parameters, folder)
                                 newAnimation.sprites:getWidth(),
                                 newAnimation.sprites:getHeight())
 
+			local frames
+
+			if type(helper.animation.frames) == 'table' then
+				frames = newAnimation.grid(unpack(helper.animation.frames))
+			else
+				frames = newAnimation.grid(helper.animation.frames)
+			end
+
 			newAnimation.animation = anim8.newAnimation( helper.animation.mode, 
-											newAnimation.grid(helper.animation.frames),
+											frames,
 											helper.animation.defaultDelay,
 											helper.animation.delays or {},
 											helper.animation.flippedH or false,
@@ -824,7 +832,7 @@ function Element:addSingleStateFromParams(stateName, stateParams, folder)
 	end 
 
 	local animation = anim8.newAnimation( stateParams.animation.mode, 
-											self.spritesGrid(stateParams.animation.frames),
+											frames,
 											stateParams.animation.defaultDelay,
 											stateParams.animation.delays or {},
 											stateParams.animation.flippedH or false,

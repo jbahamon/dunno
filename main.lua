@@ -11,7 +11,7 @@
 -- more info on its use and behavior.
 globals = {
 	scale = 2,
-	DEBUG = false,
+	DEBUG = true,
 	debugSettings = {
 		collisionBoxColor = {0, 0, 255, 100},
 		hitBoxColor = {255, 0, 0, 100}
@@ -46,8 +46,10 @@ function love.load()
 	--manager:setStage("TomahawkMan")
 	manager:setStage("SMB3-1-1")
 	--manager:setStage("YoshisIsland3")
-	manager:addPlayer("Megaman")
+	-- TODO: add
+	--manager:addPlayer("Megaman")
 	--manager:addPlayer("Scrooge")
+	manager:addPlayer("Samus")
 
 	manager:start()
 
@@ -71,9 +73,10 @@ end
 -- dragging the screen around or temporary drops in frame rate.
 -- @param dt Time elapsed since the last update, in seconds.
 function love.update(dt)
-	if dt > 0.1 then
+	if dt > 1/60.0 then
 		return 
 	end
+	--print(love.timer.getFPS())
 	globals.Timer.update(dt)
 	manager:update(dt)
 	--manager2:update(dt)

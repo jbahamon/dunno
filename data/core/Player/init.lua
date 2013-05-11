@@ -162,7 +162,7 @@ function Player:addBasicStates(basicStatesParams)
 
 	fall:addTransition( 
     	function(currentState, collisionFlags) 
-    		return not collisionFlags.canMoveDown
+    		return (not collisionFlags.canMoveDown) and currentState.dynamics.velocity.y > 0
     	end,
     	"stand")
 

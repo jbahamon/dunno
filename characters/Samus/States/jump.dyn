@@ -1,0 +1,23 @@
+local vector = require 'lib.hump.vector'
+local dynamics = {}
+
+local originalFrameRate = 60
+
+local scale = originalFrameRate
+
+-- Velocities
+dynamics.maxVelocity = vector(1, 5) * scale
+
+-- Accelerations    
+dynamics.friction = vector(0, 0)
+dynamics.noInputFriction = vector(0.25, 0) * scale * scale
+dynamics.defaultAcceleration = vector(0, 0)
+dynamics.inputAcceleration = vector(0.25, 0) * scale * scale
+dynamics.gravity = vector(0, 0.10) * scale * scale
+
+-- Other Properties, Counters and Flags
+dynamics.jumpVelocity = - 4 * scale
+dynamics.jumpReleaseVelocity = - 2.121 * scale
+dynamics.jumpClipVelocity = - 1 * scale
+
+return dynamics	
