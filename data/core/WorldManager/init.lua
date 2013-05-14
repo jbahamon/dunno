@@ -142,7 +142,7 @@ function WorldManager:update(dt)
 
 	    	local roomChange = self.stage:checkRoomChange(player)
 
-		    if roomChange then
+		    if i == 1 and roomChange then
 		    	self.cameraManager:roomTransition(player, roomChange, self)
 		    end
 	    end

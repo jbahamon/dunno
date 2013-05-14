@@ -561,6 +561,21 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 
 		if collides then
 
+			if event.tile.properties.ladder then
+				if (not highestLadderEvent) or highestLadderEvent.position.y > event.position.y then
+					highestLadderEvent = event
+				end
+				
+				local centerX, centerY = self.currentCollisionBox:center()
+				if sampleTile:intersectsRay(centerX, centerY, 0, -1) or
+					sampleTile:intersectsRay(centerX, centerY, 0, 1) then
+
+					if not self.collisionFlags.specialEvents.ladder then
+						self.collisionFlags.specialEvents.ladder = { position = vector(sampleTile:center()), element = self}
+					end
+				end
+			end	
+
 			if event.tile.properties.solid then 
 
 				self:move(vector(dx, dy))
@@ -599,30 +614,19 @@ function Element:resolveTileCollisions(sampleTile, tileSize)
 						self.collisionFlags.standingOnSolid = true
 					end
 				end
-
-			elseif event.tile.properties.ladder then
-				if (not highestLadderEvent) or highestLadderEvent.position.y > event.position.y then
-					highestLadderEvent = event
-				end
-
-				local centerX, centerY = self.currentCollisionBox:center()
-				if sampleTile:intersectsRay(centerX, centerY, 0, -1) or
-					sampleTile:intersectsRay(centerX, centerY, 0, 1) then
-
-					if not self.collisionFlags.specialEvents.ladder then
-						self.collisionFlags.specialEvents.ladder = { position = vector(sampleTile:center()), element = self}
-					end
-				end
-			end	
+			end
+			
+			
 		end
 	end
 				
 	if highestLadderEvent and highestLadderEvent.position.y * tileSize.y >= self:getLastPosition().y then
-		self:move(vector(0, highestLadderEvent.position.y * tileSize.y - self:getPosition().y))
+		self:moveTo(vector(self:getPosition().x, highestLadderEvent.position.y * tileSize.y))
 		self.collisionFlags.canMoveDown = false
 		self.collisionFlags.specialEvents.standingOnLadder = self.collisionFlags.specialEvents.ladder
 		self.collisionFlags.specialEvents.ladder = nil
 	end
+
 end
 
 --- Called when colliding with an active Element in the world (interactive element, enemy, etc).

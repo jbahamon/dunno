@@ -1,8 +1,23 @@
 TODO:
 
-- Element interaction. Default is getting hit.
 - Slopes
-- Efficient stage elements (enemies and others) (re)spawning and despawning.
-- Defition of the way dunno will use object layers in .tmx maps, in relation to stage element spawning.
+- Better (re)spawning and despawning.
+
 - Define a way to easily implement different formes for a character without having to specify the full set of states all
 	over again. A way could be to have different sprite sheets and switch between them, and have a "currentForme" variable.
+
+- change the way transitions are specified. maybe a section dedicated to transitions in a player/element's definition.
+
+- Add parameters to the room transition modes (scrolling speed/time, etc)
+
+- change "ground" layer to "background"; add optional "foreground" layer
+
+- list public table values for each class (e.g. element.collisionFlags, element.dynamics, etc)
+
+- move elements to the world/camera manager
+
+- add references to players and elements to the camera manager, or get them passed to it by the worldmanager
+
+- fix bugs with the scrolling camera (try entering tourian's second room while jumping/walking) Might have something to do with the camera's getVisible().
+
+- find a good way to have the top tile of a ladder as a platform. 

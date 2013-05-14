@@ -514,6 +514,12 @@
     <property name="ladder" value=""/>
    </properties>
   </tile>
+  <tile id="7">
+   <properties>
+    <property name="ladder" value=""/>
+    <property name="oneWayPlatform" value=""/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="ground" width="258" height="63">
   <data>

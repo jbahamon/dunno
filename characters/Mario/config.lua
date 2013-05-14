@@ -4,11 +4,11 @@ local params = {
 	
 	includeBasicStates = true,
 
-	size = vector(16, 20),
+	size = vector(10, 12),
 
 	sprites = {
 		sheet = "Sprites.png",
-		spriteSize = vector(31, 32),
+		spriteSize = vector(16, 16),
 		spriteOffset = vector(0, 0)
 	},
 
@@ -17,24 +17,14 @@ local params = {
 			dynamics = "States/jump.dyn",
 			animation = { 
 				mode = 'once',
-				frames = '1,3',
-				defaultDelay = 0.2 
+				frames = '2,2',
+				defaultDelay = 1/60 
 			},
+
 			class = "States/Jump.lua",
 			transitions = {
-			 	{ 	condition = 
-			        	function(currentState, collisionFlags) 
-			            	return currentState.dynamics.velocity.y >= currentState.dynamics.jumpClipVelocity
-			        	end,
-			        targetState = "fall" },
-
-				{ 	condition = 
-			        	function(currentState, collisionFlags) 
-				            return not collisionFlags.canMoveDown
-				        end,
-			        targetState = "stand" },
-			     { 	condition = 
-						function (currentState, collisionFlags)
+				{	condition =
+			    	    function (currentState, collisionFlags)
 				            local ladder = collisionFlags.specialEvents.ladder
 				            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
 				                currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
@@ -43,7 +33,14 @@ local params = {
 				                return false
 				            end
 				        end,
-			        targetState = "climb" },
+	    			targetState = "climb" },
+
+				{ 	condition = 
+			        	function(currentState, collisionFlags) 
+				            return not collisionFlags.canMoveDown
+				        end,
+			        targetState = "stand" },
+
 			}
 		},
 
@@ -51,10 +48,9 @@ local params = {
 			vulnerable = true,
 			dynamics = "States/stand.dyn",
 			animation = { 
-				mode = 'loop',
-				frames = '1-2,1',
-				defaultDelay = 0.2, 
-				delays = {2, 0.2} 
+				mode = 'once',
+				frames = '1,1',
+				defaultDelay = 0.2
 			}
 		},
 
@@ -62,7 +58,7 @@ local params = {
 			dynamics = "States/Climb.dyn",
 			animation = { 
 				mode = 'loop',
-				frames = '1-2,5',
+				frames = '1-2,3',
 				defaultDelay = 10/60.0,
 			}
 		},
@@ -71,8 +67,8 @@ local params = {
 			dynamics = "States/walk.dyn",
 			animation = { 
 				mode = 'loop',
-				frames = '1-4,2',
-				defaultDelay = 0.2 
+				frames = '1-2,1',
+				defaultDelay = 4/60 
 			}
 
 		},
@@ -81,7 +77,7 @@ local params = {
 			dynamics = "States/fall.dyn",
 			animation = { 
 				mode = 'once',
-				frames = '1,3',
+				frames = '2,2',
 				defaultDelay = 0.2 
 			}
 		},
@@ -90,7 +86,7 @@ local params = {
 			dynamics = "States/hit.dyn",
 			animation = { 
 				mode = 'loop',
-				frames = '1-2,6',
+				frames = '2,2',
 				defaultDelay = 2/60.0 
 			}
 		}

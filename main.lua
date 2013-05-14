@@ -44,12 +44,14 @@ function love.load()
 	manager = WorldManager(vector(0, 0), vector(512, 480))
 
 	--manager:setStage("TomahawkMan")
-	manager:setStage("SMB3-1-1")
+	--manager:setStage("SMB3-1-1")	
 	--manager:setStage("YoshisIsland3")
+	manager:setStage("Tourian")
 	-- TODO: add
+	--manager:addPlayer("Samus")
+	--manager:addPlayer("Mario")
 	--manager:addPlayer("Megaman")
-	--manager:addPlayer("Scrooge")
-	manager:addPlayer("Samus")
+	manager:addPlayer("Scrooge")
 
 	manager:start()
 
@@ -64,7 +66,7 @@ end
 --- Draw everything on the screen.
 function love.draw()
 	manager:draw()
-	--manager2:draw()
+--	manager2:draw()
 end
 
 --- Update everything.
@@ -79,6 +81,6 @@ function love.update(dt)
 	--print(love.timer.getFPS())
 	globals.Timer.update(dt)
 	manager:update(dt)
-	--manager2:update(dt)
+--	manager2:update(dt)
 
 end

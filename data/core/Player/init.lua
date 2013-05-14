@@ -102,13 +102,15 @@ function Player:addBasicStates(basicStatesParams)
 
     walk:addTransition( 
     	function(currentState, collisionFlags) 
-    		return currentState.hasControl and not (currentState.owner.control["left"] or currentState.owner.control["right"])
+    		return currentState.hasControl and 
+                    not (currentState.owner.control["left"] or currentState.owner.control["right"]) and
+                    currentState.dynamics.velocity.x == 0
     	end,
     	"stand")
 
     walk:addTransition( 
     	function(currentState, collisionFlags) 
-            return collisionFlags.canMoveDown 
+            return collisionFlags.canMoveDown
     	end,
     	"fall")
 
@@ -196,15 +198,10 @@ function Player:addBasicStates(basicStatesParams)
         end,
         "stand")
 
-    jump:addTransition( 
-        function(currentState, collisionFlags) 
-            return currentState.dynamics.velocity.y > 0
-        end,
-        "fall")
-
     jump:addTransition(
         function (currentState, collisionFlags)
             local ladder = collisionFlags.specialEvents.ladder
+            print("fds")
             if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
                 currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
                 return true
@@ -214,6 +211,11 @@ function Player:addBasicStates(basicStatesParams)
         end,   
         "climb")
 
+    jump:addTransition( 
+        function(currentState, collisionFlags) 
+            return currentState.dynamics.velocity.y > 0
+        end,
+        "fall")
 
     climb:addTransition(
         function (currentState, collisionFlags)

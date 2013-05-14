@@ -250,7 +250,7 @@ local params = {
 			    	    function (currentState, collisionFlags)
 	        				return currentState.owner.control["attack"] and collisionFlags.canMoveDown 
 	    				end,
-	    			targetState = "pogoFall" }
+	    			targetState = "pogoFall" },
 	    		
 	    	}
 

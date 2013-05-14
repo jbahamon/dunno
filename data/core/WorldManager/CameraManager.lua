@@ -171,8 +171,6 @@ end
 function CameraManager:followCameraMode(player, stage, cameraMode)
 
 	local targetPosition = self.lookingAt:clone()
-	--print("antes")
-	--print(self.lookingAt)
 
 	if cameraMode.tension then
 		local tension = cameraMode.tension
@@ -200,7 +198,7 @@ function CameraManager:followCameraMode(player, stage, cameraMode)
 	end
 
 	self.lookingAt = targetPosition
-	--print("despues")
+
 end
 
 --- Camera mode that locks to a position in zero, one or more axes, 
@@ -319,6 +317,7 @@ CameraManager.cameraModes = {
 function CameraManager:roomTransition(player, roomChange, worldManager, mode)
 	local transitionMode = mode or self.stage.roomTransitionMode
 	local transition = CameraManager.transitions[transitionMode] or CameraManager.transitions["default"]
+
 	transition(self, player, roomChange, worldManager)
 end
 
@@ -357,12 +356,12 @@ function CameraManager:scrollTransition(player, roomChange, worldManager)
 	local nextPlayerPos, nextCameraPos
 
 	-- We get the previous positions
-	prevCameraPos = vector(self.camera:getVisible())
 	prevPlayerPos = player:getPosition():clone()
 
 	-- We move both the player and the camera to the next room.
 
-	local x1, y1, x2, y2 = roomChange.nextRoom.box:bbox()
+	--print(roomChange.previousRoom)
+	x1, y1, x2, y2 = roomChange.nextRoom.box:bbox()
 	self:setWorld(x1, y1, x2 - x1, y2 - y1)
 	player:moveIntoCollidingBox(roomChange.nextRoom.box)
 
@@ -378,7 +377,8 @@ function CameraManager:scrollTransition(player, roomChange, worldManager)
 	self:setWorld(x1, y1, x2 - x1, y2 - y1)
 	player:moveTo(prevPlayerPos)
 	self:setPosition(player:getPosition())
-	
+	prevCameraPos = vector(self.camera:getVisible())
+
 	local playerVelocity = (nextPlayerPos - prevPlayerPos)/scrollTime
 	local cameraVelocity = (nextCameraPos - prevCameraPos)/scrollTime
 
@@ -404,7 +404,7 @@ function CameraManager:scrollTransition(player, roomChange, worldManager)
 			self.stage:setRoom(roomChange.nextRoom)
 			self:setWorld(self.stage:getBounds())
 			self:setPosition(nextCameraPos)
-			player:moveTo(nextPlayerPos)			
+			player:moveTo(nextPlayerPos)
 			self.currentCameraMovement = nil
 		end )
 
