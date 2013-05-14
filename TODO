@@ -21,3 +21,7 @@ TODO:
 - fix bugs with the scrolling camera (try entering tourian's second room while jumping/walking) Might have something to do with the camera's getVisible().
 
 - find a good way to have the top tile of a ladder as a platform. 
+
+- add ldoc comments to some functions that are missing them
+
+- write up a readme.md
