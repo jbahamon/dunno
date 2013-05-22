@@ -18,7 +18,7 @@ TODO:
 
 - add references to players and elements to the camera manager, or get them passed to it by the worldmanager
 
-- fix bugs with the scrolling camera (try entering tourian's second room while jumping/walking) Might have something to do with the camera's getVisible().
+- fix bugs with the scrolling camera (try entering tourian's second room while jumping/walking) Might have something to do with the camera's getVisible(). Actually, we should play Metroid and see how the camera works.
 
 - find a good way to have the top tile of a ladder as a platform. 
 

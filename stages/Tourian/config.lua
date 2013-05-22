@@ -9,7 +9,7 @@ local stageParameters ={
 	additionalParameters = {},
 
 	defaultCameraMode = { mode = "followPlayer",
-							tension = vector(8, 8)},
+							tension = vector(0, 16)},
 
 	rooms = 
 		{
