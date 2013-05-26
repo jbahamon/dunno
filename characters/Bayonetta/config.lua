@@ -16,9 +16,9 @@ local params = {
 		jump = {
 			dynamics = "States/jump.dyn",
 			animation = { 
-				mode = 'once',
-				frames = '2, 3',
-				defaultDelay = 0.2 
+				mode = 'loop',
+				frames = '1-2, 4',
+				defaultDelay = 4/30.0 
 			},
 			class = "States/Jump.lua",
 			transitions = {
@@ -52,8 +52,8 @@ local params = {
 			dynamics = "States/stand.dyn",
 			animation = { 
 				mode = 'loop',
-				frames = '1-3,1',
-				defaultDelay = 0.1
+				frames = '1-4,1',
+				defaultDelay = 3/30.0
 			}
 		},
 
@@ -61,8 +61,8 @@ local params = {
 			dynamics = "States/Climb.dyn",
 			animation = { 
 				mode = 'loop',
-				frames = '2,3',
-				defaultDelay = 10/60.0,
+				frames = '1-2,4',
+				defaultDelay = 4/30.0,
 			}
 		},
 
@@ -70,8 +70,8 @@ local params = {
 			dynamics = "States/walk.dyn",
 			animation = { 
 				mode = 'loop',
-				frames = '1-3,2',
-				defaultDelay = 0.2 
+				frames = {'1-4,2', '1-4,3'},
+				defaultDelay = 4 /30.0
 			}
 
 		},
@@ -79,8 +79,8 @@ local params = {
 		fall = {
 			dynamics = "States/fall.dyn",
 			animation = { 
-				mode = 'once',
-				frames = '1,3',
+				mode = 'loop',
+				frames = '3-4,4',
 				defaultDelay = 0.2 
 			}
 		},
@@ -90,7 +90,7 @@ local params = {
 			animation = { 
 				mode = 'loop',
 				frames = '1,1',
-				defaultDelay = 2/60.0 
+				defaultDelay = 2/30.0 
 			}
 		}
 	},	
