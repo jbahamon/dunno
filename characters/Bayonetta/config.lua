@@ -70,8 +70,8 @@ local params = {
 			dynamics = "States/walk.dyn",
 			animation = { 
 				mode = 'loop',
-				frames = {'1-4,2', '1-4,3'},
-				defaultDelay = 4 /30.0
+				frames = {'1,2', '3,2', '1,3', '3,3'},
+				defaultDelay = 4/30.0
 			}
 
 		},
