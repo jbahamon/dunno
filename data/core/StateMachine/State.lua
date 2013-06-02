@@ -12,14 +12,13 @@ local vector = require 'lib.hump.vector'
 -- @return The newly created State.
 
 local State = Class {
-	name = "State",
-
-	init = 
-		function(self, name)
-			self.name = name
-			self.flags = {}
-		end
+	name = "State"
 }
+
+function State:init(name)
+	self.name = name
+	self.flags = {}
+end
 
 ---A StateMachine's state implementation.
 -- It is the base for all other states.

@@ -18,56 +18,54 @@ local State = require 'data.core.StateMachine.State'
 
 local ElementState = Class {
 	name = "ElementState",
-
-	__includes = State,
-	
-	init =
-		function(self, name, animation, dynamics)
-			State.init(self, name)
-			self.dynamics = {}
-			self.dynamics.velocity = vector(0, 0)
-			self.dynamics.position = vector(0, 0)
-			self.nextState = nil
-			self.facing = 1
-			self.animation = animation
-			self.transitions = {}
-			self.stateTime = 0
-
-			self.dynamics.size = nil
-
-			-- Velocities
-			self.dynamics.maxVelocity = vector(0, 0)
-
-			-- Accelerations    
-			self.dynamics.friction = vector(0, 0)
-			self.dynamics.noInputFriction = vector(0, math.huge)
-			self.dynamics.defaultAcceleration = vector(0, 0)
-			self.dynamics.inputAcceleration = vector(0, math.huge)
-			self.dynamics.gravity = vector(0, 0)
-
-			if dynamics then
-				self:addDynamics(dynamics)
-			end
-			
-			if self.dynamics.hitBox and self.dynamics.hitBox.size then
-				self.hitBox = shapes.newPolygonShape(
-							    	- math.floor(self.dynamics.hitBox.size.x/2), 0,
-							    	  math.ceil(self.dynamics.hitBox.size.x/2), 0,
-							    	  math.ceil(self.dynamics.hitBox.size.x/2), - self.dynamics.hitBox.size.y,
-							    	- math.floor(self.dynamics.hitBox.size.x/2), - self.dynamics.hitBox.size.y)
-
-				self.hitBox.offset = self.dynamics.hitBox.offset or vector(0,0)
-			end
-
-			if self.dynamics.size then
-				self.collisionBox = shapes.newPolygonShape(
-							    	- math.floor(self.dynamics.size.x/2), 0,
-							    	  math.ceil(self.dynamics.size.x/2), 0,
-							    	  math.ceil(self.dynamics.size.x/2), - self.dynamics.size.y,
-							    	- math.floor(self.dynamics.size.x/2), - self.dynamics.size.y)
-			end
-		end
+	__includes = State
 }
+
+function ElementState:init(name, animation, dynamics)
+	State.init(self, name)
+	self.dynamics = {}
+	self.dynamics.velocity = vector(0, 0)
+	self.dynamics.position = vector(0, 0)
+	self.nextState = nil
+	self.facing = 1
+	self.animation = animation
+	self.transitions = {}
+	self.stateTime = 0
+
+	self.dynamics.size = nil
+
+	-- Velocities
+	self.dynamics.maxVelocity = vector(0, 0)
+
+	-- Accelerations    
+	self.dynamics.friction = vector(0, 0)
+	self.dynamics.noInputFriction = vector(0, math.huge)
+	self.dynamics.defaultAcceleration = vector(0, 0)
+	self.dynamics.inputAcceleration = vector(0, math.huge)
+	self.dynamics.gravity = vector(0, 0)
+
+	if dynamics then
+		self:addDynamics(dynamics)
+	end
+	
+	if self.dynamics.hitBox and self.dynamics.hitBox.size then
+		self.hitBox = shapes.newPolygonShape(
+					    	- math.floor(self.dynamics.hitBox.size.x/2), 0,
+					    	  math.ceil(self.dynamics.hitBox.size.x/2), 0,
+					    	  math.ceil(self.dynamics.hitBox.size.x/2), - self.dynamics.hitBox.size.y,
+					    	- math.floor(self.dynamics.hitBox.size.x/2), - self.dynamics.hitBox.size.y)
+
+		self.hitBox.offset = self.dynamics.hitBox.offset or vector(0,0)
+	end
+
+	if self.dynamics.size then
+		self.collisionBox = shapes.newPolygonShape(
+					    	- math.floor(self.dynamics.size.x/2), 0,
+					    	  math.ceil(self.dynamics.size.x/2), 0,
+					    	  math.ceil(self.dynamics.size.x/2), - self.dynamics.size.y,
+					    	- math.floor(self.dynamics.size.x/2), - self.dynamics.size.y)
+	end
+end
 
 ---An Element's state implementation. Extends @{data.core.StateMachine.State|State}.
 -- Has animation data and dynamics, in addition to normal State properties.

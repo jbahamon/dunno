@@ -5,13 +5,15 @@ local Timer = globals.Timer
 local Hit = Class {
 	name = "Hit",
 
-	__includes = PlayerState,
-
-	function(self, name, animation, dynamics)
-		PlayerState.init(self, name, animation, dynamics)
-		self.hasControl = false
-	end
+	__includes = PlayerState
 }
+
+
+
+function Hit:init(name, animation, dynamics)
+	PlayerState.init(self, name, animation, dynamics)
+	self.hasControl = false
+end
 
 
 function Hit:onEnterFrom(otherState)

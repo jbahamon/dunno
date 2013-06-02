@@ -10,10 +10,8 @@ local Stage = require 'data.core.Stage'
 local ElementFactory = require 'data.core.ElementFactory'
 local CameraManager = require 'data.core.WorldManager.CameraManager'
 
-
 local ActiveCollider = require 'lib.HardonCollider'
 local TileCollider = require 'lib.TileCollider'
-
 
 local vector = require 'lib.hump.vector'
 
@@ -25,16 +23,15 @@ local Timer = globals.Timer
 -- @name WorldManager
 -- @return The newly created WorldManager
 local WorldManager = Class {
-	name = "WorldManager",
-
-	init = 
-		function (self, topLeft, bottomRight)
-			self.topLeft = topLeft
-			self.bottomRight = bottomRight
-			self.players = {}
-			self.paused = false
-		end
+	name = "WorldManager"
 }
+
+function WorldManager:init(topLeft, bottomRight)
+	self.topLeft = topLeft
+	self.bottomRight = bottomRight
+	self.players = {}
+	self.paused = false
+end
 
 
 --- Class that handles interactions between the Stage, the Player(s) and 

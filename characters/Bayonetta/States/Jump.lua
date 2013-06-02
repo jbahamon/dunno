@@ -1,15 +1,15 @@
 local Class = require 'lib.hump.class'
-local BasicJump = require 'data.core.CommonStates.Jump'
+local BasicJump = require 'data.core.CommonStates.BasicJump'
 
 local Jump = Class {
 	name = "BayonettaJump",
-	__includes = BasicJump,
-
-	init = 
-		function(self, name, dynamics, animation)
-			BasicJump.init(self, name, dynamics, animation)
-		end
+	__includes = BasicJump
 }
+
+
+function Jump:init(name, dynamics, animation)
+	BasicJump.init(self, name, dynamics, animation)
+end
 
 function Jump:applyPostForceEffects(dt)
 	BasicJump.applyPostForceEffects(self, dt)

@@ -8,7 +8,7 @@ local vector = require 'lib.hump.vector'
 local Element = require 'data.core.Element'
 
 local PlayerState = require 'data.core.Player.PlayerState'
-local Jump = require 'data.core.CommonStates.Jump'
+local Jump = require 'data.core.CommonStates.BasicJump'
 local Climb = require 'data.core.CommonStates.Climb'
 local Hit = require 'data.core.CommonStates.Hit'
 
@@ -25,19 +25,18 @@ local anim8 = require 'lib.anim8'
 local Player = Class {
 
 	name = 'Player',
-	__includes = Element,
-
-	init =
-		function (self, size)
-			Element.init(self, size)
-			self.binds, self.control = love.filesystem.load("lib/TLBind.lua")()
-
-			self.binds.keys = {
-			    w="up", a="left", s="down", d="right", [" "]="jump", lctrl="attack", escape="menu",
-			    up="up", left="left", down="down", right="right", z="jump", rctrl="attack", x="attack"
-			}
-		end	
+	__includes = Element
 }
+
+function Player:init(size)
+    Element.init(self, size)
+    self.binds, self.control = love.filesystem.load("lib/TLBind.lua")()
+
+    self.binds.keys = {
+        w="up", a="left", s="down", d="right", [" "]="jump", lctrl="attack", escape="menu",
+        up="up", left="left", down="down", right="right", z="jump", rctrl="attack", x="attack"
+    }
+end 
 
 --- A game player implementation.  Extends @{data.core.Element|Element}.
 -- A player has all of the Element's features, plus receiving input from the user.

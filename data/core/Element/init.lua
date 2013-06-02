@@ -23,40 +23,38 @@ local Element = Class {
 	name = 'Element',
 	__includes = StateMachine,
 
-	init =
-		function (self, size)
-			StateMachine.init(self)
-
-			self.helperAnimations = {}
-
-		    self.defaultCollisionBox = shapes.newPolygonShape(
-		    	- math.floor(size.x/2), 0,
-		    	  math.ceil(size.x/2), 0,
-		    	  math.ceil(size.x/2), - size.y,
-		    	- math.floor(size.x/2), - size.y)
-
-			self.currentCollisionBox = self.defaultCollisionBox
-			self.currentCollisionBox.parent = self
-
-			local x1, y1, x2, y2 = self.currentCollisionBox:bbox()
-			self.size = vector(x2 - x1, y2 - y1)
-
-		    -- Collision flags
-		    self.collisionFlags = { canMoveLeft = true,
-				    				canMoveRight = true,
-				    				canMoveUp = true,
-				    				canMoveDown = true,
-				    				specialEvents = {}}
-
-			self.pendingCollisions = {}
-
-			self:setStartingPosition(vector(0, 0))
-
-			self.drawTimer = 0
-		end	
-
 }
 
+function Element:init(size)
+	StateMachine.init(self)
+
+	self.helperAnimations = {}
+
+    self.defaultCollisionBox = shapes.newPolygonShape(
+    	- math.floor(size.x/2), 0,
+    	  math.ceil(size.x/2), 0,
+    	  math.ceil(size.x/2), - size.y,
+    	- math.floor(size.x/2), - size.y)
+
+	self.currentCollisionBox = self.defaultCollisionBox
+	self.currentCollisionBox.parent = self
+
+	local x1, y1, x2, y2 = self.currentCollisionBox:bbox()
+	self.size = vector(x2 - x1, y2 - y1)
+
+    -- Collision flags
+    self.collisionFlags = { canMoveLeft = true,
+		    				canMoveRight = true,
+		    				canMoveUp = true,
+		    				canMoveDown = true,
+		    				specialEvents = {}}
+
+	self.pendingCollisions = {}
+
+	self:setStartingPosition(vector(0, 0))
+
+	self.drawTimer = 0
+end	
 
 
 --===============================================================

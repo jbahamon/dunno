@@ -4,13 +4,12 @@ local PlayerState = require 'data.core.Player.PlayerState'
 local Climb = Class {
 	name = "Climb",
 
-	__includes = PlayerState,
-
-	function(self, name, animation, dynamics)
-		PlayerState.init(self, name, animation, dynamics)	
-	end
+	__includes = PlayerState
 }
 
+function Climb:init(name, animation, dynamics)
+	PlayerState.init(self, name, animation, dynamics)	
+end
 
 function Climb:update(dt)
 	PlayerState.update(self, dt)

@@ -19,11 +19,8 @@ globals = {
 	Timer = require 'lib.hump.timer'
 }
 
-local WorldManager = require 'data.core.WorldManager'
-local vector = require 'lib.hump.vector'
-local manager, manager2
-
 --- Clamp number between two values.
+-- Globally defined.
 -- Returns input if it is between min_val and max_val; max_val if it is 
 -- larger than it; min_val if it is smaller than it.
 -- @param input The value to be clamped
@@ -37,51 +34,63 @@ function math.clamp(input, min_val, max_val)
 	return input
 end
 
---- Load objects and properties needed to start the game.
--- Starts a WorldManager for each view, stages and players.
+local game = {
+  libs = {},
+  states = {
+    head = nil,
+    Title = {
+      template = require 'data.states.Title',
+      parent = nil
+    },
+    InGame = {
+      template = require 'data.states.InGame',
+      parent = "Title"
+    },
+    InGameOptions = {
+      template = require 'data.states.InGameOptions',
+      parent = "InGame"
+    },
+  }
+}
+
+local newState = function (blankState, stateTemplate)
+  return stateTemplate(blankState)
+end
+
 function love.load()
+	love.graphics.setMode(love.graphics.getMode())
+	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setBackgroundColor(39, 40, 34, 255)
+	love.graphics.setFont(love.graphics.newFont(16))
 
-	manager = WorldManager(vector(0, 0), vector(512, 480))
-
-	manager:setStage("TomahawkMan")
-	--manager:setStage("SMB3-1-1")	
-	--manager:setStage("YoshisIsland3")
-	--manager:setStage("Tourian")
-	-- TODO: add
-	manager:addPlayer("Bayonetta")
-	--manager:addPlayer("Samus")
-	--manager:addPlayer("Mario")
-	--manager:addPlayer("Megaman")
-	--manager:addPlayer("Scrooge")
-
-	manager:start()
+	-- load libs
+	game.libs.Gamestate = require 'lib.hump.gamestate'
 
 
-	--manager2 = WorldManager(vector(512, 0), vector(1024, 480))
-	--manager2:setStage("SMB3-1-1")
-	--manager2:addPlayer("Megaman")
-	--manager2:start()
-
-end
-
---- Draw everything on the screen.
-function love.draw()
-	manager:draw()
---	manager2:draw()
-end
-
---- Update everything.
--- If the time elapsed between two consecutive updates is greater than 
--- 0.3s, the update is skipped. This is useful to avoid glitches when
--- dragging the screen around or temporary drops in frame rate.
--- @param dt Time elapsed since the last update, in seconds.
-function love.update(dt)
-	if dt > 1/60.0 then
-		return 
+	for name, value in pairs(game.states) do
+		value.state = value.template({})
+		value.state.parent = value.parent
 	end
-	--print(love.timer.getFPS())
-	globals.Timer.update(dt)
-	manager:update(dt)
---	manager2:update(dt)
 
+	game.states.head = game.states.Title.state
+	game.libs.Gamestate.switch(game.states.head)
+end
+
+function love.update(dt)
+	globals.Timer.update(dt)
+	local nextstate = game.states.head:update(dt)
+
+	if nextstate then
+		assert(game.states[nextstate] ~= nil, string.format("%s does not exist", nextstate))
+		game.libs.Gamestate.switch(game.states[nextstate].state)
+		game.states.head = game.states[nextstate].state
+	end
+end
+
+function love.draw()
+	game.states.head:draw()
+end
+
+function love.keypressed (key, code)
+	game.states.head:keypressed(key, code)
 end

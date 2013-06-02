@@ -1,26 +1,63 @@
 TODO:
 
+
+========================================================================
+Physics
+========================================================================
+
 - Slopes
+
+- Proper walking on ladders (making the top of a ladder a one-directional
+  platform seems a way to do it)
+
+========================================================================
+Enemies and Stage Elements
+========================================================================
+
 - Better (re)spawning and despawning.
 
-- Define a way to easily implement different formes for a character without having to specify the full set of states all
-	over again. A way could be to have different sprite sheets and switch between them, and have a "currentForme" variable.
+========================================================================
+Characters
+========================================================================
 
-- change the way transitions are specified. maybe a section dedicated to transitions in a player/element's definition.
+- Define a way to easily implement different formes for a character 
+  without having to specify the full set of states all over again. A way 
+  to do this could be to have different sprite sheets and switch between 
+  them, and have a "currentForme" variable.
+
+========================================================================
+Elements (stage elements AND characters)
+========================================================================
+
+- change the way transitions are specified. maybe a section dedicated to
+  transitions in a player/element's definition.
+- Add "drawPriority"
+
+========================================================================
+Stages
+========================================================================
 
 - Add parameters to the room transition modes (scrolling speed/time, etc)
+- Add "drawPriority" parameters to layers, enabling foreground elements.
+- Parallax?
 
-- change "ground" layer to "background"; add optional "foreground" layer
-
-- list public table values for each class (e.g. element.collisionFlags, element.dynamics, etc)
+========================================================================
+Managers (World, Camera)
+========================================================================
 
 - move elements to the world/camera manager
+- add references to players and elements to the camera manager, or get
+  them passed to it by the worldmanager
+- fix bugs with the scrolling camera (try entering tourian's second room
+  while jumping/walking) Might have something to do with the camera's 
+  getVisible(). Actually, we should play Metroid and see how the camera 
+  works in-game.
+========================================================================
+Other (documentation, global stuff, etc)
+========================================================================
 
-- add references to players and elements to the camera manager, or get them passed to it by the worldmanager
-
-- fix bugs with the scrolling camera (try entering tourian's second room while jumping/walking) Might have something to do with the camera's getVisible(). Actually, we should play Metroid and see how the camera works.
-
-- find a good way to have the top tile of a ladder as a platform. 
+- list public table values for each class (e.g. element.collisionFlags, 
+element.dynamics, etc)
 
 - add ldoc comments to some functions that are missing them
 

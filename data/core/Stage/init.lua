@@ -17,24 +17,22 @@ local ElementFactory = require 'data.core.ElementFactory'
 -- @param mapPath The path to the map file.
 -- @return The newly created Stage.
 local Stage = Class {
-	name = 'Stage',
-
-	init = 
-		function (self, mapPath) 
-			self.loader = require 'lib.AdvTileLoader.Loader'
-			
-			self.elementFactories = {}
-			self.elementLocations = {}
-			self.elementTypes = {}
-			self.activeElements = {}
-
-			self:setMap(mapPath)
-			self.rooms = {}
-			self.defaultRoom = "_defaultRoom"
-
-
-		end
+	name = 'Stage'
 }
+
+function Stage:init(mapPath) 
+	self.loader = require 'lib.AdvTileLoader.Loader'
+	
+	self.elementFactories = {}
+	self.elementLocations = {}
+	self.elementTypes = {}
+	self.activeElements = {}
+
+	self:setMap(mapPath)
+	self.rooms = {}
+	self.defaultRoom = "_defaultRoom"
+
+end
 
 --======================================
 -- Static functions

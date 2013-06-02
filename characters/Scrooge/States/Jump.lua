@@ -1,17 +1,16 @@
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
-local BasicJump = require 'data.core.CommonStates.Jump'
+local BasicJump = require 'data.core.CommonStates.BasicJump'
 
 local Jump = Class {
-	name = "ScroogeJump",
-	__includes = BasicJump,
-
-	init = 
-		function(self, name, dynamics, animation)
-			BasicJump.init(self, name, dynamics, animation)
-			self.holdControl = "jump"
-		end
+	name = "Jump",
+	__includes = BasicJump
 }
+
+function Jump:init(name, dynamics, animation)
+	BasicJump.init(self, name, dynamics, animation)
+	self.holdControl = "jump"
+end
 
 function Jump:update(dt)
 	BasicJump.update(self, dt)

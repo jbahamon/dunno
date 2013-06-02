@@ -3,13 +3,12 @@ local PlayerState = require 'data.core.Player.PlayerState'
 
 local Jump = Class {
 	name = "Jump",
-	__includes = PlayerState,
-
-	init = 
-		function(self, name, dynamics, animation)
-			PlayerState.init(self, name, dynamics, animation)
-		end
+	__includes = PlayerState
 }
+
+function Jump:init(name, dynamics, animation)
+	PlayerState.init(self, name, dynamics, animation)
+end
 
 function Jump:getCurrentAcceleration(dt)
 	

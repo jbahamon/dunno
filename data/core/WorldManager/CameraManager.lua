@@ -25,29 +25,25 @@ local Timer = globals.Timer
 -- @return The newly created CameraManager
 local CameraManager = Class {
 	name = "CameraManager",
-
-	init = 
-		function (self, players, stage, topLeft, bottomRight)
-			self.players = players
-			self.stage = stage
-
-			self.topLeft = topLeft
-			self.bottomRight = bottomRight
-
-			self.camera = Camera.new(self.stage:getBounds())
-			self.camera:setWindow(self.topLeft.x, 
-								  self.topLeft.y, 
-								  self.bottomRight.x - self.topLeft.x,
-								  self.bottomRight.y - self.topLeft.y)	
-
-			self.fullScreenTint = {255, 255, 255, 255}
-			self.lookingAt = vector(0,0)
-			self.camera:setScale(globals.scale)
-		end
-
 }
 
+function CameraManager:init(players, stage, topLeft, bottomRight)
+	self.players = players
+	self.stage = stage
 
+	self.topLeft = topLeft
+	self.bottomRight = bottomRight
+
+	self.camera = Camera.new(self.stage:getBounds())
+	self.camera:setWindow(self.topLeft.x, 
+						  self.topLeft.y, 
+						  self.bottomRight.x - self.topLeft.x,
+						  self.bottomRight.y - self.topLeft.y)	
+
+	self.fullScreenTint = {255, 255, 255, 255}
+	self.lookingAt = vector(0,0)
+	self.camera:setScale(globals.scale)
+end
 
 --- Class that handles the camera: room transitions, camera modes, fullscreen fading, etcetera.
 -- @type CameraManager

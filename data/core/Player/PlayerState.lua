@@ -19,14 +19,13 @@ local ElementState = require 'data.core.Element.ElementState'
 local PlayerState = Class {
 	name = "PlayerState",
 
-	__includes = ElementState,
-	
-	init =
-		function(self, name, animation, dynamics)
-			ElementState.init(self, name, animation, dynamics)
-			self.hasControl = true
-		end
+	__includes = ElementState
 }
+
+function PlayerState:init(name, animation, dynamics)
+	ElementState.init(self, name, animation, dynamics)
+	self.hasControl = true
+end
 
 ---A Player's state implementation. Extends @{data.core.Element.ElementState|ElementState}.
 -- Has input handling in addition to normal ElementState properties.

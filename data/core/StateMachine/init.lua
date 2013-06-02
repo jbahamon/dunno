@@ -11,15 +11,14 @@ local State = require 'data.core.StateMachine.State'
 -- @name StateMachine
 -- @return The newly created StateMachine.
 local StateMachine = Class {
-	name = "StateMachine",
-
-	init = 
-		function(self)		
-			self.states = {}
-			self.currentState = nil
-		end
-
+	name = "StateMachine"
 }
+
+
+function StateMachine:init()	
+	self.states = {}
+	self.currentState = nil
+end
 
 --- A state machine implementation.
 -- It is the base for all elements (player, enemy and neutral) in the game.

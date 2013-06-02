@@ -3,13 +3,13 @@ local PlayerState = require 'data.core.Player.PlayerState'
 
 local MorphBall = Class {
 	name = "MorphBall",
-	__includes = PlayerState,
-
-	init = 
-		function(self, name, dynamics, animation)
-			PlayerState.init(self, name, dynamics, animation)
-		end
+	__includes = PlayerState
 }
+
+
+function MorphBall:init(name, dynamics, animation)
+	PlayerState.init(self, name, dynamics, animation)
+end
 
 
 function MorphBall:applyPostForceEffects(dt)
