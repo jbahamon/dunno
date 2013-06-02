@@ -188,15 +188,15 @@ function export:getShape(column, row, columnspan, rowspan, align)
   return x, y, width, height
 end
 
-function export:Label(content, column, row, columnspan, rowspan, align, font, id)
+function export:Label(content, column, row, columnspan, rowspan, align, font)
   local x, y, width, height = self:getShape(column, row, columnspan, rowspan)
   if font then
     love.graphics.setFont(font)
   end
-  return self.quickie.Label{text = content, pos = {x, y}, size = {width, height}, align = align, id = id }
+  return self.quickie.Label{text = content, pos = {x, y}, size = {width, height}, align = align}
 end
 
-function export:Button(content, column, row, columnspan, rowspan, font, id)
+function export:Button(content, column, row, columnspan, rowspan, font)
   local x, y, width, height = self:getShape(column, row, columnspan, rowspan)
   if font then
     love.graphics.setFont(font)
@@ -204,10 +204,10 @@ function export:Button(content, column, row, columnspan, rowspan, font, id)
   return self.quickie.Button{text = content, pos = {x, y}, size = {width, height}}
 end
 
-function export:Slider(info, column, row, columnspan, rowspan, vertical, id)
+function export:Slider(info, column, row, columnspan, rowspan, vertical)
   local x, y, width, height = self:getShape(column, row, columnspan, rowspan)
 
-  return self.quickie.Slider{info = info, pos = {x, y}, size = {width, height}, vertical = vertical, id = id} 
+  return self.quickie.Slider{info = info, pos = {x, y}, size = {width, height}, vertical = vertical}  
 end
 
 
