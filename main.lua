@@ -42,6 +42,10 @@ local game = {
       template = require 'data.states.Title',
       parent = nil
     },
+    GameSelection = {
+      template = require 'data.states.GameSelection',
+      parent = "Title"
+    },
     InGame = {
       template = require 'data.states.InGame',
       parent = "Title"

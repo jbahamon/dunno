@@ -10,8 +10,8 @@ return function (state)
     function state:enter(previous)
         self.manager = WorldManager(vector(0, 0), vector(512, 480))
         --self.manager:setStage("SMB3-1-1")
-        self.manager:setStage("Tourian")
-        self.manager:addPlayer("Samus")
+        self.manager:setStage(previous.chosenStage)
+        self.manager:addPlayer(previous.chosenCharacter)
         self.manager:start()
     end
 
@@ -22,7 +22,6 @@ return function (state)
 
     function state:update(dt)
         if self.doExit then
-          -- love.event.push("quit")
             -- TODO: self.manager:destroySelf()
             self.manager = nil
             return self.parent
