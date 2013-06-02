@@ -15,6 +15,7 @@ return function (state)
             menu = love.graphics.newFont("data/fonts/joystixmono.otf", 16)
 
         }
+
     end
 
     function state:enter(previous)
@@ -27,7 +28,9 @@ return function (state)
             },
             margin = { left = 0, top = 0, right = 0, bottom = 0 }
         }
+
         self.grid:init(self.gui, gridschema)
+        self.gui.keyboard.clearFocus()
     end
 
     function state:leave(previous)
@@ -41,7 +44,7 @@ return function (state)
         self.grid:Label("'cause we didn't know what to name it", 3, 2, 3, 1, "center", self.fonts["subtitle"])
 
         if self.grid:Button("Single Player", 3, 4, 3, 1, self.fonts["menu"]) then
-            self.doExit = function () return "InGame" end
+            self.doExit = function () return "GameSelection" end
         end
 
         if self.grid:Button("Quit", 3, 6, 3, 1, self.fonts["menu"]) then
