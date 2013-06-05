@@ -31,7 +31,7 @@ return function (state)
 
         }
 
-         self.maxElems = 4
+         self.maxElems = 6
     end
 
     function state:enter(previous)
@@ -39,7 +39,7 @@ return function (state)
 
         local gridschema = {
             columns = {150, 10, 150, 10, 150, 10, 150 },
-            rows = { 50, 10, 30, 5, 30, 5, 30, 5, 30, 5, 30 },
+            rows = { 50, 10, 30, 5, 30, 5, 30, 5, 30, 5, 30, 5, 30},
             alignment = {
                 horizontal = "center",
                 vertical = "center"

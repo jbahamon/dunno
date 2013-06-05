@@ -28,7 +28,7 @@ function Jump:onEnterFrom(otherState)
 	if math.abs(self.dynamics.velocity.x) > self.dynamics.horizontalCondition then
 
 		self.dynamics.maxVelocity.x = self.dynamics.horizontalMaxVelocities[2]
-
+		
 	else
 
 		self.dynamics.maxVelocity.x = self.dynamics.horizontalMaxVelocities[1]

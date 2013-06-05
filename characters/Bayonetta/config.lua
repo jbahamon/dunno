@@ -20,31 +20,7 @@ local params = {
 				frames = '1-2, 4',
 				defaultDelay = 4/30.0 
 			},
-			class = "States/Jump.lua",
-			transitions = {
-			 	{ 	condition = 
-			        	function(currentState, collisionFlags) 
-			            	return currentState.dynamics.velocity.y >= currentState.dynamics.jumpClipVelocity
-			        	end,
-			        targetState = "fall" },
-
-				{ 	condition = 
-			        	function(currentState, collisionFlags) 
-				            return not collisionFlags.canMoveDown
-				        end,
-			        targetState = "stand" },
-			     { 	condition = 
-						function (currentState, collisionFlags)
-				            local ladder = collisionFlags.specialEvents.ladder
-				            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-				                currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
-				                return true
-				            else
-				                return false
-				            end
-				        end,
-			        targetState = "climb" },
-			}
+			class = "States/Jump.lua"
 		},
 
 		stand = {
@@ -73,7 +49,6 @@ local params = {
 				frames = {'1,2', '3,2', '1,3', '3,3'},
 				defaultDelay = 4/30.0
 			}
-
 		},
 
 		fall = {

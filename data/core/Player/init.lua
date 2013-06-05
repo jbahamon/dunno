@@ -87,153 +87,6 @@ function Player:addBasicStates(basicStatesParams)
     climb:addFlag("climb")
 
 
-    walk:addTransition(
-        function (currentState, collisionFlags)
-            return collisionFlags.hit
-        end,
-        "hit")
-
-    walk:addTransition( 
-    	function(currentState, collisionFlags) 
-    		return currentState.hasControl and currentState.owner.control.tap["jump"]
-    	end,
-    	"jump")
-
-    walk:addTransition( 
-    	function(currentState, collisionFlags) 
-    		return currentState.hasControl and 
-                    not (currentState.owner.control["left"] or currentState.owner.control["right"]) and
-                    currentState.dynamics.velocity.x == 0
-    	end,
-    	"stand")
-
-    walk:addTransition( 
-    	function(currentState, collisionFlags) 
-            return collisionFlags.canMoveDown
-    	end,
-    	"fall")
-
-    stand:addTransition( 
-    	function(currentState, collisionFlags) 
-    		return currentState.hasControl and (currentState.owner.control["left"] or currentState.owner.control["right"])
-    	end,
-    	"walk")
-
-    stand:addTransition( 
-        	function(currentState, collisionFlags) 
-       		   return currentState.hasControl and currentState.owner.control.tap["jump"]
-        	end,
-       	"jump")
-
-    stand:addTransition( 
-    	function(currentState, collisionFlags) 
-    		return collisionFlags.canMoveDown
-    	end,
-    	"fall")
-
-    stand:addTransition(
-        function (currentState, collisionFlags)
-            local ladder = collisionFlags.specialEvents.ladder
-            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-                currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
-                return true
-            else
-                return false
-            end
-        end,   
-        "climb")
-
-    stand:addTransition(
-        function (currentState, collisionFlags)
-            local ladder = collisionFlags.specialEvents.standingOnLadder
-            if ladder and currentState.owner.control["down"] then
-                currentState.owner:move(ladder.position - currentState.dynamics.position)
-                return true
-            else
-                return false
-            end
-        end,   
-        "climb")
-
-    stand:addTransition(
-        function (currentState, collisionFlags)
-            return collisionFlags.hit
-        end,
-        "hit")
-
-	fall:addTransition( 
-    	function(currentState, collisionFlags) 
-    		return (not collisionFlags.canMoveDown) and currentState.dynamics.velocity.y > 0
-    	end,
-    	"stand")
-
-    fall:addTransition(
-        function (currentState, collisionFlags)
-            return collisionFlags.hit
-        end,
-        "hit")
-
-	fall:addTransition(
-		function (currentState, collisionFlags)
-		    local ladder = collisionFlags.specialEvents.ladder
-		    if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-		        currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
-		        return true
-		    else
-		        return false
-		    end
-		end,   
-		"climb")
-    
-    jump:addTransition(
-        function (currentState, collisionFlags)
-            return collisionFlags.hit
-        end,
-        "hit")
-
-    jump:addTransition( 
-        function(currentState, collisionFlags) 
-            return not collisionFlags.canMoveDown
-        end,
-        "stand")
-
-    jump:addTransition(
-        function (currentState, collisionFlags)
-            local ladder = collisionFlags.specialEvents.ladder
-            print("fds")
-            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-                currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
-                return true
-            else
-                return false
-            end
-        end,   
-        "climb")
-
-    jump:addTransition( 
-        function(currentState, collisionFlags) 
-            return currentState.dynamics.velocity.y > 0
-        end,
-        "fall")
-
-    climb:addTransition(
-        function (currentState, collisionFlags)
-            return collisionFlags.hit
-        end,
-        "hit")
-
-    climb:addTransition(
-        function (currentState, collisionFlags)
-            return currentState.owner.control.tap["jump"] or not collisionFlags.specialEvents.ladder
-        end,
-        "fall")
-
-    hit:addTransition(
-        function (currentState, collisionFlags)
-            return currentState.hasControl
-        end,
-        "fall")
-
     self:addState(walk)
     self:addState(stand)
     self:addState(fall)
@@ -347,6 +200,15 @@ function Player:loadBasicStates(parameters, folder)
 				end
 			end
 		end
+
+        self:addTransitionsFromParams(Player.basicTransitions)
+
+        for stateName, stateParams in pairs(states) do
+            if stateParams.omitTransitions then
+                self.states[stateName].transitions = {}
+            end
+        end
+
 	end
 end
 
@@ -367,7 +229,7 @@ function Player:getHitBy(otherElement)
 end
 
 --=====================================
--- Static functions
+-- Static functions and properties
 --=====================================
 
 Player.characterFolder = 'characters/'
@@ -387,5 +249,122 @@ function Player.loadBasicFromParams(parameters, folder)
     player.name = folder
 	return player
 end
+
+Player.basicTransitions =
+    {
+        { 
+            from        = { "walk", "stand", "stand", "jump", "hit"},
+            to          = "hit",
+            condition   = 
+                function (currentState, collisionFlags)
+                    return collisionFlags.hit
+                end
+        },
+
+        {
+            from        = { "walk", "stand" },
+            to          = "jump",
+            condition   = 
+                function(currentState, collisionFlags) 
+                    return currentState.hasControl and currentState.owner.control.tap["jump"]
+                end
+        },
+
+        {
+            from        = { "walk" },
+            to          = "stand",
+            condition   =
+                function(currentState, collisionFlags) 
+                    return currentState.hasControl and 
+                            not (currentState.owner.control["left"] or currentState.owner.control["right"]) and
+                            currentState.dynamics.velocity.x == 0
+                end
+        },
+
+        {
+            from        = { "walk", "stand" },
+            to          = "fall",
+            condition   = 
+                function(currentState, collisionFlags) 
+                    return collisionFlags.canMoveDown
+                end
+        },
+
+        {
+            from        = { "stand" },
+            to          = "walk",
+            condition   =
+                function(currentState, collisionFlags) 
+                    return currentState.hasControl and (currentState.owner.control["left"] or currentState.owner.control["right"])
+                end
+        },
+
+        {
+            from        = { "stand", "fall", "jump", },
+            to          = "climb",
+            condition   = 
+                function (currentState, collisionFlags)
+                    local ladder = collisionFlags.specialEvents.ladder
+                    if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
+                        currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
+                        return true
+                    else
+                        return false
+                    end
+                end
+        },
+
+        {
+            from        = { "stand" },
+            to          = "climb",
+            condition   =
+                function (currentState, collisionFlags)
+                    local ladder = collisionFlags.specialEvents.standingOnLadder
+                    if ladder and currentState.owner.control["down"] then
+                        currentState.owner:move(ladder.position - currentState.dynamics.position)
+                        return true
+                    else
+                        return false
+                    end
+                end
+        },
+
+
+        {
+            from        = { "fall" },
+            to          = "stand",
+            condition   = 
+                function(currentState, collisionFlags) 
+                    return (not collisionFlags.canMoveDown) and currentState.dynamics.velocity.y > 0
+                end
+        },
+
+        {
+            from        = { "jump" },
+            to          = "fall",
+            condition   = 
+                function(currentState, collisionFlags) 
+                    return currentState.dynamics.velocity.y > 0
+                end
+        },
+        
+        {
+            from        = { "climb" },
+            to          = "fall",
+            condition   = 
+                function (currentState, collisionFlags)
+                    return currentState.owner.control.tap["jump"] or not collisionFlags.specialEvents.ladder
+                end
+        },
+
+        {
+            from        = { "hit" },
+            to          = "fall",
+            condition   = 
+                function (currentState, collisionFlags)
+                    return currentState.hasControl
+                end
+        }
+    }
 
 return Player

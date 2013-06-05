@@ -22,26 +22,6 @@ local params = {
 			},
 
 			class = "States/Jump.lua",
-			transitions = {
-				{	condition =
-			    	    function (currentState, collisionFlags)
-				            local ladder = collisionFlags.specialEvents.ladder
-				            if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-				                currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
-				                return true
-				            else
-				                return false
-				            end
-				        end,
-	    			targetState = "climb" },
-
-				{ 	condition = 
-			        	function(currentState, collisionFlags) 
-				            return not collisionFlags.canMoveDown
-				        end,
-			        targetState = "stand" },
-
-			}
 		},
 
 		stand = {

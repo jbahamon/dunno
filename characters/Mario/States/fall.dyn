@@ -10,7 +10,7 @@ dynamics.maxVelocity = vector(1.125, 5) * scale
 
 -- Accelerations    
 dynamics.friction = vector(0, 0)
-dynamics.noInputFriction = vector(0.25, 0) * scale * scale
+dynamics.noInputFriction = vector(0, 0) * scale * scale
 dynamics.defaultAcceleration = vector(0, 0)
 dynamics.inputAcceleration = vector(0.25, 0) * scale * scale
 dynamics.gravity = vector(0, 0.1) * scale * scale

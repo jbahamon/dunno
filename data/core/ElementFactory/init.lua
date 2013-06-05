@@ -89,6 +89,7 @@ function ElementFactory:create()
 	newElement.spriteOffset = self.spriteOffset:clone()
 
 	newElement:loadStatesFromParams(self.parameters)
+	newElement:addTransitionsFromParams(self.parameters)
 
 	return newElement
 

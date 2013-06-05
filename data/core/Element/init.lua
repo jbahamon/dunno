@@ -808,6 +808,10 @@ function Element:loadStatesFromParams(parameters)
 	assert(parameters.initialState and type(parameters.initialState) == "string" and self.states[parameters.initialState],
 		"Must specify a valid initial state")
 
+    if (parameters.transitions) then
+        self:addTransitionsFromParams(parameters.transitions)
+    end
+
 	self:setInitialState(parameters.initialState)
 	
 end
@@ -861,16 +865,6 @@ function Element:addSingleStateFromParams(stateName, stateParams, folder)
 
 	self:addState(newState)
 
-	if stateParams.transitions then
-		for _, transition in ipairs(stateParams.transitions) do
-
-			assert(transition.condition, "Transition condition not specified for state \'".. stateName .."\'")
-			assert(transition.targetState, "Transition target not specified for state \'".. stateName .."\'")
-			
-			self.states[stateName]:addTransition(transition.condition, transition.targetState)
-		end
-	end
-
 	if stateParams.flags then
 		for _, flag in ipairs(stateParams.flags) do
 			assert(type(flag) == "string", "Flag name must be a string, got \'".. tostring(flag) .."\'")
@@ -879,6 +873,24 @@ function Element:addSingleStateFromParams(stateName, stateParams, folder)
 	end
 end
 
+--- Creates and adds transition from a parameter table.
+-- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+-- @param parameters The parameter table.
+function Element:addTransitionsFromParams(transitions)
+	for _, transition in ipairs(transitions) do
+		assert(transition.from, "Transition origin not specified in parameters.")
+		assert(transition.condition, "Transition condition not specified in parameters.")
+		assert(transition.to, "Transition target not specified in parameters.")
+		
+		if type(transition.from) == "string" then
+			self.states[transition.from]:addTransition(transition.condition, transition.to)
+		elseif type(transition.from) == "table" then
+			for _, fromState in ipairs(transition.from) do
+				self.states[fromState]:addTransition(transition.condition, transition.to)
+			end
+		end
+	end
+end
 
 function Element:destroySelf()
 

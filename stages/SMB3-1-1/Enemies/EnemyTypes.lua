@@ -25,9 +25,6 @@ local enemyTypes = {
 					frames = "1-2,1",
 					defaultDelay = 8/60
 				},
-
-				transitions = {}
-
 			}
 		},
 
@@ -56,23 +53,6 @@ local enemyTypes = {
 					frames = "1-4,1",
 					defaultDelay = 4/60
 				},
-
-				transitions = {
-
-					{	condition = 
-							function (currentState, collisionFlags)
-								return (not collisionFlags.canMoveDown) and currentState.dynamics.velocity.y > 0
-							end,
-						targetState = "jumping" 
-
-					},
-
-					{	condition = 
-						function (currentState, collisionFlags)
-							return collisionFlags.hit and false -- TODO: life
-						end,
-						targetState = "walking" }
-				}
 			},
 
 			walking = {
@@ -83,8 +63,26 @@ local enemyTypes = {
 					defaultDelay = 8/60
 				},
 
-				transitions = {}
+			}
+		},
 
+		transitions = {
+			{	
+				from		= { "jumping" },
+				to 			= "jumping",
+				condition = 
+					function (currentState, collisionFlags)
+						return (not collisionFlags.canMoveDown) and currentState.dynamics.velocity.y > 0
+					end,
+			},
+
+			{	
+				from		= { "jumping" },
+				to 			= "walking",
+				condition = 
+					function (currentState, collisionFlags)
+						return collisionFlags.hit and false -- TODO: life
+					end
 			}
 		},
 
@@ -105,32 +103,6 @@ local enemyTypes = {
 		},
 
 		states = {
-			jumping = {
-				class = "Enemies/States/Jump.lua",
-				dynamics = "Enemies/Dynamics/GoombaJump.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-4,1",
-					defaultDelay = 4/60
-				},
-
-				transitions = {
-
-					{	condition = 
-							function (currentState, collisionFlags)
-								return (not collisionFlags.canMoveDown) and currentState.dynamics.velocity.y > 0
-							end,
-						targetState = "jumping" 
-
-					},
-
-					{	condition = 
-						function (currentState, collisionFlags)
-							return collisionFlags.hit and false -- TODO: life
-						end,
-						targetState = "walking" }
-				}
-			},
 
 			walkingWithWings = {
 				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
@@ -139,14 +111,6 @@ local enemyTypes = {
 					frames = "1-2,1",
 					defaultDelay = 8/60
 				},
-
-				transitions = {
-					{	condition = 	
-							function (currentState, collisionFlags)
-								return currentState.stateTime > 32/60 
-							end,
-						targetState = "hopping" }
-				}
 			},
 
 			walking = {
@@ -156,9 +120,6 @@ local enemyTypes = {
 					frames = "1-2,2",
 					defaultDelay = 8/60
 				},
-
-				transitions = {}
-
 			},
 
 			hopping = {
@@ -169,26 +130,6 @@ local enemyTypes = {
 					frames = "1-4,1",
 					defaultDelay = 4/60
 				},
-				
-				transitions = {
-					{ 	condition =
-							function (currentState, collisionFlags)
-								return (not collisionFlags.canMoveDown) and 
-										currentState.dynamics.velocity.y > 0 and 
-										currentState.hopCount <= 3
-							end,
-						targetState = "hopping"
-					},
-
-				 	{	condition =
-							function (currentState, collisionFlags)
-								return (not collisionFlags.canMoveDown) and 
-										currentState.dynamics.velocity.y > 0 and 
-										currentState.hopCount > 3
-							end,
-						targetState = "jumping"
-					}
-				}
 			},
 
 			jumping = {
@@ -199,19 +140,62 @@ local enemyTypes = {
 					frames = "1-4,1",
 					defaultDelay = 4/60
 				},
-
-				transitions = {
-					{	condition =
-							function (currentState, collisionFlags)
-								return (not collisionFlags.canMoveDown) and 
-										currentState.dynamics.velocity.y > 0 
-							end,
-						targetState = "walkingWithWings"
-					}
-				}
 			}
 
 		},
+
+
+		transitions = {
+			{	
+				from		= { "jumping" },
+				to 			= "walkingWithWings",
+				condition = 
+					function (currentState, collisionFlags)
+						return (not collisionFlags.canMoveDown) and 
+								currentState.dynamics.velocity.y > 0 
+					end
+			},
+
+			{	
+				from		= { "hopping" },
+				to 			= "hopping",
+				condition =
+					function (currentState, collisionFlags)
+						return (not collisionFlags.canMoveDown) and 
+								currentState.dynamics.velocity.y > 0 and 
+								currentState.hopCount <= 3
+					end
+			},
+
+		 	{
+				from		= { "hopping" },
+				to 			= "jumping",
+				condition =
+					function (currentState, collisionFlags)
+						return (not collisionFlags.canMoveDown) and 
+								currentState.dynamics.velocity.y > 0 and 
+								currentState.hopCount > 3
+					end
+			},
+
+			{
+				from		= { "jumping", "walkingWithWings", "hopping" },
+				to 			= "walking",
+				condition = 
+					function (currentState, collisionFlags)
+						return collisionFlags.hit and false -- TODO: life
+					end
+			},
+
+			{	from		= "walkingWithWings",
+				to 			= "hopping",
+				condition = 	
+					function (currentState, collisionFlags)
+						return currentState.stateTime > 32/60 
+					end,
+			}
+		},
+	
 
 		initialState = "hopping"
 	},
@@ -239,10 +223,7 @@ local enemyTypes = {
 					mode = "loop",
 					frames = "5-6,1",
 					defaultDelay = 8/60
-				},
-
-				transitions = {}
-
+				}
 			}
 		},
 
@@ -271,10 +252,7 @@ local enemyTypes = {
 					mode = "loop",
 					frames = "1-2,2",
 					defaultDelay = 8/60
-				},
-
-				transitions = {}
-
+				}
 			}
 		},
 
@@ -317,16 +295,6 @@ local enemyTypes = {
 					mode = "loop",
 					frames = "1-2,1",
 					defaultDelay = 8/60
-				},
-
-				transitions = {
-					{	condition =
-							function (currentState, collisionFlags)
-								return currentState.stateTime > currentState.dynamics.maxStateTime
-							end,
-
-						targetState = "movingUp"
-					}
 				}
 			},
 
@@ -336,16 +304,6 @@ local enemyTypes = {
 					mode = "loop",
 					frames = "1-2,1",
 					defaultDelay = 8/60
-				},
-
-				transitions = {
-					{	condition =
-							function (currentState, collisionFlags)
-								return currentState.stateTime > currentState.dynamics.maxStateTime
-							end,
-
-						targetState = "movingDown"
-					}
 				}
 			},
 
@@ -356,16 +314,6 @@ local enemyTypes = {
 					mode = "loop",
 					frames = "1-2,1",
 					defaultDelay = 8/60
-				},
-
-				transitions = {
-					{	condition =
-							function (currentState, collisionFlags)
-								return currentState.stateTime > currentState.dynamics.maxStateTime
-							end,
-
-						targetState = "up"
-					}
 				}
 			},
 
@@ -376,18 +324,48 @@ local enemyTypes = {
 					mode = "loop",
 					frames = "1-2,1",
 					defaultDelay = 8/60
-				},
-
-				transitions = {
-					{	condition =
-							function (currentState, collisionFlags)
-								return currentState.stateTime > currentState.dynamics.maxStateTime
-							end,
-
-						targetState = "hidden"
-					}
 				}
 			},
+		},
+
+		transitions = {
+
+			{	
+				from 		= { "hidden" },
+				to  		= "movingUp",
+				condition 	=
+					function (currentState, collisionFlags)
+						return currentState.stateTime > currentState.dynamics.maxStateTime
+					end
+			},
+
+			{	
+				from 		= { "movingUp" },
+				to  		= "up",
+				condition 	=
+					function (currentState, collisionFlags)
+						return currentState.stateTime > currentState.dynamics.maxStateTime
+					end
+			},
+
+			{	
+				from 		= { "up" },
+				to  		= "movingDown",
+				condition 	=
+					function (currentState, collisionFlags)
+						return currentState.stateTime > currentState.dynamics.maxStateTime
+					end
+			},
+
+			{	
+				from 		= { "movingDown" },
+				to  		= "hidden",
+				condition 	=
+					function (currentState, collisionFlags)
+						return currentState.stateTime > currentState.dynamics.maxStateTime
+					end
+			},
+
 		},
 
 		initialState = "hidden"
