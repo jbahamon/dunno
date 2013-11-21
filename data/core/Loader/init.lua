@@ -3,7 +3,7 @@
 -- @name data.core.PhysicsComponent
 
 local GameObject = require 'data.core.GameObject'
-local State = require 'data.core.component.State'
+local State = require 'data.core.Component.State'
 local BasicJump = require 'data.core.CommonStates.BasicJump'
 local Climb = require 'data.core.CommonStates.Climb'
 local Hit = require 'data.core.CommonStates.Hit'
