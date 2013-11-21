@@ -34,10 +34,10 @@ function State:addTransition(condition, targetState, position)
 
 	local transition = {condition = condition, targetState = targetState}
 
-	if position < 0 then
+	if not position or position < 0 then
 		table.insert(self.transitions, transition)
 	else
-		table.insert(self.transitions, transition, position)
+		table.insert(self.transitions, position, transition)
 	end
 end
 

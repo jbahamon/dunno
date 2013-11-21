@@ -48,7 +48,7 @@ function StateMachineComponent:addTo(container)
     Component.addTo(self, container)
     container:register("start", self)
     container:register("update", self)
-    container:register("checkStateChange", self)
+    container:register("lateUpdate", self)
     container.stateMachine = self
 
     for k, v in pairs(self.states) do
@@ -72,8 +72,14 @@ end
 -- is taken (or the one that was added first, if there is more than one transition with the
 -- same priority). State transition conditions take a single argument: the current
 -- state.
-function StateMachineComponent:checkStateChange(dt)
+function StateMachineComponent:lateUpdate(dt)
+
     local currentState = self.currentState
+
+    if currentState.lateUpdate then
+        currentState:lateUpdate(dt)
+    end
+    
     for _ , transition in ipairs(currentState.transitions) do
         if transition.condition(currentState, self.container.collision.collisionFlags) then
             self:changeToState(self.states[transition.targetState])

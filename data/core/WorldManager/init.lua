@@ -149,9 +149,9 @@ function WorldManager:update(dt)
 	    -- handled by HardonCollider
 	    self.activeCollider:update(dt)
 		
-	    -- We check for state changes after everything is done.
+	    -- Now the late updates
 	    for i, player in ipairs(self.players) do
-	    	player:checkStateChange()
+	    	player:lateUpdate(dt)
 
 	    	local roomChange = self.stage:checkRoomChange(player)
 

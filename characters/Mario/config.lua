@@ -103,7 +103,6 @@ local params = {
 		},
 
 		{
-
 			from = "skid",
 			to = "walk",
 			condition =
@@ -115,62 +114,51 @@ local params = {
 								currentState.owner.control["right"]) and 
 							currentState.owner.transform.facing > 0)
 				end
-
 		},
 
 		{
-
 			from = "skid",
 			to = "walk",
 			condition =
 				function(currentState, collisionFlags)
 					return (not currentState.owner.control["right"]) and (not currentState.owner.control["left"])
 				end
-
 		},
 
 		{
-
 			from = "skid",
 			to = "fall",
 			condition =
 				function(currentState, collisionFlags)
 					return collisionFlags.canMoveDown
 				end
-
 		},
 
 		{
-
 			from = "skid",
 			to = "jump",
 			condition =
 				function(currentState, collisionFlags)
 					return currentState.owner.control["jump"]
 				end
-
 		},
 
 		{
-
 			from = "skid",
 			to = "stand",
 			condition =
 				function(currentState, collisionFlags)
 					return currentState.owner.physics.velocity.x == 0
 				end
-
 		},
 
 		{
-
 			from = "fall",
 			to = "walk",
 			condition =
 				function(currentState, collisionFlags)
 					return currentState.owner.physics.velocity.x ~= 0 and not collisionFlags.canMoveDown
 				end
-
 		}
 
 	},

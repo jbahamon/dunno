@@ -11,7 +11,7 @@ return function (state)
         self.manager = WorldManager("")
         self.manager:addViewport(vector(0, 0), vector(512, 480))
         self.manager:setStage("SMB3-1-1")
-        self.manager:addPlayer("Mario")
+        self.manager:addPlayer("Samus")
         self.manager:start()
     end
 

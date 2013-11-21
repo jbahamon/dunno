@@ -6,10 +6,6 @@ local Jump = Class {
 	__includes = State
 }
 
-function Jump:init(...)
-	State.init(self, ...)
-end
-
 function Jump:update(dt)
 	
 	if self.owner.control["jump"] and self.owner.physics.velocity.y < self.dynamics.gravityCondition then

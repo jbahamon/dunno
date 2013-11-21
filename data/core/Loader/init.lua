@@ -242,11 +242,11 @@ function Loader.loadTransitions(object, transitions)
 
         if type(transition.from) == "string" then
             assert(object.stateMachine.states[transition.from], "Transition origin state "..transition.from.." does not exist")
-            object.stateMachine.states[transition.from]:addTransition(transition.condition, transition.to)
+            object.stateMachine.states[transition.from]:addTransition(transition.condition, transition.to, transition.priority)
         elseif type(transition.from) == "table" then
             for _, fromState in ipairs(transition.from) do
                 assert(object.stateMachine.states[fromState], "Transition origin state "..fromState.." does not exist")
-                object.stateMachine.states[fromState]:addTransition(transition.condition, transition.to)
+                object.stateMachine.states[fromState]:addTransition(transition.condition, transition.to, transition.priority)
             end
         end
     end

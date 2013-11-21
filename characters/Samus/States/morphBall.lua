@@ -1,22 +1,15 @@
-	local Class = require 'lib.hump.class'
-local PlayerState = require 'data.core.Player.PlayerState'
+local Class = require 'lib.hump.class'
+local State = require 'data.core.Component.State'
 
 local MorphBall = Class {
 	name = "MorphBall",
-	__includes = PlayerState
+	__includes = State
 }
 
+function MorphBall:lateUpdate(dt)
 
-function MorphBall:init(name, dynamics, animation)
-	PlayerState.init(self, name, dynamics, animation)
-end
-
-
-function MorphBall:applyPostForceEffects(dt)
-	PlayerState.applyPostForceEffects(self, dt)
-
-	if (not self.owner.collisionFlags.canMoveDown) and self.dynamics.velocity.y > 0 then
-		self.dynamics.velocity.y = 0
+	if (not self.owner.collision.collisionFlags.canMoveDown) and self.owner.physics.velocity.y > 0 then
+		self.owner.physics.velocity.y = 0
 		self:removeFlag("air")
 		self:addFlag("grounded")
 	else
@@ -28,10 +21,7 @@ function MorphBall:applyPostForceEffects(dt)
 end
 
 function MorphBall:onEnterFrom(otherState)
-	PlayerState.onEnterFrom(self, otherState)
-
-	self.dynamics.velocity.y = self.dynamics.startVelocity
-
+	self.owner.physics.velocity.y = self.dynamics.startVelocity
 end
 
 return MorphBall

@@ -1,23 +1,23 @@
 local Class = require 'lib.hump.class'
-local BasicJump = require 'data.core.CommonStates.BasicJump'
+local State = require 'data.core.Component.State'
 
 local Jump = Class {
 	name = "MegamanJump",
-	__includes = BasicJump
+	__includes = State
 }
 
-function Jump:init(name, dynamics, animation)
-	BasicJump.init(self, name, dynamics, animation)
-end
 
-function Jump:applyPostForceEffects(dt)
-	BasicJump.applyPostForceEffects(self, dt)
-
-	if self.dynamics.velocity.y < self.dynamics.jumpReleaseVelocity and
+function Jump:lateUpdate(dt)
+	
+	if self.owner.physics.velocity.y < self.dynamics.jumpReleaseVelocity and
 		not self.owner.control["jump"] then
-		self.dynamics.velocity.y = self.dynamics.jumpClipVelocity
+		self.owner.physics.velocity.y = self.dynamics.jumpClipVelocity
 	end
 
+end
+
+function Jump:onEnterFrom(otherState)
+    self.owner.physics.velocity.y = self.dynamics.jumpVelocity
 end
 
 return Jump

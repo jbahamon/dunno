@@ -15,85 +15,96 @@ local params = {
     basicStates = {
         jump = {
             dynamics = "States/jump.dyn",
-            animation = { 
-                mode = 'once',
-                frames = {'1,4', '2,1', '4,1'},
-                defaultDelay = 3/60 
-            },
-
+            animation = "jump",
             class = "States/Jump.lua"
         },
 
         stand = {
             vulnerable = true,
             dynamics = "States/stand.dyn",
-            animation = { 
-                mode = 'loop',
-                frames = '1,4',
-                defaultDelay = 0.2
-            }
+            animation = "stand"
         },
 
         climb = {
             dynamics = "States/Climb.dyn",
-            animation = { 
-                mode = 'loop',
-                frames = '2-3,4',
-                defaultDelay = 10/60.0,
-            }
+            animation = "climb"
         },
 
         walk = {
             dynamics = "States/walk.dyn",
-            animation = { 
-                mode = 'loop',
-                frames = '1-3,1',
-                defaultDelay = 3/60 
-            }
-
+            animation = "walk"
         },
 
         fall = {
             dynamics = "States/fall.dyn",
-            animation = { 
-                mode = 'once',
-                frames = '4,1',
-                defaultDelay = 0.2 
-            }
+            animation = "fall"
         },
 
         hit = {
             dynamics = "States/hit.dyn",
-            animation = { 
-                mode = 'loop',
-                frames = '1,4',
-                defaultDelay = 2/60.0 
-            }
+            animation = "stand"
         }
     },  
+
+    animations = {
+
+        jump = { 
+            mode = 'once',
+            frames = {'1,4', '2,1', '4,1'},
+            defaultDelay = 3/60 
+        },
+
+        fall = { 
+            mode = 'once',
+            frames = '4,1',
+            defaultDelay = 0.2 
+        },
+
+        walk = { 
+            mode = 'loop',
+            frames = '1-3,1',
+            defaultDelay = 3/60 
+        },
+
+        stand = { 
+            mode = 'loop',
+            frames = '1,4',
+            defaultDelay = 0.2
+        },
+
+        spinJump = {
+            mode = 'loop',
+            frames = '1-4, 2',
+            defaultDelay = 2/60.0
+        },
+
+        morphBall = {
+            mode = 'loop',
+            frames = '1-4, 3',
+            defaultDelay = 2/60.0
+        },
+
+        climb = { 
+            mode = 'loop',
+            frames = '2-3,4',
+            defaultDelay = 10/60.0,
+        }
+
+    },
 
     states = {
         diagJump = {
             dynamics = "States/diagJump.dyn",
             class = "States/diagJump.lua",
-            animation = {
-                mode = 'loop',
-                frames = '1-4, 2',
-                defaultDelay = 2/60.0
-            },
-
+            animation = "spinJump",
+            size = vector(13, 13),
             flags = {"air"},
         },
 
         diagFall = {
             dynamics = "States/diagJump.dyn",
-
-            animation = {
-                mode = 'loop',
-                frames = '1-4, 2',
-                defaultDelay = 2/60.0
-            },
-
+            animation = "spinJump",
+            size = vector(13, 13),
             flags = {"air"},
 
         },
@@ -101,12 +112,8 @@ local params = {
         morphBall = {
             dynamics = "States/morphBall.dyn",
             class = "States/morphBall.lua",
-            animation = {
-                mode = 'loop',
-                frames = '1-4, 3',
-                defaultDelay = 2/60.0
-            },
-
+            animation = "morphBall",
+            size = vector(10, 10),
             flags = {"grounded"},
 
         }
@@ -137,7 +144,7 @@ local params = {
             to          = "stand",
             condition =
                 function(currentState, collisionFlags) 
-                    return (not collisionFlags.canMoveDown) and currentState.dynamics.velocity.y > 0
+                    return (not collisionFlags.canMoveDown) and currentState.owner.physics.velocity.y > 0
                 end,
             targetState = "stand"
         },
@@ -149,7 +156,7 @@ local params = {
                 function (currentState, collisionFlags)
                     local ladder = collisionFlags.specialEvents.ladder
                     if ladder and (currentState.owner.control["up"] or currentState.owner.control["down"]) then
-                        currentState.owner:move(vector(ladder.position.x - currentState.dynamics.position.x, 0))
+                        currentState.owner:move(vector(ladder.position.x - currentState.owner.physics.position.x, 0))
                         return true
                     else
                         return false
@@ -162,7 +169,7 @@ local params = {
             to          = "diagFall",
             condition =
                 function(currentState, collisionFlags) 
-                    return currentState.dynamics.velocity.y > 0
+                    return currentState.owner.physics.velocity.y > 0
                 end,
         },
 
@@ -171,7 +178,7 @@ local params = {
             to          = "fall",
             condition   =
                 function (currentState, collisionFlags)
-                    return currentState.stateTime > 0.8
+                    return currentState.owner.physics.stateTime > 0.8
                 end                 
         },
 
@@ -180,8 +187,9 @@ local params = {
             to          = "diagJump",
             condition   = 
                 function (currentState, collisionFlags)
-                    return currentState.stateTime < 1/30 and (currentState.owner.control["left"] or currentState.owner.control["right"])
-                end
+                    return currentState.owner.physics.stateTime < 1/30 and (currentState.owner.control["left"] or currentState.owner.control["right"])
+                end,    
+            priority = 1
         },
 
         {
