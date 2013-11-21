@@ -18,6 +18,7 @@ local State = Class {
 function State:init(name)
 	self.name = name
 	self.flags = {}
+	self.transitions = {}
 end
 
 ---A StateMachine's state implementation.
@@ -65,11 +66,4 @@ function State:clearFlags(flag)
 	self.flags = {}
 end
 
---- Updates the state
--- @param dt Time since the last update, in seconds.
-function State:update(dt)
-end
-
-function State:destroySelf()
-end
 return State

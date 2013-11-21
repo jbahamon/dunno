@@ -1,37 +1,35 @@
 local Class = require 'lib.hump.class'
-local PlayerState = require 'data.core.Player.PlayerState'
+local State = require 'data.core.Component.State'
 local Timer = globals.Timer
 
 local Hit = Class {
 	name = "Hit",
 
-	__includes = PlayerState
+	__includes = State
 }
 
-
-
-function Hit:init(name, animation, dynamics)
-	PlayerState.init(self, name, animation, dynamics)
-	self.hasControl = false
+function Hit:init(name)
+	State.init(self, name)
 end
 
 
 function Hit:onEnterFrom(otherState)
-	PlayerState.onEnterFrom(self, otherState)
-	self.owner.hittable = false
+	State.onEnterFrom(self, otherState)
+	self.owner.collision.hittable = false
+
 	Timer.add(
 		self.dynamics.invincibleTime,
 		function()
-			self.owner.hittable = true
+			self.owner.collision.hittable = true
 		end
 		)
 
-	self.owner.collisionFlags = {}
-	self.dynamics.velocity = self.dynamics.startVelocity
-	self.dynamics.velocity.x = self.dynamics.velocity.x * self.facing
+	self.owner.collision:clearCollisionFlags()
+	self.owner.physics.velocity = self.dynamics.startVelocity:clone()
+	self.owner.physics.velocity.x = self.owner.physics.velocity.x * self.owner.transform.facing
 
-	self.dynamics.hitTimer = 0
-	self.hasControl = false
+	self.hitTimer = 0
+	self.owner.input.hasControl = false
 
 
 	if otherState.flags["grounded"] then
@@ -46,10 +44,9 @@ function Hit:onEnterFrom(otherState)
 end
 
 function Hit:update(dt)
-	PlayerState.update(self, dt)
-	self.dynamics.hitTimer = self.dynamics.hitTimer + dt
-	if self.dynamics.hitTimer > self.dynamics.hitTime then
-		self.hasControl = true
+	self.hitTimer = self.hitTimer + dt
+	if self.hitTimer > self.hitTime then
+		self.owner.input.hasControl = true
 	end
 
 end

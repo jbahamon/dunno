@@ -235,6 +235,7 @@ function Animation:update(dt)
   self.timer = self.timer + dt
 
   while self.timer > self.delays[self.position] do
+
     self.timer = self.timer - self.delays[self.position]
     self.position = self.position + self.direction
     if self.position < 1 or self.position > #self.frames then

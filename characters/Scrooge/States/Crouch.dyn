@@ -5,9 +5,6 @@ local originalFrameRate = 60
 
 local scale = originalFrameRate
 
--- size
-dynamics.size = vector(16, 10)
-
 -- Velocities
 dynamics.maxVelocity = vector(0, 1) * scale
 

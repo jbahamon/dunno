@@ -13,11 +13,14 @@ function Jump:init(name, dynamics, animation)
 end
 
 function Jump:update(dt)
-	BasicJump.update(self, dt)
 
-	if self.stateTime >= self.dynamics.groundedTime then
+	if self.owner.physics.stateTime >= self.owner.physics.parameters.groundedTime then
 		self:removeFlag("grounded")
 		self:addFlag("air")
+	end
+
+	if self.owner.control[self.holdControl] and self.owner.physics.stateTime < self.owner.physics.parameters.jumpTime then
+		self.owner.physics.velocity.y = self.owner.physics.parameters.jumpVelocity
 	end
 
 end
@@ -29,15 +32,6 @@ function Jump:onEnterFrom(previousState)
 	self:addFlag("grounded")
 end
 
-
-function Jump:applyPostForceEffects(dt)
-	BasicJump.applyPostForceEffects(self, dt)
-
-	if self.owner.control[self.holdControl] and self.stateTime < self.dynamics.jumpTime then
-		self.dynamics.velocity.y = self.dynamics.jumpVelocity
-	end
-
-end
 
 function Jump:setHoldControl(control)
 	self.holdControl = control

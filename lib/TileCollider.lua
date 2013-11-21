@@ -34,7 +34,7 @@ local TileCollider = Class {
 --- Adds an Element to the TileCollider. The TileCollider is NOT added in any way
 -- to the Element. Nothing is done if the Element was already added to the TileCollider.
 -- @param element The Element object to be added to the TileCollider.
-function TileCollider:addElement(element)
+function TileCollider:addShape(element)
 	for _, value in pairs(self.elements) do
 	    if value == element then
 	        return

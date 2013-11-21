@@ -21,7 +21,7 @@ return function (state)
     function state:enter(previous)
         local gridschema = {
             columns = {150, 10, 150, 10, 150, 10, 150 },
-            rows = { 100, 20, 30, 30, 10, 30 },
+            rows = { 100, 20, 30, 30, 10, 30, 10, 30 },
             alignment = {
                 horizontal = "center",
                 vertical = "center"
@@ -47,7 +47,11 @@ return function (state)
             self.doExit = function () return "GameSelection" end
         end
 
-        if self.grid:Button("Quit", 3, 6, 3, 1, self.fonts["menu"]) then
+        if self.grid:Button("Test", 3, 6, 3, 1, self.fonts["menu"]) then
+            self.doExit = function () return "Test" end
+        end
+
+        if self.grid:Button("Quit", 3, 8, 3, 1, self.fonts["menu"]) then
             love.event.push("quit")
         end
 
@@ -62,7 +66,7 @@ return function (state)
     function state:keypressed(key, code)
         self.gui.keyboard.pressed(key, code)
 
-        if globals.debug and key == "g" then
+        if globals.DEBUG and key == "g" then
             self.drawGrid = not self.drawGrid
         end
 

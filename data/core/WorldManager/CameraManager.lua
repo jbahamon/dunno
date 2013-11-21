@@ -5,11 +5,7 @@
 
 
 local Class = require 'lib.hump.class'
-
-local Player = require 'data.core.Player'
 local Stage = require 'data.core.Stage'
-local ElementFactory = require 'data.core.ElementFactory'
-
 local Camera = require 'lib.gamera'
 
 local ActiveCollider = require 'lib.HardonCollider'
@@ -171,8 +167,8 @@ function CameraManager:followCameraMode(player, stage, cameraMode)
 	if cameraMode.tension then
 		local tension = cameraMode.tension
 
-		local playerPos = player:getPosition()
-		local lastPlayerPos = player:getLastPosition()
+		local playerPos = player.transform.position
+		local lastPlayerPos = player.transform.lastPosition
 		
 		-- horizontal following
 		if playerPos.x > (targetPosition.x + tension.x) then
@@ -190,7 +186,7 @@ function CameraManager:followCameraMode(player, stage, cameraMode)
 
 	else 
 
-		targetPosition = player:getPosition()
+		targetPosition = player.transform.position
 	end
 
 	self.lookingAt = targetPosition
@@ -237,8 +233,8 @@ function CameraManager:platformCameraMode(player, stage, cameraMode)
 
 	local tension = cameraMode.tension or vector(0, 0)
 
-	local playerPos = player:getPosition()
-	local lastPlayerPos = player:getLastPosition()
+	local playerPos = player.transform.position
+	local lastPlayerPos = player.transform.lastPosition
 
 	local targetPosition = self.lookingAt:clone()
 
@@ -265,7 +261,7 @@ function CameraManager:platformCameraMode(player, stage, cameraMode)
 	-- This is the behavior observed in Super Mario World's "Yoshi's Island 3" stage.
 
 	-- First, we check if we are standing on something
-	if player:getStateFlags()["grounded"] and not cameraMode._scrolling then
+	if player.stateMachine:getStateFlags()["grounded"] and not cameraMode._scrolling then
 		
 		local oldLock = cameraMode.verticalLock	or math.floor(playerPos.y /  self.stage.tileSize.y)
 
@@ -330,7 +326,7 @@ function CameraManager:fadingTransition(player, roomChange, worldManager)
 	self:fadeToColor(rampTime, {0, 0, 0, 255}, 5)
 	Timer.add(rampTime + blackTime/2, 
 		function () 
-	    	player:moveIntoCollidingBox(roomChange.nextRoom.box)
+	    	player:move(player.collision:movementIntoCollidingBox(roomChange.nextRoom.box))
 	    	self.stage:setRoom(roomChange.nextRoom)
 	    	self.camera:setWorld(self.stage:getBounds())
 	    end,
@@ -352,27 +348,27 @@ function CameraManager:scrollTransition(player, roomChange, worldManager)
 	local nextPlayerPos, nextCameraPos
 
 	-- We get the previous positions
-	prevPlayerPos = player:getPosition():clone()
+	prevPlayerPos = player.transform.position:clone()
 
 	-- We move both the player and the camera to the next room.
 
 	--print(roomChange.previousRoom)
 	x1, y1, x2, y2 = roomChange.nextRoom.box:bbox()
 	self:setWorld(x1, y1, x2 - x1, y2 - y1)
-	player:moveIntoCollidingBox(roomChange.nextRoom.box)
+	player:move(player.collision:movementIntoCollidingBox(roomChange.nextRoom.box))
 
-	self:setPosition(player:getPosition())
+	self:setPosition(player.transform.position)
 
 	-- We get the after-transition positions
 	nextCameraPos = vector(self.camera:getVisible())
-	nextPlayerPos = player:getPosition():clone()
+	nextPlayerPos = player.transform.position:clone()
 
 	-- We revert the changes
 	x1, y1, x2, y2 = roomChange.previousRoom.box:bbox()
 
 	self:setWorld(x1, y1, x2 - x1, y2 - y1)
 	player:moveTo(prevPlayerPos)
-	self:setPosition(player:getPosition())
+	self:setPosition(player.transform.position)
 	prevCameraPos = vector(self.camera:getVisible())
 
 	local playerVelocity = (nextPlayerPos - prevPlayerPos)/scrollTime
@@ -388,7 +384,7 @@ function CameraManager:scrollTransition(player, roomChange, worldManager)
 		function (dt) 
 			local l, t, w, h
 			player:move(playerVelocity * dt)
-			player.currentState.animation:update(dt)
+			player.animation:update(dt)
 			l, t, w, h = self.camera:getVisible()
 
 			self.camera:setWorld( l + cameraVelocity.x * dt,

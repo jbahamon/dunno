@@ -10,6 +10,9 @@
 -- See <a href="http://vrld.github.com/hump/">hump's documentation</a> for 
 -- more info on its use and behavior.
 globals = {
+    -- FIXME set these in their own file
+    characterFolder = 'characters/',
+    stageFolder = 'stages/',
 	scale = 2,
 	DEBUG = true,
 	debugSettings = {
@@ -18,6 +21,7 @@ globals = {
 	},
 	Timer = require 'lib.hump.timer'
 }
+
 
 --- Clamp number between two values.
 -- Globally defined.
@@ -54,6 +58,10 @@ local game = {
       template = require 'data.states.InGameOptions',
       parent = "InGame"
     },
+    Test = {
+        template = require 'data.states.Test',
+        parent = "Title"
+    },
   }
 }
 
@@ -70,7 +78,6 @@ function love.load()
 	-- load libs
 	game.libs.Gamestate = require 'lib.hump.gamestate'
 
-
 	for name, value in pairs(game.states) do
 		value.state = value.template({})
 		value.state.parent = value.parent
@@ -83,7 +90,7 @@ end
 function love.update(dt)
 	globals.Timer.update(dt)
 	local nextstate = game.states.head:update(dt)
-
+    
 	if nextstate then
 		assert(game.states[nextstate] ~= nil, string.format("%s does not exist", nextstate))
 		game.libs.Gamestate.switch(game.states[nextstate].state)
@@ -95,6 +102,6 @@ function love.draw()
 	game.states.head:draw()
 end
 
-function love.keypressed (key, code)
+function love.keypressed(key, code)
 	game.states.head:keypressed(key, code)
 end

@@ -1,22 +1,21 @@
 local Class = require 'lib.hump.class'
-local PlayerState = require 'data.core.Player.PlayerState'
+local State = require 'data.core.Component.State'
 
 local Climb = Class {
-	name = "Climb",
+	name = "climb",
 
-	__includes = PlayerState
+	__includes = State
 }
 
-function Climb:init(name, animation, dynamics)
-	PlayerState.init(self, name, animation, dynamics)	
+function Climb:init(name)
+	State.init(self, name)	
 end
 
 function Climb:update(dt)
-	PlayerState.update(self, dt)
-	if self.owner.control["up"] or self.owner.control["down"] then
-		self.animation:resume()
+	if self.owner.input.control["up"] or self.owner.input.control["down"] then
+		self.owner.animation:resume()
 	else 
-		self.animation:pause()
+		self.owner.animation:pause()
 	end
 end
 

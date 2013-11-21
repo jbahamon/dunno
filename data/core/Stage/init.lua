@@ -9,7 +9,7 @@ local SpatialHash = require 'lib.HardonCollider.spatialhash'
 local shapes = require 'lib.HardonCollider.shapes'
 local GeometryUtils = require 'lib.GeometryUtils'
 
-local ElementFactory = require 'data.core.ElementFactory'
+--local ElementFactory = require 'data.core.ElementFactory'
 
 --- Builds a new empty Stage, given the stage's map file.
 -- @class function
@@ -31,64 +31,6 @@ function Stage:init(mapPath)
 	self:setMap(mapPath)
 	self.rooms = {}
 	self.defaultRoom = "_defaultRoom"
-
-end
-
---======================================
--- Static functions
---======================================
-
-Stage.stageFolder = "stages/"
-
---- Builds and returns a new stage from a folder.
--- @param folderName The folder from which to load the stage.
--- @return The newly created Stage.
-function Stage.loadFromFolder(folderName)
-
-	local folder = Stage.stageFolder .. string.gsub(folderName, '[^%a%d-_/]', '')
-
-	assert(love.filesystem.isFile(folder .. "/config.lua"), "Stage configuration file \'".. folder .. "/config.lua"   .."\' not found")
-	local ok, stageFile = pcall(love.filesystem.load, folder .. "/config.lua")
-
-	assert(ok, "Stage file has syntax errors: " .. tostring(stageFile))
-
-	local parameters = stageFile()
-
-	assert(type(parameters) == "table", "Stage configuration file must return a table")
-
-	local mapPath = folderName .. "/" ..parameters.map
-	local stage = Stage(mapPath, parameters)
-
-	assert(parameters.startingPosition and vector.isvector(parameters.startingPosition), 
-		"Missing parameter \'startingPosition\' or parameter is not a vector.")
-
-	stage:setStartingPosition(parameters.startingPosition)
-
-	if parameters.roomTransitionMode then
-		assert(type(parameters.roomTransitionMode) == "string", "Room transition mode must be specified using a string")
-		stage.roomTransitionMode = parameters.roomTransitionMode
-	end
-
-	if parameters.rooms then
-		assert (type(parameters.rooms) == "table", "\'rooms\' parameter must be an array")
-		for _, room in ipairs(parameters.rooms) do
-			assert(room.topLeft and room.bottomRight and vector.isvector(room.topLeft) and vector.isvector(room.bottomRight), 
-				"Room must specify top left and bottom right corners as vectors.")
-			stage:addRoom(room)
-		end
-	end
-
-	if parameters.defaultCameraMode then
-		stage.defaultCameraMode = parameters.defaultCameraMode
-	end
-
-	if parameters.elementTypes then
-		stage.elementTypes = parameters.elementTypes
-	end
-
-	stage:setFolder(folder)
-
-	return stage
 
 end
 
@@ -219,12 +161,12 @@ end
 -- @param element The Element to test for collisions.
 -- @return An array containing the rooms that the Element is touching. 
 function Stage:getCollidingRooms(element)
-	local playerBox = element:getCollisionBox()
+	local playerBox = element.collision.box
 	local collidingRooms = {}
 
 	for _, room in ipairs(self.rooms) do
 		if room.box:collidesWith(playerBox) then
-			room.collisionArea = GeometryUtils.getCollisionArea(element:getCollisionBox(), room.box)			
+			room.collisionArea = GeometryUtils.getCollisionArea(playerBox, room.box)			
 
 			if room.collisionArea > 0 then
 				table.insert(collidingRooms, room)
@@ -244,7 +186,7 @@ function Stage:checkRoomChange(element)
 		return false
 	end
 
-	local x1, y1, x2, y2 = element:getCollisionBox():bbox()
+	local x1, y1, x2, y2 = element.collision.box:bbox()
 
 	if self.currentRoom.box:contains(x1, y1) and self.currentRoom.box:contains(x2, y1) and
 		self.currentRoom.box:contains(x1, y2) and self.currentRoom.box:contains(x2, y2) then
@@ -281,7 +223,6 @@ end
 -- @param mapPath The Stage's map subfolder. The base folder is always "stages/".
 function Stage:setMap(mapPath)
 			
-	self.loader.path = 'stages/'
 	self.map = self.loader.load(mapPath)
 	self.map:setDrawRange(0,0, love.graphics.getWidth(), love.graphics.getHeight())
 	self.tileSize = vector(self.map.tileWidth, self.map.tileHeight)
@@ -415,7 +356,7 @@ end
 function Stage:refreshElementSpawning(topLeft, bottomRight) 
 
 	for i, elem in ipairs(self.activeElements) do
-		if not GeometryUtils.isBoxInRange(elem:getCollisionBox(), topLeft -  vector(32, 32), bottomRight +  vector(32, 32)) then
+		if not GeometryUtils.isBoxInRange(elem.collision.box, topLeft -  vector(32, 32), bottomRight +  vector(32, 32)) then
 			
 			if elem.elementLocation.onExitScreen then
 				elem.elementLocation.onExitScreen(elem)

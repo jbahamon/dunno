@@ -1,20 +1,18 @@
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
-local PlayerState = require 'data.core.Player.PlayerState'
+local State = require 'data.core.Component.State'
 
 local BasicJump = Class {
 	name = "BasicJump",
-	__includes = PlayerState
+	__includes = State
 }
 
-function BasicJump:init(name, animationData, dynamics)
-	PlayerState.init(self, name, animationData, dynamics)
+function BasicJump:init(name)
+	State.init(self, name)
 end
 
 function BasicJump:onEnterFrom(previousState)
-	PlayerState.onEnterFrom(self, previousState)
-
-	self.dynamics.velocity.y = self.dynamics.jumpVelocity
+	self.owner.physics.velocity.y = self.dynamics.jumpVelocity
 end
 
 return BasicJump

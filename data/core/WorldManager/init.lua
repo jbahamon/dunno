@@ -5,9 +5,10 @@
 
 local Class = require 'lib.hump.class'
 
-local Player = require 'data.core.Player'
-local Stage = require 'data.core.Stage'
-local ElementFactory = require 'data.core.ElementFactory'
+--local Player = require 'data.core.Player'
+--local GameObject = require 'data.core.GameObject'
+local Loader = require 'data.core.Loader'
+
 local CameraManager = require 'data.core.WorldManager.CameraManager'
 
 local ActiveCollider = require 'lib.HardonCollider'
@@ -26,12 +27,20 @@ local WorldManager = Class {
 	name = "WorldManager"
 }
 
-function WorldManager:init(topLeft, bottomRight)
+function WorldManager:init(name)
+	self.name = name
+	self.players = {}
+end
+
+function WorldManager:addViewport(topLeft, bottomRight)
+	if self.topLeft or self.bottomRight then
+		error("We only support one view for now.")
+	end
+
 	self.topLeft = topLeft
 	self.bottomRight = bottomRight
-	self.players = {}
-	self.paused = false
 end
+
 
 
 --- Class that handles interactions between the Stage, the Player(s) and 
@@ -45,33 +54,35 @@ end
 --- Loads a stage from a file and sets it as the WorldManager's stage.
 -- @param stageName The name of the stage's folder.
 function WorldManager:setStage(stageName)
-	
-	self.stage = Stage.loadFromFolder(stageName)
-	self.tileCollider = TileCollider(self.stage)
-	self.activeCollider = ActiveCollider(100, self.onDynamicCollide)
-
-	for i, player in ipairs(self.players) do
-		player:setColliders(self.tileCollider, self.activeCollider)
-	end
-
-	self.stage:initialize(self.tileCollider, self.activeCollider, self.topLeft, self.bottomRight)
-
+	self.stage = Loader.loadStage(stageName)
 end
 
 --- Starts the WorldManager and all of its elements (player, enemies, etc)
 function WorldManager:start()
-	local startingPosition = self.stage:getPixelStartingPosition()
+
+	local startingPosition 
+	-- Stage startup
+	self.tileCollider = TileCollider(self.stage)
+	self.activeCollider = ActiveCollider(100, self.onDynamicCollide)
+
+	for i, player in ipairs(self.players) do
+		player.collision:setColliders(self.tileCollider, self.activeCollider)
+	end
+
+	self.stage:initialize(self.tileCollider, self.activeCollider, self.topLeft, self.bottomRight)
+	startingPosition = self.stage:getPixelStartingPosition()
 	self.stage:setRoom(self.stage:getRoomAt(startingPosition))
+
+	-- Player startup
 	self.cameraManager = CameraManager(self.players, self.stage, self.topLeft, self.bottomRight)
 	self.cameraManager:start()
 
 	for i, player in ipairs(self.players) do
-		player:setStartingPosition(startingPosition)
 		player:start()
+		player:moveTo(startingPosition)
 	end
 
 	self.paused = false
-
 end
 
 --- Loads a player from a folder and adds it to the WorldManager.
@@ -79,22 +90,27 @@ end
 -- but should be added at some point.
 -- @param playerName The name of the player's folder
 function WorldManager:addPlayer(playerName)
-	local parameters = self:loadPlayerParameters(playerName, Player.characterFolder)
-
-	local player = Player.loadBasicFromParams(parameters, Player.characterFolder .. '/' .. playerName )
-
-	if self.stage then 
-		player:setColliders(self.tileCollider, self.activeCollider)
-	end
-	
-	player:loadSpritesFromParams(parameters)
-	player:loadBasicStates(parameters)
-	player:loadStatesFromParams(parameters)
-
-	if parameters.postBuild then
-		parameters.postBuild(player)
-	end
-
+--	local parameters = self:loadPlayerParameters(playerName, globals.settings.characterFolder)
+--
+--	local player = GameObject.loadBasicFromParams(parameters, globals.settings.characterFolder .. '/' .. playerName )
+--	
+--
+--	--FIXME make a generic load from parameters
+--	player:addComponent(AnimationComponent(player.folder .. '/' .. parameters.sprites.sheet,
+--						parameters.sprites.spriteSize,
+--						parameters.sprites.spriteOffset))
+--
+--	for k, v in pairs(parameters.animations) do
+--		player.animation:addAnimation(k, v)
+--	end
+--
+--	player.stateMachine:loadBasicStates(parameters)
+--	player.stateMachine:loadStatesFromParams(parameters)
+--
+--	if parameters.postBuild then
+--		parameters.postBuild(player)
+--	end
+	local player = Loader.loadCharacter(playerName)
 	table.insert(self.players, player)
 	
 end
@@ -198,7 +214,7 @@ end
 -- @param path The character's folder path.
 -- @param rootFolder (Optional) Any base path to add to the character's path.
 function WorldManager:loadPlayerParameters(path, rootFolder)
-	rootFolder = rootFolder or ""
+	local rootFolder = rootFolder or ""
 
 	local folder = rootFolder .. string.gsub(path, '[^%a%d-_/]', '')
 	assert(love.filesystem.isFile(folder .. "/config.lua"), "Character configuration file \'".. folder .. "/config.lua"   .."\' not found")
@@ -207,7 +223,7 @@ function WorldManager:loadPlayerParameters(path, rootFolder)
 	assert(ok, "Parameters file " .. path .. " has syntax errors: " .. tostring(playerFile))
 
 	local parameters = paramsFile()
-	assert(type(parameters) == "table", "Parameters file " .. path .. " must return a table")
+	assert(type(parameters) == "table", "Parameter file " .. path .. " must return a table")
 
 	return parameters
 end
