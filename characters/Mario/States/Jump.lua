@@ -24,12 +24,16 @@ function Jump:update(dt)
 		
 	-- A trick to see where the player is pointing. If the player is pointing in 
 	-- both directions, it is calculated as 0 (no direction)
-	local inputDirection =  (self.owner.control["right"]) and 0 or 1 
-	inputDirection = inputDirection + ((self.owner.control["left"]) and 0 or -1)
+	local inputDirection =  (self.owner.control["right"]) and 1 or 0
+	inputDirection = inputDirection + ((self.owner.control["left"]) and -1 or 0)
 
 	self.dynamics.inputAcceleration = (motionDirection * inputDirection > 0) and
 		self.dynamics.forwardsInputAcceleration	or
 		self.dynamics.backwardsInputAcceleration
+
+	if inputDirection * self.owner.transform.facing < 0 then
+		self.owner:turn()
+	end
 
 end
 

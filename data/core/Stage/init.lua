@@ -354,7 +354,7 @@ function Stage:checkStateChanges()
 end
 
 function Stage:refreshElementSpawning(topLeft, bottomRight) 
-
+	
 	for i, elem in ipairs(self.activeElements) do
 		if not GeometryUtils.isBoxInRange(elem.collision.box, topLeft -  vector(32, 32), bottomRight +  vector(32, 32)) then
 			

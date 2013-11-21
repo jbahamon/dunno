@@ -88,7 +88,7 @@ end
 -- are executed, if found.
 -- @param nextState The target state.
 function StateMachineComponent:changeToState(nextState)
-    
+    print("change to"..nextState.name)    
     if self.currentState and self.currentState.onExitTo then
         self.currentState:onExitTo(nextState)
     end

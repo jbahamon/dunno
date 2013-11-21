@@ -61,9 +61,9 @@ function InputComponent:update(dt)
     self.binds:update()
      if self.hasControl then
         if (self.control["left"] and not self.control["right"]
-                and self.container.transform.facing > 0)  or 
+                and self.container.transform.facing > 0 and self.container.physics.velocity.x < 0)  or 
            (self.control["right"] and not self.control["left"]
-                and self.container.transform.facing < 0) then
+                and self.container.transform.facing < 0 and self.container.physics.velocity.x > 0) then
             self.container:turn()
         end
     end

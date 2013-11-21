@@ -30,7 +30,7 @@ local stageParameters ={
 				bottomRight = vector(176, 27) },
 		},
 
-	elementTypes = love.filesystem.load('stages/SMB3-1-1/Enemies/EnemyTypes.lua')()
+	--elementTypes = love.filesystem.load('stages/SMB3-1-1/Enemies/EnemyTypes.lua')()
 
 }
 

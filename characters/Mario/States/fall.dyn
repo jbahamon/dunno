@@ -6,13 +6,24 @@ local originalFrameRate = 60
 local scale = originalFrameRate
 
 -- Velocities
-dynamics.maxVelocity = vector(1.125, 5) * scale
+dynamics.maxVelocity = vector(1, 5.3125) * scale
 
 -- Accelerations    
 dynamics.friction = vector(0, 0)
 dynamics.noInputFriction = vector(0, 0) * scale * scale
 dynamics.defaultAcceleration = vector(0, 0)
-dynamics.inputAcceleration = vector(0.25, 0) * scale * scale
-dynamics.gravity = vector(0, 0.1) * scale * scale
+dynamics.inputAcceleration = vector(0.0546875, 0) * scale * scale
+
+
+dynamics.forwardsInputAcceleration = vector(0.0546875, 0) * scale * scale
+
+dynamics.backwardsInputAcceleration = vector(0.0546875, 0) * scale * scale
+
+dynamics.gravity = vector(0, 0.3125) * scale * scale
+
+dynamics.horizontalMaxVelocities = { 1.5 * scale,  
+                                    2.5 * scale, 
+                                    3.5 * scale }
+dynamics.horizontalCondition = 1.5 * scale
 
 return dynamics

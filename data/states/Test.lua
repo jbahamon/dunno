@@ -10,8 +10,8 @@ return function (state)
     function state:enter(previous)
         self.manager = WorldManager("")
         self.manager:addViewport(vector(0, 0), vector(512, 480))
-        self.manager:setStage("TomahawkMan")
-        self.manager:addPlayer("Bayonetta")
+        self.manager:setStage("SMB3-1-1")
+        self.manager:addPlayer("Mario")
         self.manager:start()
     end
 

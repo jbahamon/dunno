@@ -167,7 +167,7 @@ function WorldManager:update(dt)
 	-- camera managing
 
 	self.cameraManager:updateCameraFocus(self.players)
-	self.stage:refreshElementSpawning(self.cameraManager:getVisible())
+	--self.stage:refreshElementSpawning(self.cameraManager:getVisible())
 end
 
 

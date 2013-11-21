@@ -35,6 +35,13 @@ local params = {
 			mode = 'loop',
 			frames = '1-2,1',
 			defaultDelay = 4/60 
+		},
+
+		skid = {
+			mode = 'once',
+			frames = '1,2',
+			flippedH = true,
+			defaultDelay = 4/60
 		}
 	},
 
@@ -62,7 +69,8 @@ local params = {
 
 		fall = {
 			dynamics = "States/fall.dyn",
-			animation = "jump"
+			animation = "jump",
+			class = "States/Fall.lua"
 		},
 
 		hit = {
@@ -71,7 +79,101 @@ local params = {
 		}
 	},	
 
-	states = {},
+	states = {
+
+		skid = {
+			dynamics = "States/skid.dyn",
+			animation = "skid",
+			class = "States/Skid.lua"
+		}
+	},
+
+	transitions = {
+
+		{
+			from = "walk",
+			to = "skid",
+			condition = 
+				function(currentState, collisionFlags)
+					return (currentState.owner.control["right"] and (not currentState.owner.control["left"])
+						and currentState.owner.physics.velocity.x < 0 and currentState.owner.transform.facing < 0) or 
+						(currentState.owner.control["left"] and (not currentState.owner.control["right"])
+						and currentState.owner.physics.velocity.x > 0 and currentState.owner.transform.facing > 0)
+				end
+		},
+
+		{
+
+			from = "skid",
+			to = "walk",
+			condition =
+				function(currentState, collisionFlags)
+					return ((not currentState.owner.control["right"] or 
+								currentState.owner.control["left"]) and 
+							currentState.owner.transform.facing < 0) or
+						((not currentState.owner.control["left"] or  
+								currentState.owner.control["right"]) and 
+							currentState.owner.transform.facing > 0)
+				end
+
+		},
+
+		{
+
+			from = "skid",
+			to = "walk",
+			condition =
+				function(currentState, collisionFlags)
+					return (not currentState.owner.control["right"]) and (not currentState.owner.control["left"])
+				end
+
+		},
+
+		{
+
+			from = "skid",
+			to = "fall",
+			condition =
+				function(currentState, collisionFlags)
+					return collisionFlags.canMoveDown
+				end
+
+		},
+
+		{
+
+			from = "skid",
+			to = "jump",
+			condition =
+				function(currentState, collisionFlags)
+					return currentState.owner.control["jump"]
+				end
+
+		},
+
+		{
+
+			from = "skid",
+			to = "stand",
+			condition =
+				function(currentState, collisionFlags)
+					return currentState.owner.physics.velocity.x == 0
+				end
+
+		},
+
+		{
+
+			from = "fall",
+			to = "walk",
+			condition =
+				function(currentState, collisionFlags)
+					return currentState.owner.physics.velocity.x ~= 0 and not collisionFlags.canMoveDown
+				end
+
+		}
+
+	},
 
 	initialState = "stand"
 }

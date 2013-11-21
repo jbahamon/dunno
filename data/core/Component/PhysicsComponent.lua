@@ -72,7 +72,6 @@ end
 --- Updates the component, applying the current acceleration to the container object.
 -- @param dt The time interval to apply to the Component.
 function PhysicsComponent:update(dt)
-
     local acceleration  = self.parameters.defaultAcceleration:permul(vector(self.container.transform.facing, 1)) 
                             + self.parameters.gravity
                             + self:getAdditionalForces()
@@ -122,7 +121,7 @@ end
 -- @section dynamics
 
 function PhysicsComponent:turn() 
-    self.velocity.x = - self.velocity.x
+    --self.velocity.x = - self.velocity.x
 end
 
 function PhysicsComponent:addForce(identifier, forceValue, duration)
