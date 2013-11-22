@@ -96,6 +96,10 @@ function Loader.loadCharacter(name)
 
     if parameters.size then
         character:addComponent(CollisionComponent(parameters.size))
+
+        if parameters.elementType == "Enemy" then
+            character.collision.damagesOnContact = true
+        end
     end    
     
     if parameters.states or parameters.basicStates then
@@ -120,6 +124,10 @@ function Loader.loadCharacter(name)
 
     if parameters.postBuild then
         parameters.postBuild(character)
+    end
+
+    if parameters.onStart then
+        character:setEventHandler("start", parameters.onStart)
     end
 
     return character
@@ -221,15 +229,25 @@ function Loader.loadSingleState(object, newState, stateParams)
         newState[field] = value
     end
 
-    local dynamics = dynamicsFile()
-
-    newState.dynamics = dynamics
+    if stateParams.dynamics then
+        local dynamics = dynamicsFile()
+        newState.dynamics = dynamics
+        Loader.normalizeDynamics(dynamics)
+    end
 
     
     object.stateMachine:addState(newState)
 
 end
 
+function Loader.normalizeDynamics(dynamics)
+    dynamics.maxVelocity = dynamics.maxVelocity or vector(math.huge, math.huge)
+    dynamics.friction = dynamics.friction or vector(0, 0)
+    dynamics.noInputFriction = dynamics.noInputFriction or vector(0, 0)
+    dynamics.defaultAcceleration = dynamics.defaultAcceleration or vector(0, 0)
+    dynamics.inputAcceleration = dynamics.inputAcceleration or vector(0, 0)
+    dynamics.gravity = dynamics.gravity or 0
+end
 
 --- Creates and adds transition from a parameter table.
 -- See the parameter specification (TODO!) for details of building an Element from a set of parameters.

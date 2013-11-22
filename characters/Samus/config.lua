@@ -103,6 +103,7 @@ local params = {
 
         diagFall = {
             dynamics = "States/diagJump.dyn",
+            class = "States/diagFall.lua",
             animation = "spinJump",
             size = vector(13, 13),
             flags = {"air"},

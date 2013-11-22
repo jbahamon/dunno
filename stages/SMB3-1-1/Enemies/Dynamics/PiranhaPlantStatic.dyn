@@ -16,6 +16,7 @@ dynamics.facing = 1
 
 -- Velocities
 dynamics.startingVelocity = vector(0, 0)
+dynamics.maxVelocity = vector(0, 0)
 
 -- Accelerations    
 dynamics.friction = vector(0, 0)

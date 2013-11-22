@@ -32,4 +32,9 @@ GeometryUtils.isBoxInRange = function (box, topLeft, bottomRight)
 
 end
 
+GeometryUtils.isPointInRange = function (point, topLeft, bottomRight)
+  return point.x >= topLeft.x and point.x <= bottomRight.x and
+         point.y >= topLeft.y and point.y <= bottomRight.y
+end
+
 return GeometryUtils

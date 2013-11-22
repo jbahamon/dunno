@@ -8,8 +8,7 @@ local vector = require 'lib.hump.vector'
 local SpatialHash = require 'lib.HardonCollider.spatialhash'
 local shapes = require 'lib.HardonCollider.shapes'
 local GeometryUtils = require 'lib.GeometryUtils'
-
---local ElementFactory = require 'data.core.ElementFactory'
+local GameObjectFactory = require 'data.core.GameObjectFactory'
 
 --- Builds a new empty Stage, given the stage's map file.
 -- @class function
@@ -328,7 +327,7 @@ end
 
 function Stage:initialize(tileCollider, activeCollider, topLeft, bottomRight)
 	for _, elementType in ipairs(self.elementTypes) do
-		self.elementFactories[elementType.name] = ElementFactory(elementType, tileCollider, activeCollider, self:getFolder())
+		self.elementFactories[elementType.name] = GameObjectFactory(elementType, tileCollider, activeCollider, self:getFolder())
 	end
 
 	self.map:setDrawRange( topLeft.x,
@@ -347,20 +346,25 @@ function Stage:update(dt)
 	end
 end
 
-function Stage:checkStateChanges()
+function Stage:lateUpdate(dt)
     for _, element in ipairs(self.activeElements) do
-		element:checkStateChange()
+		element:lateUpdate(dt)
 	end
 end
 
 function Stage:refreshElementSpawning(topLeft, bottomRight) 
 	
 	for i, elem in ipairs(self.activeElements) do
-		if not GeometryUtils.isBoxInRange(elem.collision.box, topLeft -  vector(32, 32), bottomRight +  vector(32, 32)) then
+
+		local offscreen = (elem.collision and (not GeometryUtils.isBoxInRange(elem.collision.box, topLeft -  vector(32, 32), bottomRight +  vector(32, 32))))
+			or not GeometryUtils.isPointInRange(elem.transform.position, topLeft -  vector(32, 32), bottomRight +  vector(32, 32))
+
+		if offscreen then
 			
 			if elem.elementLocation.onExitScreen then
 				elem.elementLocation.onExitScreen(elem)
 			end
+			
 			elem:destroySelf()
 			table.remove(self.activeElements, i)
 		end

@@ -36,6 +36,22 @@ function GameObject:register(event, component)
 	table.insert(self._inner.events[event], component)
 end
 
+
+function GameObject:destroySelf()
+	
+end
+
+function GameObject:setEventHandler(event, handler)
+	self[event] = function(self, ...)
+		handler(self, ...)
+		if self._inner.events[event] then
+			for k, component in ipairs(self._inner.events[event]) do
+				component[event](component, ...)
+			end
+		end
+	end
+end
+
 --- Builds a GameObject
 -- @class function
 -- @name GameObject
@@ -45,7 +61,9 @@ function GameObject.new()
 	return setmetatable(
 		{	_inner = InnerGameObject(),
 			addComponent = GameObject.addComponent,
-			register = GameObject.register },
+			register = GameObject.register,
+			setEventHandler = GameObject.setEventHandler,
+			destroySelf = GameObject.destroySelf },
 		{	__index = function (t, key)
 				if t._inner.events[key] then
 					return function(self, ...)
@@ -59,30 +77,6 @@ function GameObject.new()
 				end
 			end
 		})
-end
-
---FIXME
---- Loads an empty GameObject from a minimal set of parameters.
--- @param parameters The set of parameters to be used. It must have width and height as fields.
--- @param folder The base folder to load files (sprites, classes, etc) from. Required (in opposition to uses of folder parameters in Player methods).
-function GameObject.loadBasicFromParams(parameters, folder)
-
-	assert(type(parameters) == "table", "Character configuration file must return a table")
-
-	assert(parameters.size and vector.isvector(parameters.size), "Element size not specified")
-
-	local object = GameObject.new()
-
-	object:addComponent(TransformComponent())
-	object:addComponent(StateMachineComponent())
-	object:addComponent(CollisionComponent(parameters.size))
-	object:addComponent(InputComponent())
-	object:addComponent(PhysicsComponent())
-
-	object.folder = folder
-    object.name = folder
-
-	return object
 end
 
 return GameObject

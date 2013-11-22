@@ -1,4 +1,4 @@
-	local vector = require 'lib.hump.vector'
+local vector = require 'lib.hump.vector'
 
 local enemyTypes = {
 
@@ -15,23 +15,27 @@ local enemyTypes = {
 			spriteOffset = vector(0, 1)
 		},
 
+		animations = {
+			walk = {
+				mode = "loop",
+				frames = "1-2,1",
+				defaultDelay = 8/60
+			},
+		},
+
 		states = {
 
 			walking = {
 				class = "Enemies/States/RedKoopaWalk.lua",
 				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-2,1",
-					defaultDelay = 8/60
-				},
+				animation = "walk"
 			}
 		},
 
 		initialState = "walking"
 	},
 
-	{ 
+	{
 		name = "GreenParaKoopa",
 
 		elementType = "Enemy",
@@ -44,25 +48,29 @@ local enemyTypes = {
 			spriteOffset = vector(0, 1)
 		},
 
+		animations = {
+			jump = {
+				mode = "loop",
+				frames = "1-4,1",
+				defaultDelay = 4/60
+			},
+			walk = {
+				mode = "loop",
+				frames = "5-6,1",
+				defaultDelay = 8/60
+			},
+		},
+
 		states = {
 			jumping = {
 				class = "Enemies/States/Jump.lua",
 				dynamics = "Enemies/Dynamics/EnemyJump.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-4,1",
-					defaultDelay = 4/60
-				},
+				animation = "jump"
 			},
 
 			walking = {
 				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
-				animation = {
-					mode = "loop",
-					frames = "5-6,1",
-					defaultDelay = 8/60
-				},
-
+				animation = "walk"
 			}
 		},
 
@@ -72,7 +80,7 @@ local enemyTypes = {
 				to 			= "jumping",
 				condition = 
 					function (currentState, collisionFlags)
-						return (not collisionFlags.canMoveDown) and currentState.dynamics.velocity.y > 0
+						return (not collisionFlags.canMoveDown) and currentState.owner.physics.velocity.y > 0
 					end,
 			},
 
@@ -102,44 +110,54 @@ local enemyTypes = {
 			spriteOffset = vector(0, 1)
 		},
 
+		animations = {
+			winged = {
+				mode = "loop",
+				frames = "1-2,1",
+				defaultDelay = 8/60
+			},
+
+			walk = {
+				mode = "loop",
+				frames = "1-2,2",
+				defaultDelay = 8/60
+			},
+
+			hop = {
+				mode = "loop",
+				frames = "1-4,1",
+				defaultDelay = 4/60
+			},
+
+			jump = {
+				mode = "loop",
+				frames = "1-4,1",
+				defaultDelay = 4/60
+			},
+		},
+
 		states = {
 
 			walkingWithWings = {
 				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-2,1",
-					defaultDelay = 8/60
-				},
+				animation = "winged"
 			},
 
 			walking = {
 				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-2,2",
-					defaultDelay = 8/60
-				},
+				animation = "walk"
 			},
 
 			hopping = {
 				class = "Enemies/States/Hop.lua",
 				dynamics = "Enemies/Dynamics/EnemyHop.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-4,1",
-					defaultDelay = 4/60
-				},
+				animation = "hop"
 			},
 
 			jumping = {
 				class = "Enemies/States/Jump.lua",
 				dynamics = "Enemies/Dynamics/EnemyJump.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-4,1",
-					defaultDelay = 4/60
-				},
+				animation = "jump"
 			}
 
 		},
@@ -152,7 +170,7 @@ local enemyTypes = {
 				condition = 
 					function (currentState, collisionFlags)
 						return (not collisionFlags.canMoveDown) and 
-								currentState.dynamics.velocity.y > 0 
+								currentState.owner.physics.velocity.y > 0 
 					end
 			},
 
@@ -162,7 +180,7 @@ local enemyTypes = {
 				condition =
 					function (currentState, collisionFlags)
 						return (not collisionFlags.canMoveDown) and 
-								currentState.dynamics.velocity.y > 0 and 
+								currentState.owner.physics.velocity.y > 0 and 
 								currentState.hopCount <= 3
 					end
 			},
@@ -173,7 +191,7 @@ local enemyTypes = {
 				condition =
 					function (currentState, collisionFlags)
 						return (not collisionFlags.canMoveDown) and 
-								currentState.dynamics.velocity.y > 0 and 
+								currentState.owner.physics.velocity.y > 0 and 
 								currentState.hopCount > 3
 					end
 			},
@@ -191,7 +209,7 @@ local enemyTypes = {
 				to 			= "hopping",
 				condition = 	
 					function (currentState, collisionFlags)
-						return currentState.stateTime > 32/60 
+						return currentState.owner.physics.stateTime > 32/60 
 					end,
 			}
 		},
@@ -214,16 +232,20 @@ local enemyTypes = {
 			spriteOffset = vector(0, 1)
 		},
 
+		animations = {
+			walk = {
+				mode = "loop",
+				frames = "5-6,1",
+				defaultDelay = 8/60
+			}
+		},
+
 		states = {
 
 			walking = {
 				class = "Enemies/States/Walk.lua",
 				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
-				animation = {
-					mode = "loop",
-					frames = "5-6,1",
-					defaultDelay = 8/60
-				}
+				animation = "walk"
 			}
 		},
 
@@ -233,7 +255,7 @@ local enemyTypes = {
 
 	{ 
 		name = "Goomba",
-		--elementType = "Enemy",
+		elementType = "Enemy",
 
 		size = vector(14, 14),
 		
@@ -243,16 +265,20 @@ local enemyTypes = {
 			spriteOffset = vector(0, 1)
 		},
 
+		animations = {
+			walk = {
+				mode = "loop",
+				frames = "1-2,2",
+				defaultDelay = 8/60
+			}
+		},
+
 		states = {
 
 			walking = {
 				class = "Enemies/States/Walk.lua",
 				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-2,2",
-					defaultDelay = 8/60
-				}
+				animation = "walk"
 			}
 		},
 
@@ -261,12 +287,21 @@ local enemyTypes = {
 
 	{
 		name = 'GreenPiranhaPlant',
+		elementType = "Enemy",
 		class = 'Enemies/Classes/PiranhaPlant.lua',
 		size = vector(14, 25),
 
 		sprites = {
 			sheet = "Enemies/Sprites/GreenPiranhaPlant.png",
 			spriteSize = vector(32, 25),
+		},
+
+		animations = {
+			default = {
+				mode = "loop",
+				frames = "1-2,1",
+				defaultDelay = 8/60
+			}
 		},
 
 		helperAnimations = {
@@ -291,40 +326,24 @@ local enemyTypes = {
 
 			hidden = {
 				dynamics = "Enemies/Dynamics/PiranhaPlantStatic.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-2,1",
-					defaultDelay = 8/60
-				}
+				animation = "default"
 			},
 
 			up = {
 				dynamics = "Enemies/Dynamics/PiranhaPlantStatic.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-2,1",
-					defaultDelay = 8/60
-				}
+				animation = "default"
 			},
 
 			movingUp = {
 				class = "Enemies/States/PiranhaPlantMoving.lua",
 				dynamics = "Enemies/Dynamics/PiranhaPlantMovingUp.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-2,1",
-					defaultDelay = 8/60
-				}
+				animation = "default"
 			},
 
 			movingDown = {
 				class = "Enemies/States/PiranhaPlantMoving.lua",
 				dynamics = "Enemies/Dynamics/PiranhaPlantMovingDown.dyn",
-				animation = {
-					mode = "loop",
-					frames = "1-2,1",
-					defaultDelay = 8/60
-				}
+				animation = "default"
 			},
 		},
 
@@ -335,7 +354,7 @@ local enemyTypes = {
 				to  		= "movingUp",
 				condition 	=
 					function (currentState, collisionFlags)
-						return currentState.stateTime > currentState.dynamics.maxStateTime
+						return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
 					end
 			},
 
@@ -344,7 +363,7 @@ local enemyTypes = {
 				to  		= "up",
 				condition 	=
 					function (currentState, collisionFlags)
-						return currentState.stateTime > currentState.dynamics.maxStateTime
+						return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
 					end
 			},
 
@@ -353,7 +372,7 @@ local enemyTypes = {
 				to  		= "movingDown",
 				condition 	=
 					function (currentState, collisionFlags)
-						return currentState.stateTime > currentState.dynamics.maxStateTime
+						return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
 					end
 			},
 
@@ -362,15 +381,18 @@ local enemyTypes = {
 				to  		= "hidden",
 				condition 	=
 					function (currentState, collisionFlags)
-						return currentState.stateTime > currentState.dynamics.maxStateTime
+						return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
 					end
 			},
 
 		},
 
-		initialState = "hidden"
-	}
+		initialState = "hidden",
 
+		onStart = function(plant)
+				plant.collision:disableTileCollisions()
+			end
+	}
 
 }	
 

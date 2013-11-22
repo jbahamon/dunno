@@ -5,9 +5,7 @@
 
 local Class = require 'lib.hump.class'
 
---local Player = require 'data.core.Player'
---local GameObject = require 'data.core.GameObject'
-local Loader = require 'data.core.Loader'
+local Loader = globals.Loader
 
 local CameraManager = require 'data.core.WorldManager.CameraManager'
 
@@ -90,29 +88,8 @@ end
 -- but should be added at some point.
 -- @param playerName The name of the player's folder
 function WorldManager:addPlayer(playerName)
---	local parameters = self:loadPlayerParameters(playerName, globals.settings.characterFolder)
---
---	local player = GameObject.loadBasicFromParams(parameters, globals.settings.characterFolder .. '/' .. playerName )
---	
---
---	--FIXME make a generic load from parameters
---	player:addComponent(AnimationComponent(player.folder .. '/' .. parameters.sprites.sheet,
---						parameters.sprites.spriteSize,
---						parameters.sprites.spriteOffset))
---
---	for k, v in pairs(parameters.animations) do
---		player.animation:addAnimation(k, v)
---	end
---
---	player.stateMachine:loadBasicStates(parameters)
---	player.stateMachine:loadStatesFromParams(parameters)
---
---	if parameters.postBuild then
---		parameters.postBuild(player)
---	end
 	local player = Loader.loadCharacter(playerName)
 	table.insert(self.players, player)
-	
 end
 
 
@@ -160,14 +137,14 @@ function WorldManager:update(dt)
 		    end
 	    end
 
-		self.stage:checkStateChanges()
+		self.stage:lateUpdate(dt)
 
 	end
 
 	-- camera managing
 
 	self.cameraManager:updateCameraFocus(self.players)
-	--self.stage:refreshElementSpawning(self.cameraManager:getVisible())
+	self.stage:refreshElementSpawning(self.cameraManager:getVisible())
 end
 
 
@@ -205,8 +182,8 @@ end
 -- @param shapeB The second colliding shape, as a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
 function WorldManager.onDynamicCollide(dt, shapeA, shapeB)
    	if shapeA.parent and shapeB.parent then
-   		shapeA.parent:onDynamicCollide(dt, shapeA, shapeB.parent)
-   		shapeB.parent:onDynamicCollide(dt, shapeB, shapeA.parent)
+   		shapeA.parent:onDynamicCollide(dt, shapeB.parent)
+   		shapeB.parent:onDynamicCollide(dt, shapeA.parent)
    	end
 end
 

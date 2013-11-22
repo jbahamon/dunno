@@ -15,7 +15,7 @@ function DiagJump:lateUpdate(dt)
 	end
 
 	if self.permafacing ~= self.owner.transform.facing then
-		self:turn()
+		self.owner:turn()
 	end
 end
 

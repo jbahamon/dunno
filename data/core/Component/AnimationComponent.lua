@@ -19,12 +19,17 @@ local AnimationComponent = Class {
     __includes = Component
 }
 
-function AnimationComponent:init(spritesPath, spriteSize, spriteOffset)
+function AnimationComponent:init(spriteData, spriteSize, spriteOffset)
     Component.init(self)
 
-    local sprites = string.gsub(spritesPath, '[^%a%d-_/.]', '')
+    local sprites 
 
-    assert(love.filesystem.isFile(sprites), "Spritesheet \'".. spritesPath .."\' supplied is not a file")   
+    if type(spriteData) == "string" then
+        sprites = string.gsub(spriteData, '[^%a%d-_/.]', '')
+        assert(love.filesystem.isFile(sprites), "Spritesheet \'".. spriteData .."\' supplied is not a file")   
+    else
+        sprites = spriteData
+    end
 
     self:setSpriteData(sprites, spriteSize, spriteOffset)
 
@@ -65,13 +70,16 @@ function AnimationComponent:draw()
 end
 
 --- Sets the Element's sprite data for it to be drawn.
--- @param sprites The sprite sheet image, as loaded by love.graphics.newImage.
+-- @param spriteData The sprite sheet image, as loaded by love.graphics.newImage. May be
+--                        supplied as a path too.
 -- Sprites in the sheet must be arranged in a grid where every cell must have the same size.
 -- @param spriteSize The size of a sprite's cell in the sheet, as a hump vector, in pixels.
 -- @param offset The sprites' offset, as a vector, in pixels. 
-function AnimationComponent:setSpriteData(spritePath, spriteSize, offset)
+function AnimationComponent:setSpriteData(spriteData, spriteSize, offset)
+
+    self.sprites = type(spriteData) == "string" and love.graphics.newImage(spriteData) or spriteData
+
     self.spriteSize = spriteSize:clone()
-    self.sprites = love.graphics.newImage(spritePath)
     self.sprites:setFilter('nearest', 'nearest')
     self.spritesGrid = anim8.newGrid(self.spriteSize.x,
                                          self.spriteSize.y,

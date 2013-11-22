@@ -14,13 +14,14 @@ globals = {
     characterFolder = 'characters/',
     stageFolder = 'stages/',
 	scale = 2,
-	DEBUG = true,
+	DEBUG = false,
 	debugSettings = {
 		collisionBoxColor = {0, 0, 255, 100},
 		hitBoxColor = {255, 0, 0, 100}
 	},
-	Timer = require 'lib.hump.timer'
 }
+globals.Timer = require 'lib.hump.timer'
+globals.Loader = require 'data.core.Loader'
 
 
 --- Clamp number between two values.

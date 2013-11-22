@@ -21,6 +21,8 @@ local StateMachineComponent = Class {
     name = 'StateMachineComponent'
 }
 
+StateMachineComponent.defaultFlags = {}
+
 function StateMachineComponent:init()
     Component.init(self)
     self.states = {}
@@ -81,7 +83,9 @@ function StateMachineComponent:lateUpdate(dt)
     end
     
     for _ , transition in ipairs(currentState.transitions) do
-        if transition.condition(currentState, self.container.collision.collisionFlags) then
+
+        local collisionFlags = (self.container.collision and self.container.collision.collisionFlags) or StateMachineComponent.defaultFlags
+        if transition.condition(currentState, collisionFlags) then
             self:changeToState(self.states[transition.targetState])
             return
         end
@@ -94,7 +98,7 @@ end
 -- are executed, if found.
 -- @param nextState The target state.
 function StateMachineComponent:changeToState(nextState)
-    print("change to"..nextState.name)    
+    
     if self.currentState and self.currentState.onExitTo then
         self.currentState:onExitTo(nextState)
     end

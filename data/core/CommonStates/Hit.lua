@@ -14,17 +14,16 @@ end
 
 
 function Hit:onEnterFrom(otherState)
-	State.onEnterFrom(self, otherState)
-	self.owner.collision.hittable = false
+	self.owner.collision.invincible = true
 
 	Timer.add(
 		self.dynamics.invincibleTime,
 		function()
-			self.owner.collision.hittable = true
+			self.owner.collision.invincible = false
 		end
 		)
 
-	self.owner.collision:clearCollisionFlags()
+	self.owner.collision:resetCollisionFlags()
 	self.owner.physics.velocity = self.dynamics.startVelocity:clone()
 	self.owner.physics.velocity.x = self.owner.physics.velocity.x * self.owner.transform.facing
 
@@ -45,7 +44,7 @@ end
 
 function Hit:update(dt)
 	self.hitTimer = self.hitTimer + dt
-	if self.hitTimer > self.hitTime then
+	if self.hitTimer > self.dynamics.hitTime then
 		self.owner.input.hasControl = true
 	end
 
