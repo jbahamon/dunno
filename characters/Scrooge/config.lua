@@ -49,8 +49,8 @@ local params = {
 		},
 
 		hit = {
-			mode = "once",
-			frames = "1,7",
+			mode = "loop",
+			frames = {"1,7", "2,1"},
 			defaultDelay = 1/60.0
 		},
 

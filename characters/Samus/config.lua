@@ -42,11 +42,17 @@ local params = {
 
         hit = {
             dynamics = "States/hit.dyn",
-            animation = "stand"
+            animation = "hit"
         }
     },  
 
     animations = {
+
+        hit = { 
+            mode = 'loop',
+            frames = {'1,4', '4,4'},
+            defaultDelay = 2/60 
+        },
 
         jump = { 
             mode = 'once',

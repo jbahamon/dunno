@@ -334,7 +334,6 @@ end
 function CollisionComponent:getHitBy(otherObject)
     if not self.invincible then
         self.collisionFlags.hit = true
-        print("wow")
     end
 end
 
