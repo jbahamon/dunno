@@ -20,6 +20,7 @@ globals = {
 		hitBoxColor = {255, 0, 0, 100}
 	},
 }
+
 globals.Timer = require 'lib.hump.timer'
 globals.Loader = require 'data.core.Loader'
 

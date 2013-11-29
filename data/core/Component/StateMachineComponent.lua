@@ -1,53 +1,53 @@
---- A game StateMachineComponent implementation.
--- @class module
--- @name data.core.StateMachineComponent
+--- A Component that represents an element's behavior as a state machine.
+-- @classmod data.core.Component.StateMachineComponent
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 
-local Component = require 'data.core.Component'
+local BaseComponent = require 'data.core.Component.BaseComponent'
 local State = require 'data.core.Component.State'
 local GeometryUtils = require 'lib.GeometryUtils'
 local shapes = require 'lib.HardonCollider.shapes'
 
-
---- Builds a new StateMachineComponent with no states.
--- @class function
--- @name StateMachineComponent
--- @param defaultSize The size of the StateMachineComponent's default collision box, as a vector, in pixels.
--- @return The newly created StateMachineComponent.
-
 local StateMachineComponent = Class {
-    name = 'StateMachineComponent'
+    name = 'StateMachineComponent',
+    __includes = BaseComponent
 }
 
 StateMachineComponent.defaultFlags = {}
 
-function StateMachineComponent:init()
-    Component.init(self)
-    self.states = {}
-    self.currentState = nil
-end    
 -----------------------------------------------------------------
 --- Building and destroying
 -- @section building
 
--- Adds a state to the StateMachine. 
--- A state can only belong to a single StateMachine at a time: it should not belong 
--- to another StateMachine when this method is called. 
--- Call @{StateMachine:removeState} on the other StateMachine first.
--- @param state The state to be added.
+--- Builds a new StateMachineComponent with no states.
+-- @class function
+-- @name StateMachineComponent.__call
+-- @treturn StateMachineComponent The newly created StateMachineComponent.
+function StateMachineComponent:init()
+    BaseComponent.init(self)
+    self.states = {}
+    self.currentState = nil
+end    
+
+-- Adds a state to the StateMachineComponent. 
+-- A state can only belong to a single StateMachineComponent at a time: it should not belong 
+-- to another StateMachineComponent when this method is called. 
+-- Call @{StateMachine:removeState} on the other StateMachineComponent first.
+-- @tparam State state The state to be added.
 function StateMachineComponent:addState(state)
     self.states[state.name] = state
     state.owner = self.container
 end
 
 --- Adds this component to a GameObject. This method registers
--- the move, moveTo, start, draw, changeToState and destroySelf methods
--- with the container GameObject.
--- @param container The GameObject this component is being added to.
+-- the start, update and lateUpdate methods with the container GameObject.
+-- These methods will also be called on the current state, if they exist.
+-- The StateMachineComponent will be added as the stateMachine field of
+-- the GameObject.
+-- @tparam GameObject container The GameObject this component is being added to.
 function StateMachineComponent:addTo(container)
-    Component.addTo(self, container)
+    BaseComponent.addTo(self, container)
     container:register("start", self)
     container:register("update", self)
     container:register("lateUpdate", self)
@@ -59,21 +59,27 @@ function StateMachineComponent:addTo(container)
 end
 
 --- Removes a state from the StateMachine, leaving it with no owner.
--- @param stateName The name of the state to be removed. If there is no state with such name in the StateMachine, nothing is done.
+-- @tparam string stateName The name of the state to be removed. If there is no state with such name in the StateMachine, nothing is done.
 function StateMachineComponent:removeState(stateName)
     self.states[stateName] = nil
 end
 
+--- Starts the state machine, changing to the initial state. If the initial state
+-- has a start method, it will be called.
 function StateMachineComponent:start()
     self:changeToState(self.states[self.initialState])
-
+    if self.initialState.start then
+        self.initialState:start()
+    end
 end
 
---- Checks for conditions and executes any possible state change.
+--- Executes the current state's lateUpdate method, if present. Additionally, 
+-- checks for conditions and executes any possible state change.
 -- If two or more transitions are possible, the one with higher priority
 -- is taken (or the one that was added first, if there is more than one transition with the
 -- same priority). State transition conditions take a single argument: the current
 -- state.
+-- @tparam number dt The elapsed time since the last lateUpdate call, in seconds.
 function StateMachineComponent:lateUpdate(dt)
 
     local currentState = self.currentState
@@ -96,7 +102,7 @@ end
 --- Executes a transition to a specified state.
 -- The current state's onExitTo and the target state's onEnterFrom
 -- are executed, if found.
--- @param nextState The target state.
+-- @tparam State nextState The target state.
 function StateMachineComponent:changeToState(nextState)
     
     if self.currentState and self.currentState.onExitTo then
@@ -111,12 +117,15 @@ function StateMachineComponent:changeToState(nextState)
     self.container:changeToState(nextState)
 end
 
+--- Returns the current state's flags.
+-- @treturn table The flags, as an array of flags that can be true or false.
 function StateMachineComponent:getStateFlags()
     return self.currentState.flags
 end
 
 
-
+--- Executes the current state's update method, if present. 
+-- @tparam number dt The elapsed time since the last update, in seconds.
 function StateMachineComponent:update(dt)
     if self.currentState.update then
         self.currentState:update(dt)

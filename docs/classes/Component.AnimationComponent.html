@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Building_and_destroying">Building and destroying </a></li>
+<li><a href="#Drawing_and_animation_data">Drawing and animation data </a></li>
+<li><a href="#State_handling">State handling </a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><strong>Component.AnimationComponent</strong></li>
+  <li><a href="../classes/Component.InputComponent.html">Component.InputComponent</a></li>
+  <li><a href="../classes/data.core.Component.html">data.core.Component</a></li>
+  <li><a href="../classes/data.core.Component.CollisionComponent.html">data.core.Component.CollisionComponent</a></li>
+  <li><a href="../classes/data.core.Component.PhysicsComponent.html">data.core.Component.PhysicsComponent</a></li>
+  <li><a href="../classes/data.core.Component.State.html">data.core.Component.State</a></li>
+  <li><a href="../classes/data.core.Component.StateMachineComponent.html">data.core.Component.StateMachineComponent</a></li>
+  <li><a href="../classes/data.core.Component.TransformComponent.html">data.core.Component.TransformComponent</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/lib.TileCollider.html">TileCollider</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Component.AnimationComponent</code></h1>
+
+<p>A Component that represents an element&rsquo;s sprites and animations.</p>
+<p>
+</p>
+
+
+<h2><a href="#Building_and_destroying">Building and destroying </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AnimationComponent.__call">AnimationComponent.__call (spriteData, spriteSize[, spriteOffset=nil])</a></td>
+	<td class="summary">Builds a new AnimationComponent.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AnimationComponent:addTo">AnimationComponent:addTo (container)</a></td>
+	<td class="summary">Adds this component to a GameObject.</td>
+	</tr>
+</table>
+<h2><a href="#Drawing_and_animation_data">Drawing and animation data </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AnimationComponent:draw">AnimationComponent:draw ()</a></td>
+	<td class="summary">Draws the AnimationComponent&rsquo;s current animation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AnimationComponent:setSpriteData">AnimationComponent:setSpriteData (spriteData, spriteSize[, spriteOffset=nil])</a></td>
+	<td class="summary">Sets the AnimationComponent&rsquo;s sprite data for it to be drawn.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AnimationComponent:addAnimation">AnimationComponent:addAnimation (name, params)</a></td>
+	<td class="summary">Adds an animation to the component.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AnimationComponent:setAnimation">AnimationComponent:setAnimation (name[, noReset=false])</a></td>
+	<td class="summary">Sets the component&rsquo;s current animation.</td>
+	</tr>
+</table>
+<h2><a href="#State_handling">State handling </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AnimationComponent:changeToState">AnimationComponent:changeToState (nextState)</a></td>
+	<td class="summary">Executes a transition to a specified state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AnimationComponent:update">AnimationComponent:update (dt)</a></td>
+	<td class="summary">Updates the Component, advancing the animation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AnimationComponent:pause">AnimationComponent:pause ()</a></td>
+	<td class="summary">Pauses the Component, preventing the animation from advancing.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AnimationComponent:resume">AnimationComponent:resume ()</a></td>
+	<td class="summary">Resumes the Component, allowing the animation to advance.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Building_and_destroying"></a>Building and destroying </h2>
+
+
+    <dl class="function">
+    <dt>
+    <a name = "AnimationComponent.__call"></a>
+    <strong>AnimationComponent.__call (spriteData, spriteSize[, spriteOffset=nil])</strong>
+    </dt>
+    <dd>
+    Builds a new AnimationComponent.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">spriteData</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span class="type">Image</span></span>
+         The component&rsquo;s sprites. Can be supplied as a file path (as a string) or
+  as an already loaded (using love.graphics.newImage) sprite sheet.
+        </li>
+        <li><span class="parameter">spriteSize</span>
+            <span class="types"><span class="type">vector</span></span>
+         The sprite size for the animation in pixels.
+        </li>
+        <li><span class="parameter">spriteOffset</span>
+            <span class="types"><span class="type">vector</span></span>
+         The sprite offset for the animation in pixels. Default is no offset.
+         (<em>default</em> nil)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">AnimationComponent</span></span>
+        The newly created AnimationComponent.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AnimationComponent:addTo"></a>
+    <strong>AnimationComponent:addTo (container)</strong>
+    </dt>
+    <dd>
+    Adds this component to a GameObject.  This method registers
+ the update, changeToState and draw methods with the container
+ GameObject. The AnimationComponent will be added as the animation field of
+ the GameObject.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">container</span>
+            <span class="types"><span class="type">GameObject</span></span>
+         The GameObject this component is being added to.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Drawing_and_animation_data"></a>Drawing and animation data </h2>
+
+
+    <dl class="function">
+    <dt>
+    <a name = "AnimationComponent:draw"></a>
+    <strong>AnimationComponent:draw ()</strong>
+    </dt>
+    <dd>
+    Draws the AnimationComponent&rsquo;s current animation.  The default positioning is such that the
+  animation&rsquo;s bottom-center overlaps the container GameObject&rsquo;s position.
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AnimationComponent:setSpriteData"></a>
+    <strong>AnimationComponent:setSpriteData (spriteData, spriteSize[, spriteOffset=nil])</strong>
+    </dt>
+    <dd>
+    Sets the AnimationComponent&rsquo;s sprite data for it to be drawn.  This method is called when
+ the Component is initialized, so you should only call it if you want to alter sprite data dynamically.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">spriteData</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span class="type">Image</span></span>
+         The component&rsquo;s sprites. Can be supplied as a file path (as a string) or
+  as an already loaded (using love.graphics.newImage) sprite sheet.
+        </li>
+        <li><span class="parameter">spriteSize</span>
+            <span class="types"><span class="type">vector</span></span>
+         The sprite size for the animation in pixels.
+        </li>
+        <li><span class="parameter">spriteOffset</span>
+            <span class="types"><span class="type">vector</span></span>
+         The sprite offset for the animation in pixels. Default is no offset.
+         (<em>default</em> nil)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AnimationComponent:addAnimation"></a>
+    <strong>AnimationComponent:addAnimation (name, params)</strong>
+    </dt>
+    <dd>
+    Adds an animation to the component.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The name of the new animation. If the component already
+ had an animation with this name, it will be overwritten.
+        </li>
+        <li><span class="parameter">params</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of animation parameters. Mandatory entries in
+ this table are &ldquo;mode&rdquo; (animation mode, which can be &ldquo;loop&rdquo;, &ldquo;once&rdquo;
+ or &ldquo;bounce&rdquo;); frames, which must be an array of frame coordinates as
+ strings; and defaultDelay, the default time for each animation frame.
+ Optional entries are delays, an array of numbers representing each frame&rsquo;s
+ duration; flippedH and flippedV, the animation&rsquo;s horizontal and vertical
+ flipping respectively.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AnimationComponent:setAnimation"></a>
+    <strong>AnimationComponent:setAnimation (name[, noReset=false])</strong>
+    </dt>
+    <dd>
+    Sets the component&rsquo;s current animation.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The name of the animation to set. If no animation with such
+ name exists, an error is raised.
+        </li>
+        <li><span class="parameter">noReset</span>
+            <span class="types"><span class="type">bool</span></span>
+         A flag to prevent restarting the animation if true.
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="State_handling"></a>State handling </h2>
+
+
+    <dl class="function">
+    <dt>
+    <a name = "AnimationComponent:changeToState"></a>
+    <strong>AnimationComponent:changeToState (nextState)</strong>
+    </dt>
+    <dd>
+    Executes a transition to a specified state.
+ The next state&rsquo;s animation is set as the current animation, if it differs from
+ the current one.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">nextState</span>
+            <span class="types"><span class="type">State</span></span>
+         The target state.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AnimationComponent:update"></a>
+    <strong>AnimationComponent:update (dt)</strong>
+    </dt>
+    <dd>
+    Updates the Component, advancing the animation.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+            <span class="types"><span class="type">number</span></span>
+         The time interval to apply to the Component.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AnimationComponent:pause"></a>
+    <strong>AnimationComponent:pause ()</strong>
+    </dt>
+    <dd>
+    Pauses the Component, preventing the animation from advancing.
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AnimationComponent:resume"></a>
+    <strong>AnimationComponent:resume ()</strong>
+    </dt>
+    <dd>
+    Resumes the Component, allowing the animation to advance.
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

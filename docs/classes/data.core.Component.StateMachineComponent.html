@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Building_and_destroying">Building and destroying </a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/data.core.BaseComponent.html">data.core.BaseComponent</a></li>
+  <li><a href="../classes/data.core.Component.AnimationComponent.html">data.core.Component.AnimationComponent</a></li>
+  <li><a href="../classes/data.core.Component.CollisionComponent.html">data.core.Component.CollisionComponent</a></li>
+  <li><a href="../classes/data.core.Component.InputComponent.html">data.core.Component.InputComponent</a></li>
+  <li><a href="../classes/data.core.Component.PhysicsComponent.html">data.core.Component.PhysicsComponent</a></li>
+  <li><a href="../classes/data.core.Component.State.html">data.core.Component.State</a></li>
+  <li><strong>data.core.Component.StateMachineComponent</strong></li>
+  <li><a href="../classes/data.core.Component.TransformComponent.html">data.core.Component.TransformComponent</a></li>
+  <li><a href="../classes/data.core.GameObject.html">data.core.GameObject</a></li>
+  <li><a href="../classes/data.core.GameObjectFactory.html">data.core.GameObjectFactory</a></li>
+  <li><a href="../classes/lib.TileCollider.html">lib.TileCollider</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/data.core.Loader.html">core.Loader</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>data.core.Component.StateMachineComponent</code></h1>
+
+<p>A Component that represents an element&rsquo;s behavior as a state machine.</p>
+<p>
+</p>
+
+
+<h2><a href="#Building_and_destroying">Building and destroying </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineComponent.__call">StateMachineComponent.__call ()</a></td>
+	<td class="summary">Builds a new StateMachineComponent with no states.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineComponent:addTo">StateMachineComponent:addTo (container)</a></td>
+	<td class="summary">Adds this component to a GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineComponent:removeState">StateMachineComponent:removeState (stateName)</a></td>
+	<td class="summary">Removes a state from the StateMachine, leaving it with no owner.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineComponent:start">StateMachineComponent:start ()</a></td>
+	<td class="summary">Starts the state machine, changing to the initial state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineComponent:lateUpdate">StateMachineComponent:lateUpdate (dt)</a></td>
+	<td class="summary">Executes the current state&rsquo;s lateUpdate method, if present.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineComponent:changeToState">StateMachineComponent:changeToState (nextState)</a></td>
+	<td class="summary">Executes a transition to a specified state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineComponent:getStateFlags">StateMachineComponent:getStateFlags ()</a></td>
+	<td class="summary">Returns the current state&rsquo;s flags.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineComponent:update">StateMachineComponent:update (dt)</a></td>
+	<td class="summary">Executes the current state&rsquo;s update method, if present.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Building_and_destroying"></a>Building and destroying </h2>
+
+
+    <dl class="function">
+    <dt>
+    <a name = "StateMachineComponent.__call"></a>
+    <strong>StateMachineComponent.__call ()</strong>
+    </dt>
+    <dd>
+    Builds a new StateMachineComponent with no states.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">StateMachineComponent</span></span>
+        The newly created StateMachineComponent.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineComponent:addTo"></a>
+    <strong>StateMachineComponent:addTo (container)</strong>
+    </dt>
+    <dd>
+    Adds this component to a GameObject.  This method registers
+ the start, update and lateUpdate methods with the container GameObject.
+ These methods will also be called on the current state, if they exist.
+ The StateMachineComponent will be added as the stateMachine field of
+ the GameObject.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">container</span>
+            <span class="types"><span class="type">GameObject</span></span>
+         The GameObject this component is being added to.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineComponent:removeState"></a>
+    <strong>StateMachineComponent:removeState (stateName)</strong>
+    </dt>
+    <dd>
+    Removes a state from the StateMachine, leaving it with no owner.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">stateName</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The name of the state to be removed. If there is no state with such name in the StateMachine, nothing is done.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineComponent:start"></a>
+    <strong>StateMachineComponent:start ()</strong>
+    </dt>
+    <dd>
+    Starts the state machine, changing to the initial state.  If the initial state
+ has a start method, it will be called.
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineComponent:lateUpdate"></a>
+    <strong>StateMachineComponent:lateUpdate (dt)</strong>
+    </dt>
+    <dd>
+    Executes the current state&rsquo;s lateUpdate method, if present.  Additionally,
+ checks for conditions and executes any possible state change.
+ If two or more transitions are possible, the one with higher priority
+ is taken (or the one that was added first, if there is more than one transition with the
+ same priority). State transition conditions take a single argument: the current
+ state.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+            <span class="types"><span class="type">number</span></span>
+         The elapsed time since the last lateUpdate call, in seconds.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineComponent:changeToState"></a>
+    <strong>StateMachineComponent:changeToState (nextState)</strong>
+    </dt>
+    <dd>
+    Executes a transition to a specified state.
+ The current state&rsquo;s onExitTo and the target state&rsquo;s onEnterFrom
+ are executed, if found.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">nextState</span>
+            <span class="types"><span class="type">State</span></span>
+         The target state.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineComponent:getStateFlags"></a>
+    <strong>StateMachineComponent:getStateFlags ()</strong>
+    </dt>
+    <dd>
+    Returns the current state&rsquo;s flags.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        The flags, as an array of flags that can be true or false.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineComponent:update"></a>
+    <strong>StateMachineComponent:update (dt)</strong>
+    </dt>
+    <dd>
+    Executes the current state&rsquo;s update method, if present.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+            <span class="types"><span class="type">number</span></span>
+         The elapsed time since the last update, in seconds.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

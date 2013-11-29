@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Building_and_destroying">Building and destroying </a></li>
+<li><a href="#State_handling">State handling </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/data.core.Component.html">core.Component</a></li>
+  <li><a href="../modules/data.core.Component.CollisionComponent.html">core.Component.CollisionComponent</a></li>
+  <li><strong>core.Component.InputComponent</strong></li>
+  <li><a href="../modules/data.core.Component.PhysicsComponent.html">core.Component.PhysicsComponent</a></li>
+  <li><a href="../modules/data.core.Component.State.html">core.Component.State</a></li>
+  <li><a href="../modules/data.core.Component.StateMachineComponent.html">core.Component.StateMachineComponent</a></li>
+  <li><a href="../modules/data.core.Component.TransformComponent.html">core.Component.TransformComponent</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/lib.TileCollider.html">TileCollider</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Component.AnimationComponent.html">Component.AnimationComponent</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>data.core.Component.InputComponent</code></h1>
+
+<p>A Component that represents keyboard input for a GameObject.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#InputComponent">InputComponent (bindings)</a></td>
+	<td class="summary">Builds a new InputComponent with the given bindings, or default ones.</td>
+	</tr>
+</table>
+<h2><a href="#Building_and_destroying">Building and destroying </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#InputComponent:addTo">InputComponent:addTo (container)</a></td>
+	<td class="summary">Adds this component to a GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#InputComponent:setBindings">InputComponent:setBindings (bindings)</a></td>
+	<td class="summary">Sets the player's bindings.</td>
+	</tr>
+</table>
+<h2><a href="#State_handling">State handling </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#InputComponent:update">InputComponent:update (dt)</a></td>
+	<td class="summary">Updates the InputComponent, applying control physics if necessary.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#InputComponent:setControl">InputComponent:setControl (control)</a></td>
+	<td class="summary">Sets the control flag for the Component.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "InputComponent"></a>
+    <strong>InputComponent (bindings)</strong>
+    </dt>
+    <dd>
+    Builds a new InputComponent with the given bindings, or default ones.
+ The default bindings are as follows: WASD and arrows can be used as
+ the direction buttons; Space and Z can be used as the jump button, and
+ Right Control and X can be used as the special/attack button.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bindings</span>
+         The key bindings to set, as a table.  See <a href="http://love2d.org/wiki/TLbind">TLbind's documentation</a> for details (under bind.keys).
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Building_and_destroying"></a>Building and destroying </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "InputComponent:addTo"></a>
+    <strong>InputComponent:addTo (container)</strong>
+    </dt>
+    <dd>
+    Adds this component to a GameObject.  This method registers
+ the update method with the container GameObject. The InputComponent will
+ be added as the input field of the GameObject.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">container</span>
+         The GameObject this component is being added to.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "InputComponent:setBindings"></a>
+    <strong>InputComponent:setBindings (bindings)</strong>
+    </dt>
+    <dd>
+    Sets the player's bindings.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bindings</span>
+         The bindings to set, as a table.  See <a href="http://love2d.org/wiki/TLbind">TLbind's documentation</a> for details (under bind.keys).
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="State_handling"></a>State handling </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "InputComponent:update"></a>
+    <strong>InputComponent:update (dt)</strong>
+    </dt>
+    <dd>
+    Updates the InputComponent, applying control physics if necessary.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The time interval to apply to the Component.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "InputComponent:setControl"></a>
+    <strong>InputComponent:setControl (control)</strong>
+    </dt>
+    <dd>
+    Sets the control flag for the Component.  A value of false will disable input.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">control</span>
+         The value for the control flag.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

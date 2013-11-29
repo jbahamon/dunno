@@ -32,20 +32,13 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
-<li><a href="#Tables">Tables</a></li>
+<li><a href="#Methods">Methods </a></li>
 </ul>
 
 
-<h2>Modules</h2>
-<ul class="nowrap">
-  <li><a href="../modules/data.core.Loader.html">core.Loader</a></li>
-  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
-  <li><strong>main</strong></li>
-</ul>
 <h2>Classes</h2>
 <ul class="nowrap">
-  <li><a href="../classes/data.core.BaseComponent.html">data.core.BaseComponent</a></li>
+  <li><strong>data.core.BaseComponent</strong></li>
   <li><a href="../classes/data.core.Component.AnimationComponent.html">data.core.Component.AnimationComponent</a></li>
   <li><a href="../classes/data.core.Component.CollisionComponent.html">data.core.Component.CollisionComponent</a></li>
   <li><a href="../classes/data.core.Component.InputComponent.html">data.core.Component.InputComponent</a></li>
@@ -57,29 +50,33 @@
   <li><a href="../classes/data.core.GameObjectFactory.html">data.core.GameObjectFactory</a></li>
   <li><a href="../classes/lib.TileCollider.html">lib.TileCollider</a></li>
 </ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/data.core.Loader.html">core.Loader</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
 
 </div>
 
 <div id="content">
 
-<h1>Module <code>main</code></h1>
+<h1>Class <code>data.core.BaseComponent</code></h1>
 
-<p>Dunno entry point.</p>
-<p> Also the point of definition of global variables.</p>
+<p>The base class for all BaseComponents of a GameObject.</p>
+<p> A BaseComponent represents a distinct functionality and/or characteristic of a GameObject.
+ See other classes of the BaseComponent module.</p>
 
 
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Methods">Methods </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#math.clamp">math.clamp (input, min_val, max_val)</a></td>
-	<td class="summary">Clamp number between two values.</td>
+	<td class="name" nowrap><a href="#BaseComponent.__call">BaseComponent.__call ()</a></td>
+	<td class="summary">Builds a BaseComponent.</td>
 	</tr>
-</table>
-<h2><a href="#Tables">Tables</a></h2>
-<table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#globals">globals</a></td>
-	<td class="summary">Global variables.</td>
+	<td class="name" nowrap><a href="#BaseComponent:addTo">BaseComponent:addTo (container)</a></td>
+	<td class="summary">Adds this BaseComponent to a GameObject.</td>
 	</tr>
 </table>
 
@@ -87,57 +84,43 @@
 <br/>
 
 
-    <h2><a name="Functions"></a>Functions</h2>
+    <h2><a name="Methods"></a>Methods </h2>
+        Methods
     <dl class="function">
     <dt>
-    <a name = "math.clamp"></a>
-    <strong>math.clamp (input, min_val, max_val)</strong>
+    <a name = "BaseComponent.__call"></a>
+    <strong>BaseComponent.__call ()</strong>
     </dt>
     <dd>
-    Clamp number between two values.
- Globally defined.
- Returns input if it is between min_val and max_val; max_val if it is
- larger than it; min_val if it is smaller than it.
+    Builds a BaseComponent.
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">input</span>
-         The value to be clamped
-        </li>
-        <li><span class="parameter">min_val</span>
-         The lower bound of the clamping interval.
-        </li>
-        <li><span class="parameter">max_val</span>
-         The upper bound of the clamping interval. Must be
- greater than or equal to min_val
-        </li>
-    </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">BaseComponent</span></span>
+        The newly created BaseComponent
+    </ol>
 
 
 
 
 </dd>
-</dl>
-    <h2><a name="Tables"></a>Tables</h2>
-    <dl class="function">
     <dt>
-    <a name = "globals"></a>
-    <strong>globals</strong>
+    <a name = "BaseComponent:addTo"></a>
+    <strong>BaseComponent:addTo (container)</strong>
     </dt>
     <dd>
-    Global variables.
+    Adds this BaseComponent to a GameObject.  When defining your own Basecomponents,
+  you should register the Basecomponent&rsquo;s methods with the container
+  object in this method. Remember calling the BaseComponent&rsquo;s (or the
+ corresponding superclass) addTo method if you do this!
 
-    <h3>Fields:</h3>
+    <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">DEBUG</span>
-         Debug flag. If set to true, hitboxes are visible and other
-  debug messages are enabled.
-        </li>
-        <li><span class="parameter">Timer</span>
-         Utility for programming delayed events and others.
- See <a href="http://vrld.github.com/hump/">hump&rsquo;s documentation</a> for
- more info on its use and behavior.
+        <li><span class="parameter">container</span>
+            <span class="types"><span class="type">GameObject</span></span>
+         The GameObject this Basecomponent will be added to.
         </li>
     </ul>
 

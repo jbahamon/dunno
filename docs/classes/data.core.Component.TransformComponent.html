@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Building_and_destroying">Building and destroying </a></li>
+<li><a href="#Positioning_and_dynamics">Positioning and dynamics </a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/data.core.BaseComponent.html">data.core.BaseComponent</a></li>
+  <li><a href="../classes/data.core.Component.AnimationComponent.html">data.core.Component.AnimationComponent</a></li>
+  <li><a href="../classes/data.core.Component.CollisionComponent.html">data.core.Component.CollisionComponent</a></li>
+  <li><a href="../classes/data.core.Component.InputComponent.html">data.core.Component.InputComponent</a></li>
+  <li><a href="../classes/data.core.Component.PhysicsComponent.html">data.core.Component.PhysicsComponent</a></li>
+  <li><a href="../classes/data.core.Component.State.html">data.core.Component.State</a></li>
+  <li><a href="../classes/data.core.Component.StateMachineComponent.html">data.core.Component.StateMachineComponent</a></li>
+  <li><strong>data.core.Component.TransformComponent</strong></li>
+  <li><a href="../classes/data.core.GameObject.html">data.core.GameObject</a></li>
+  <li><a href="../classes/data.core.GameObjectFactory.html">data.core.GameObjectFactory</a></li>
+  <li><a href="../classes/lib.TileCollider.html">lib.TileCollider</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/data.core.Loader.html">core.Loader</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>data.core.Component.TransformComponent</code></h1>
+
+<p>A Component that represents an element&rsquo;s position and orientation.</p>
+<p> Every GameObject has a TransformComponent.</p>
+
+
+<h2><a href="#Building_and_destroying">Building and destroying </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#TransformComponent.__call">TransformComponent.__call ([position], facing)</a></td>
+	<td class="summary">Builds a new TransformComponent.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TransformComponent:addTo">TransformComponent:addTo (container)</a></td>
+	<td class="summary">Adds this component to a GameObject.</td>
+	</tr>
+</table>
+<h2><a href="#Positioning_and_dynamics">Positioning and dynamics </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#TransformComponent:move">TransformComponent:move (displacement)</a></td>
+	<td class="summary">Moves the component by a certain amount, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TransformComponent:moveTo">TransformComponent:moveTo (position)</a></td>
+	<td class="summary">Moves the component to a certain position, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TransformComponent:turn">TransformComponent:turn ()</a></td>
+	<td class="summary">Flips the component horizontally.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Building_and_destroying"></a>Building and destroying </h2>
+
+
+    <dl class="function">
+    <dt>
+    <a name = "TransformComponent.__call"></a>
+    <strong>TransformComponent.__call ([position], facing)</strong>
+    </dt>
+    <dd>
+    Builds a new TransformComponent.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">position</span>
+            <span class="types"><span class="type">vector</span></span>
+         The starting position for the TransformComponent, as
+ a vector. Optional (default is (0, 0))
+        </li>
+        <li><span class="parameter">facing</span>
+            <span class="types"><span class="type">number</span></span>
+         The starting facing for the TransformComponent. A
+ facing value greater than zero means facing right; lesser than zero
+ means facing left. Optional (default is facing right).
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">TransformComponent</span></span>
+        The newly created TransformComponent.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TransformComponent:addTo"></a>
+    <strong>TransformComponent:addTo (container)</strong>
+    </dt>
+    <dd>
+    Adds this component to a GameObject.  This method registers
+ the move, moveTo, turn and changeToState methods with the container
+ GameObject. The TransformComponent will be added as the transform field of
+ the GameObject.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">container</span>
+            <span class="types"><span class="type">GameObject</span></span>
+         The GameObject this component is being added to.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Positioning_and_dynamics"></a>Positioning and dynamics </h2>
+
+
+    <dl class="function">
+    <dt>
+    <a name = "TransformComponent:move"></a>
+    <strong>TransformComponent:move (displacement)</strong>
+    </dt>
+    <dd>
+    Moves the component by a certain amount, in pixels.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">displacement</span>
+            <span class="types"><span class="type">vector</span></span>
+         The displacement to be applied, in pixels.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TransformComponent:moveTo"></a>
+    <strong>TransformComponent:moveTo (position)</strong>
+    </dt>
+    <dd>
+    Moves the component to a certain position, in pixels.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">position</span>
+            <span class="types"><span class="type">vector</span></span>
+         The target position.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TransformComponent:turn"></a>
+    <strong>TransformComponent:turn ()</strong>
+    </dt>
+    <dd>
+    Flips the component horizontally.
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

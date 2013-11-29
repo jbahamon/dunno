@@ -30,20 +30,24 @@
 
 
 <h2>Modules</h2>
-<ul>
-  <li><a href="modules/data.core.CameraManager.html">data.core.CameraManager</a></li>
-  <li><a href="modules/data.core.Element.html">data.core.Element</a></li>
-  <li><a href="modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></li>
-  <li><a href="modules/data.core.ElementFactory.html">data.core.ElementFactory</a></li>
-  <li><a href="modules/data.core.Player.html">data.core.Player</a></li>
-  <li><a href="modules/data.core.Player.PlayerState.html">data.core.Player.PlayerState</a></li>
-  <li><a href="modules/data.core.Stage.html">data.core.Stage</a></li>
-  <li><a href="modules/data.core.StateMachine.html">data.core.StateMachine</a></li>
-  <li><a href="modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></li>
-  <li><a href="modules/data.core.WorldManager.html">data.core.WorldManager</a></li>
-  <li><a href="modules/lib.GeometryUtils.html">lib.GeometryUtils</a></li>
-  <li><a href="modules/lib.TileCollider.html">lib.TileCollider</a></li>
+<ul class="nowrap">
+  <li><a href="modules/data.core.Loader.html">core.Loader</a></li>
+  <li><a href="modules/lib.GeometryUtils.html">GeometryUtils</a></li>
   <li><a href="modules/main.html">main</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="classes/data.core.BaseComponent.html">data.core.BaseComponent</a></li>
+  <li><a href="classes/data.core.Component.AnimationComponent.html">data.core.Component.AnimationComponent</a></li>
+  <li><a href="classes/data.core.Component.CollisionComponent.html">data.core.Component.CollisionComponent</a></li>
+  <li><a href="classes/data.core.Component.InputComponent.html">data.core.Component.InputComponent</a></li>
+  <li><a href="classes/data.core.Component.PhysicsComponent.html">data.core.Component.PhysicsComponent</a></li>
+  <li><a href="classes/data.core.Component.State.html">data.core.Component.State</a></li>
+  <li><a href="classes/data.core.Component.StateMachineComponent.html">data.core.Component.StateMachineComponent</a></li>
+  <li><a href="classes/data.core.Component.TransformComponent.html">data.core.Component.TransformComponent</a></li>
+  <li><a href="classes/data.core.GameObject.html">data.core.GameObject</a></li>
+  <li><a href="classes/data.core.GameObjectFactory.html">data.core.GameObjectFactory</a></li>
+  <li><a href="classes/lib.TileCollider.html">lib.TileCollider</a></li>
 </ul>
 
 </div>
@@ -53,68 +57,75 @@
 
 
   <h2>Dunno</h2>
-  <p>...</p>
+  <p>&hellip;</p>
 
 <h2>Modules</h2>
 <table class="module_list">
 	<tr>
-		<td class="name"  nowrap><a href="modules/data.core.CameraManager.html">data.core.CameraManager</a></td>
-		<td class="summary">CameraManager implementation.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/data.core.Element.html">data.core.Element</a></td>
-		<td class="summary">A game element implementation.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/data.core.Element.ElementState.html">data.core.Element.ElementState</a></td>
-		<td class="summary">Element state implementation.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/data.core.ElementFactory.html">data.core.ElementFactory</a></td>
-		<td class="summary">ElementFactory implementation.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/data.core.Player.html">data.core.Player</a></td>
-		<td class="summary">The game player class and helper functions.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/data.core.Player.PlayerState.html">data.core.Player.PlayerState</a></td>
-		<td class="summary">Player state implementation.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/data.core.Stage.html">data.core.Stage</a></td>
-		<td class="summary">State machine implementation.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/data.core.StateMachine.html">data.core.StateMachine</a></td>
-		<td class="summary">State machine implementation.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/data.core.StateMachine.State.html">data.core.StateMachine.State</a></td>
-		<td class="summary">State machine's state implementation</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/data.core.WorldManager.html">data.core.WorldManager</a></td>
-		<td class="summary">WorldManager implementation.</td>
+		<td class="name"  nowrap><a href="modules/data.core.Loader.html">data.core.Loader</a></td>
+		<td class="summary">A module for loading and building game elements from user files.</td>
 	</tr>
 	<tr>
 		<td class="name"  nowrap><a href="modules/lib.GeometryUtils.html">lib.GeometryUtils</a></td>
-		<td class="summary">Helper functions related to geometry.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/lib.TileCollider.html">lib.TileCollider</a></td>
-		<td class="summary">Tile Collider implementation</td>
+		<td class="summary">Helper functions related to geometry, useful for collision analysis.</td>
 	</tr>
 	<tr>
 		<td class="name"  nowrap><a href="modules/main.html">main</a></td>
 		<td class="summary">Dunno entry point.</td>
 	</tr>
 </table>
+<h2>Classes</h2>
+<table class="module_list">
+	<tr>
+		<td class="name"  nowrap><a href="classes/data.core.BaseComponent.html">data.core.BaseComponent</a></td>
+		<td class="summary">The base class for all BaseComponents of a GameObject.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/data.core.Component.AnimationComponent.html">data.core.Component.AnimationComponent</a></td>
+		<td class="summary">A Component that represents an element&rsquo;s sprites and animations.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/data.core.Component.CollisionComponent.html">data.core.Component.CollisionComponent</a></td>
+		<td class="summary">A Component that represents an element&rsquo;s collision box.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/data.core.Component.InputComponent.html">data.core.Component.InputComponent</a></td>
+		<td class="summary">A Component that represents keyboard input for a GameObject.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/data.core.Component.PhysicsComponent.html">data.core.Component.PhysicsComponent</a></td>
+		<td class="summary">A Component that represents an element&rsquo;s physics.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/data.core.Component.State.html">data.core.Component.State</a></td>
+		<td class="summary">A StateMachineComponent&rsquo;s basic State.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/data.core.Component.StateMachineComponent.html">data.core.Component.StateMachineComponent</a></td>
+		<td class="summary">A Component that represents an element&rsquo;s behavior as a state machine.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/data.core.Component.TransformComponent.html">data.core.Component.TransformComponent</a></td>
+		<td class="summary">A Component that represents an element&rsquo;s position and orientation.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/data.core.GameObject.html">data.core.GameObject</a></td>
+		<td class="summary">The objects that represent anything in a stage.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/data.core.GameObjectFactory.html">data.core.GameObjectFactory</a></td>
+		<td class="summary">A class for mass producing GameObjects without loading every resource each time.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/lib.TileCollider.html">lib.TileCollider</a></td>
+		<td class="summary">A module that processes collisions between GameObjects and stage tiles.</td>
+	</tr>
+</table>
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
-<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

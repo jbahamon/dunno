@@ -1,27 +1,30 @@
---- A game CollisionComponent implementation.
--- @class module
--- @name data.core.CollisionComponent
+--- A Component that represents an element's collision box.
+-- @classmod data.core.Component.CollisionComponent
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
-local Component = require 'data.core.Component'
+local BaseComponent = require 'data.core.Component.BaseComponent'
 
 local GeometryUtils = require 'lib.GeometryUtils'
 local shapes = require 'lib.HardonCollider.shapes'
 
-
---- Builds a new CollisionComponent with a collision box and no states.
--- @class function
--- @name CollisionComponent
--- @param defaultSize The size of the CollisionComponent's default collision box, as a vector, in pixels.
--- @return The newly created CollisionComponent.
-
 local CollisionComponent = Class {
-    name = 'CollisionComponent'
+    name = 'CollisionComponent',
+    __includes = BaseComponent
 }
 
+-----------------------------------------------------------------
+--- Building and destroying
+-- @section building
+
+--- Builds a new CollisionComponent.
+-- @class function
+-- @name CollisionComponent.__call
+-- @tparam vector defaultSize The size of the CollisionComponent's default collision box, in pixels.
+-- @treturn CollisionComponent The newly created CollisionComponent.
+
 function CollisionComponent:init(defaultSize)
-    Component.init(self)
+    BaseComponent.init(self)
 
     self.defaultSize = defaultSize
     self:setCollisionBox(self.defaultSize)
@@ -35,22 +38,21 @@ function CollisionComponent:init(defaultSize)
 
     self.pendingCollisions = {}
 end    
------------------------------------------------------------------
---- Building and destroying
--- @section building
 
 --- Adds this component to a GameObject. This method registers
--- the move, moveTo, start, draw, changeToState and destroySelf methods
--- with the container GameObject.
--- @param container The GameObject this component is being added to.
+-- the move, moveTo, draw, changeToState, destroySelf and getHitBy methods
+-- with the container GameObject. The CollisionComponent will be added as the collision field of
+-- the GameObject.
+-- @tparam @{data.core.GameObject} container The GameObject this component is being added to.
 function CollisionComponent:addTo(container)
-    Component.addTo(self, container)
+    BaseComponent.addTo(self, container)
 
     container:register("move", self)
     container:register("moveTo", self)
     container:register("draw", self)
     container:register("changeToState", self)
     container:register("destroySelf", self)
+    container:register("getHitBy", self)
     container.collision = self
 end
 
@@ -66,7 +68,7 @@ end
 -- @section dynamics
 
 --- Moves the CollisionComponent by a certain amount, in pixels.
--- @param displacement The displacement to be applied, as a hump vector, in pixels.
+-- @tparam vector displacement The displacement to be applied in pixels.
 function CollisionComponent:move(displacement)
     self.box:move(displacement:unpack())
 end
@@ -74,13 +76,13 @@ end
 --- Moves the CollisionComponent to a given location, in pixels.
 -- The CollisionComponent's collision box is moved so that the CollisionComponent's
 -- new position lies at the bottom-center of the collision box.
--- @param newPosition The target position, as a hump vector, in pixels.
+-- @tparam vector newPosition The target position in pixels.
 function CollisionComponent:moveTo(newPosition)
     self.box:moveTo(newPosition.x, newPosition.y - (self.size.y)/2)
 end
 
 --- Returns the center of the CollisionComponent's collision box, in pixels.
--- @return The center's position, as a vector.
+-- @treturn vector The center's position.
 function CollisionComponent:center()
     return vector(self.box:center())
 end
@@ -89,7 +91,7 @@ end
 -- Drawing
 -- @section drawing
 
---- If globals.DEBUG is set to <i>true</i>, the CollisionComponent's collision box is drawn.
+--- If globals.DEBUG is set to <i>true</i>, this method draws the CollisionComponent's current collision box.
 function CollisionComponent:draw()
     if not globals.DEBUG then return end
     local x, y = self.box:center()
@@ -103,8 +105,9 @@ end
 -- @section state
 
 --- Called when the container GameObject changes state.
--- This method changes the component's collision box to the target state's collision box.
--- @param nextState The target state.
+-- This method changes the component's collision box to the target state's 
+-- collision box if it differs from the current one.
+-- @tparam @{data.core.Component.State} nextState The target state.
 function CollisionComponent:changeToState(nextState)
 
     if nextState.size and
@@ -130,16 +133,17 @@ end
 -- Collision handling
 -- @section collision
 
---- Sets the colliders for this CollisionComponent, adding the current collision box to them.
--- @param tileCollider The tileCollider to set.
--- @param activeCollider The activeCollider to set.
+--- Sets the colliders for this CollisionComponent, adding the current collision box to them. 
+-- If the Component already had colliders, it is removed from them.
+-- @tparam @{lib.TileCollider} tileCollider The tileCollider to set.
+-- @tparam HardonCollider activeCollider The activeCollider to set.
 function CollisionComponent:setColliders(tileCollider, activeCollider)
     -- If we had colliders, we remove ourselves from them.
-    if self.activeCollider then
+    if self.activeCollider and self.box then
         self.activeCollider:remove(self.box)
     end
 
-    if self.tileCollider then
+    if self.tileCollider and self.box then
         self.tileCollider:remove(self.box)
     end
 
@@ -147,15 +151,17 @@ function CollisionComponent:setColliders(tileCollider, activeCollider)
     self.tileCollider = tileCollider
     self.activeCollider = activeCollider
 
-    self.activeCollider:addShape(self.box)
-    self.tileCollider:addShape(self.box)
+    if self.box then
+        self.activeCollider:addShape(self.box)
+        self.tileCollider:addShape(self.box)
+    end
 end
 
 --- Calculates the displacement needed to move the CollisionComponent into a colliding box.
 -- The movement is performed in the axis with the smallest distance to the target 
 -- box. Useful for room transitions, for example.
--- @param box The collision box to move the CollisionComponent into.
--- @return The needed displacement that should be applied.
+-- @tparam Shape box The collision box to move the CollisionComponent into.
+-- @treturn number The needed displacement that should be applied.
 function CollisionComponent:movementIntoCollidingBox(box)
     local collides, dx, dy = self.box:collidesWith(box)
 
@@ -205,13 +211,13 @@ function CollisionComponent:resetCollisionFlags()
 end
 
 --- Called when colliding with a tile from the stage's collision layer. 
--- Essentially, adds the collision event to the pendingCollisions field.
+-- Essentially, it adds the collision event to the pendingCollisions field.
 -- This function should not be overriden; if you want to implement your own collision
 -- resolution for tiles, override @{CollisionComponent:resolveTileCollisions}.
--- @param dt The time slice for the collision frame.
--- @param tileCollisionComponent A sample tile that can be used to recreate the collision (should be removed).
--- @param tile The tile CollisionComponent with which the CollisionComponent is colliding.
--- @param position The position of the colliding tile, measured in tiles, as a hump vector.
+-- @tparam number dt The time slice for the collision frame.
+-- @tparam Tile tileCollisionComponent A sample tile that can be used to recreate the collision (should be removed).
+-- @tparam Tile tile The tile CollisionComponent with which the CollisionComponent is colliding.
+-- @tparam vector position The position of the colliding tile, measured in tiles.
 -- @see CollisionComponent:resolveTileCollisions, CollisionComponent:resetCollisionFlags
 function CollisionComponent:onTileCollide(dt, tileCollisionComponent, tile, position)
 
@@ -228,10 +234,11 @@ end
 
 --- Resolves collisions with tiles.
 -- Iterates over the registered collision events and resolves them appropriately.
--- This function can be overriden to implement custom tile collision resolution.
--- @param sampleTile A tile of the appropriate size that can be moved around to simulate 
+-- This function can be overriden to implement custom tile collision resolution, but be careful
+-- to treat every tile type.
+-- @tparam Tile sampleTile A tile of the appropriate size that can be moved around to simulate 
 -- the collisions.
--- @param tileSize A vector that contains the size of the stage's tiles, in pixels.
+-- @tparam vector tileSize A vector that contains the size of the stage's tiles, in pixels.
 -- @see CollisionComponent:onTileCollide, CollisionComponent:resetCollisionFlags
 function CollisionComponent:resolveTileCollisions(sampleTile, tileSize)
 
@@ -317,20 +324,23 @@ function CollisionComponent:resolveTileCollisions(sampleTile, tileSize)
 end
 
 --- Called when colliding with an active CollisionComponent in the world (interactive CollisionComponent, enemy, etc).
--- Currently calls getHitBy on the other CollisionComponent if this CollisionComponent damages on contact.
--- @param dt The time slice for the collision frame.
--- @param box This CollisionComponent's colliding box.
--- @param otherCollisionComponent The CollisionComponent that is colliding with this one.
+-- Currently calls getHitBy on the other CollisionComponent's container if this CollisionComponent damages on contact.
+-- @tparam number dt The time slice for the collision frame.
+-- @tparam @{data.core.Component.CollisionComponent} otherCollisionComponent The CollisionComponent that is colliding with this one.
 function CollisionComponent:onDynamicCollide(dt, otherCollisionComponent)
     if otherCollisionComponent == self then
         return
     end
 
     if self.damagesOnContact then
-        otherCollisionComponent:getHitBy(self.parent)
+        otherCollisionComponent.container:getHitBy(self.parent)
     end
 end
 
+
+--- Called when hit by something (read: something that does damage)-
+-- Currently sets the hit flag in the collisionFlags field.
+-- @tparam @{data.core.GameObject} otherObject The GameObject hitting this CollisionComponent
 function CollisionComponent:getHitBy(otherObject)
     if not self.invincible then
         self.collisionFlags.hit = true
@@ -338,8 +348,7 @@ function CollisionComponent:getHitBy(otherObject)
 end
 
 --- Sets the current collision box for the CollisionComponent.
--- @param newSize The size of the new collision box.
--- @see CollisionComponent:getCollisionBox
+-- @tparam vector newSize The size of the new collision box in pixels.
 function CollisionComponent:setCollisionBox(newSize)
 
     if self.box then

@@ -1,19 +1,20 @@
---- State machine's state implementation
--- @class module
--- @name data.core.StateMachine.State
+--- A StateMachineComponent's basic State.
+-- @classmod data.core.Component.State
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 
---- Builds a new State.
--- @class function
--- @name State
--- @param name The state's name.
--- @return The newly created State.
 
 local State = Class {
 	name = "State"
 }
+
+
+--- Builds a new State with no flags nor transitions.
+-- @class function
+-- @name State.__call
+-- @tparam string name The state's name.
+-- @treturn State The newly created State.
 
 function State:init(name)
 	self.name = name
@@ -21,12 +22,11 @@ function State:init(name)
 	self.transitions = {}
 end
 
----A StateMachine's state implementation.
--- It is the base for all other states.
--- @type State
-
 --- Adds a transition to the state.
--- position indicates the priority of the transition with respect to the others.
+-- @tparam function condition The condition function that shall be evaluated to 
+-- determine if the transition should be performed.
+-- @tparam string targetState The name of the state the transition will lead to.
+-- @tparam[opt=1] number position The priority of the transition with respect to the others.
 -- (1 meaning the new transition will be checked before all those added before)
 function State:addTransition(condition, targetState, position)
 
@@ -42,13 +42,13 @@ function State:addTransition(condition, targetState, position)
 end
 
 --- Sets a state's flag as on.
--- @param flag The name of the flag to turn on.
+-- @tparam string flag The name of the flag to turn on.
 function State:addFlag(flag)
 	self.flags[flag] = true
 end
 
 --- Sets a state's flag as off.
--- @param flag The name of the flag to turn off.
+-- @tparam string flag The name of the flag to turn off.
 function State:removeFlag(flag)
 	self.flags[flag] = nil
 end
@@ -61,8 +61,8 @@ function State:getFlags()
 	return self.flags
 end
 
---- Sets all of a state's flag to off.
-function State:clearFlags(flag)
+--- Sets every flag of this state as off.
+function State:clearFlags()
 	self.flags = {}
 end
 

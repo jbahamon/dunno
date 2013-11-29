@@ -8,6 +8,7 @@ return function (state)
     end
 
     function state:enter(previous)
+
         self.manager = WorldManager("")
         self.manager:addViewport(vector(0, 0), vector(512, 480))
         self.manager:setStage(previous.chosenStage)

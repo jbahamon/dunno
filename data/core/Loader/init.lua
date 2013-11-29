@@ -1,6 +1,5 @@
-
--- @class module
--- @name data.core.PhysicsComponent
+--- A module for loading and building game elements from user files.
+-- @module data.core.Loader
 
 local GameObject = require 'data.core.GameObject'
 local State = require 'data.core.Component.State'
@@ -21,7 +20,9 @@ local vector = require 'lib.hump.vector'
 
 local Loader = {}
 
-
+--- Loads a Stage, given its folder path.
+-- @tparam string name The Stage's folder's name.
+-- @return Stage The newly created Stage
 function Loader.loadStage(name)
 
     local folder = globals.stageFolder .. string.gsub(name, '[^%a%d-_/]', '')
@@ -67,6 +68,13 @@ function Loader.loadStage(name)
     return stage
 end
 
+--- Loads a Player character, given its folder name. 
+-- Transform, Input and Physics components are added to the GameObject. 
+-- Animation, Collision and StateMachine components are added if sprites 
+-- (and animations), size and states (or basicStates) fields are present 
+-- in the character's parameters.
+-- @tparam string name The Player character's folder's name.
+-- @return GameObject The newly created Player character.
 function Loader.loadCharacter(name)
    
     local path = globals.characterFolder .. string.gsub(name, "[^%a%d-_/]", "") .. "/config.lua"    
@@ -134,6 +142,13 @@ function Loader.loadCharacter(name)
 
 end
 
+
+--- Adds a set of basic player states to a GameObject. The GameObject should have
+-- a StateMachine, Animation, Transform, Input, Collision and Physics components.
+-- See the parameter specification (TODO!) for details of building a GameObject from 
+-- a set of parameters.
+-- @tparam GameObject object The GameObject that will receive the created states. Must have a StateMachineComponent.
+-- @tparam table stateParams The parameter table.
 function Loader.loadBasicStates(object, stateParams)
 
     assert(stateParams.stand and 
@@ -188,10 +203,10 @@ function Loader.loadBasicStates(object, stateParams)
 
 end
 
---- Creates and adds states from a parameter table.
--- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
--- @param parameters The parameter table.
--- @see Element:addSingleStateFromParams, Element:loadSpritesFromParams
+--- Creates and adds states from a list of state parameters.
+-- See the parameter specification (TODO!) for details of building a GameObject from a set of parameters.
+-- @tparam GameObject object The GameObject that will receive the created states. Must have a StateMachineComponent.
+-- @tparam table states The states' parameters table.
 function Loader.loadStates(object, states)
 
     assert(type(states) == "table", "\'states\' parameter must be a table.")
@@ -240,6 +255,9 @@ function Loader.loadSingleState(object, newState, stateParams)
 
 end
 
+
+--- Sets the default parameters for a dynamics table if they're missing.
+-- @tparam table dynamics The dynamics table to normalize.
 function Loader.normalizeDynamics(dynamics)
     dynamics.maxVelocity = dynamics.maxVelocity or vector(math.huge, math.huge)
     dynamics.friction = dynamics.friction or vector(0, 0)
@@ -251,7 +269,8 @@ end
 
 --- Creates and adds transition from a parameter table.
 -- See the parameter specification (TODO!) for details of building an Element from a set of parameters.
--- @param parameters The parameter table.
+-- @tparam GameObject object The GameObject that will receive the created transitions. Must have a StateMachineComponent.
+-- @tparam table transitions The transitions' parameters table.
 function Loader.loadTransitions(object, transitions)
     for _, transition in ipairs(transitions) do
         assert(transition.from, "Transition origin not specified in parameters.")
@@ -271,6 +290,9 @@ function Loader.loadTransitions(object, transitions)
 
 end
 
+--- Loads a table from a file.
+-- @tparam string path The path of the file to be loaded.
+-- @treturn table The loaded table.
 function Loader.loadFile(path)
     assert(love.filesystem.isFile(path), "File \'".. path .. "\' not found")
     local ok, paramsFile = pcall(love.filesystem.load, path)
@@ -280,6 +302,7 @@ function Loader.loadFile(path)
     return parameters
 end
 
+--- Transitions between basic states.
 Loader.basicTransitions =
     {
         { 

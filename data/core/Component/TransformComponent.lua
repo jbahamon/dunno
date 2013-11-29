@@ -1,44 +1,45 @@
---- A game TransformComponent implementation.
--- @class module
--- @name data.core.TransformComponent
+--- A Component that represents an element's position and orientation. Every GameObject has a TransformComponent.
+-- @classmod data.core.Component.TransformComponent
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 local anim8 = require 'lib.anim8'
 
-local Component = require 'data.core.Component'
-
---- Builds a new TransformComponent with a collision box and no states.
--- @class function
--- @name TransformComponent
--- @param position The starting position for the TransformComponent, as 
--- a vector.
--- @param facing The starting facing for the TransformComponent. A 
--- facing value greater than zero means facing right; lesser than zero 
--- means facing left.
--- @return The newly created TransformComponent.
+local BaseComponent = require 'data.core.Component.BaseComponent'
 
 local TransformComponent = Class {
     name = 'TransformComponent',
-    __includes = Component
+    __includes = BaseComponent
 }
-
-function TransformComponent:init(position, facing)
-    Component.init(self)
-    self.position = position or vector(0,0)
-    self.facing = facing or 1
-end    
 
 -----------------------------------------------------------------
 --- Building and destroying
 -- @section building
 
+--- Builds a new TransformComponent.
+-- @class function
+-- @name TransformComponent.__call
+-- @tparam[opt] vector position The starting position for the TransformComponent, as 
+-- a vector. Optional (default is (0, 0))
+-- @tparam number facing The starting facing for the TransformComponent. A 
+-- facing value greater than zero means facing right; lesser than zero 
+-- means facing left. Optional (default is facing right).
+-- @treturn TransformComponent The newly created TransformComponent.
+
+function TransformComponent:init(position, facing)
+    BaseComponent.init(self)
+    self.position = position or vector(0,0)
+    self.facing = facing or 1
+end    
+
+
 --- Adds this component to a GameObject. This method registers
 -- the move, moveTo, turn and changeToState methods with the container
--- GameObject.
--- @param container The GameObject this component is being added to.
+-- GameObject. The TransformComponent will be added as the transform field of
+-- the GameObject.
+-- @tparam @{data.core.GameObject} container The GameObject this component is being added to.
 function TransformComponent:addTo(container)
-    Component.addTo(self, container)
+    BaseComponent.addTo(self, container)
 
     container:register("move", self)
     container:register("moveTo", self)
@@ -51,14 +52,14 @@ end
 -- @section position
 
 --- Moves the component by a certain amount, in pixels. 
--- @param displacement The displacement to be applied, as a hump vector, in pixels.
+-- @tparam vector displacement The displacement to be applied, in pixels.
 function TransformComponent:move(displacement)
     self.lastPosition = self.position
     self.position = self.position + displacement
 end
 
 --- Moves the component to a certain position, in pixels. 
--- @param position The target position, as a hump vector.
+-- @tparam vector position The target position.
 function TransformComponent:moveTo(position)
     self.lastPosition = self.position
     self.position = position:clone()

@@ -1,0 +1,343 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>data.core.Loader</strong></li>
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/lib.TileCollider.html">TileCollider</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/data.core.Component.html">data.core.Component</a></li>
+  <li><a href="../classes/data.core.Component.AnimationComponent.html">data.core.Component.AnimationComponent</a></li>
+  <li><a href="../classes/data.core.Component.CollisionComponent.html">data.core.Component.CollisionComponent</a></li>
+  <li><a href="../classes/data.core.Component.InputComponent.html">data.core.Component.InputComponent</a></li>
+  <li><a href="../classes/data.core.Component.PhysicsComponent.html">data.core.Component.PhysicsComponent</a></li>
+  <li><a href="../classes/data.core.Component.State.html">data.core.Component.State</a></li>
+  <li><a href="../classes/data.core.Component.StateMachineComponent.html">data.core.Component.StateMachineComponent</a></li>
+  <li><a href="../classes/data.core.Component.TransformComponent.html">data.core.Component.TransformComponent</a></li>
+  <li><a href="../classes/data.core.GameObject.html">data.core.GameObject</a></li>
+  <li><a href="../classes/data.core.GameObjectFactory.html">data.core.GameObjectFactory</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>asd.data.core.Loader</code></h1>
+
+<p>A module for loading and building game elements from user files.</p>
+<p>
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#loadStage">loadStage (name)</a></td>
+	<td class="summary">Loads a Stage, given its folder path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#loadCharacter">loadCharacter (name)</a></td>
+	<td class="summary">Loads a Player character, given its folder name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#loadBasicStates">loadBasicStates (object, stateParams)</a></td>
+	<td class="summary">Adds a set of basic player states to a GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#loadStates">loadStates (object, states)</a></td>
+	<td class="summary">Creates and adds states from a list of state parameters.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#normalizeDynamics">normalizeDynamics (dynamics)</a></td>
+	<td class="summary">Sets the default parameters for a dynamics table if they're missing.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#loadTransitions">loadTransitions (object, transitions)</a></td>
+	<td class="summary">Creates and adds transition from a parameter table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#loadFile">loadFile (path)</a></td>
+	<td class="summary">Loads a table from a file.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#basicTransitions">basicTransitions</a></td>
+	<td class="summary">Transitions between basic states.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "loadStage"></a>
+    <strong>loadStage (name)</strong>
+    </dt>
+    <dd>
+    Loads a Stage, given its folder path.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The Stage&rsquo;s folder&rsquo;s name.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Stage The newly created Stage
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "loadCharacter"></a>
+    <strong>loadCharacter (name)</strong>
+    </dt>
+    <dd>
+    Loads a Player character, given its folder name.<br/>
+ Transform, Input and Physics components are added to the GameObject.
+ Animation, Collision and StateMachine components are added if sprites
+ (and animations), size and states (or basicStates) fields are present
+ in the character&rsquo;s parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The Player character&rsquo;s folder&rsquo;s name.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        GameObject The newly created Player character.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "loadBasicStates"></a>
+    <strong>loadBasicStates (object, stateParams)</strong>
+    </dt>
+    <dd>
+    Adds a set of basic player states to a GameObject.  The GameObject should have
+ a StateMachine, Animation, Transform, Input, Collision and Physics components.
+ See the parameter specification (TODO!) for details of building a GameObject from
+ a set of parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+            <span class="types"><span class="type">GameObject</span></span>
+         The GameObject that will receive the created states. Must have a StateMachineComponent.
+        </li>
+        <li><span class="parameter">stateParams</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         The parameter table.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "loadStates"></a>
+    <strong>loadStates (object, states)</strong>
+    </dt>
+    <dd>
+    Creates and adds states from a list of state parameters.
+ See the parameter specification (TODO!) for details of building a GameObject from a set of parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+            <span class="types"><span class="type">GameObject</span></span>
+         The GameObject that will receive the created states. Must have a StateMachineComponent.
+        </li>
+        <li><span class="parameter">states</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         The states' parameters table.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "normalizeDynamics"></a>
+    <strong>normalizeDynamics (dynamics)</strong>
+    </dt>
+    <dd>
+    Sets the default parameters for a dynamics table if they're missing.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dynamics</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         The dynamics table to normalize.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "loadTransitions"></a>
+    <strong>loadTransitions (object, transitions)</strong>
+    </dt>
+    <dd>
+    Creates and adds transition from a parameter table.
+ See the parameter specification (TODO!) for details of building an Element from a set of parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+            <span class="types"><span class="type">GameObject</span></span>
+         The GameObject that will receive the created transitions. Must have a StateMachineComponent.
+        </li>
+        <li><span class="parameter">transitions</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         The transitions' parameters table.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "loadFile"></a>
+    <strong>loadFile (path)</strong>
+    </dt>
+    <dd>
+    Loads a table from a file.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path of the file to be loaded.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        The loaded table.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+    <dl class="function">
+    <dt>
+    <a name = "basicTransitions"></a>
+    <strong>basicTransitions</strong>
+    </dt>
+    <dd>
+    Transitions between basic states.
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">{</span>
+
+
+        </li>
+        <li><span class="parameter">stand</span>
+
+
+        </li>
+        <li><span class="parameter">climb</span>
+
+
+        </li>
+        <li><span class="parameter">jump</span>
+
+
+        </li>
+        <li><span class="parameter">hit</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

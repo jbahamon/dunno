@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods </a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/data.core.BaseComponent.html">data.core.BaseComponent</a></li>
+  <li><a href="../classes/data.core.Component.AnimationComponent.html">data.core.Component.AnimationComponent</a></li>
+  <li><a href="../classes/data.core.Component.CollisionComponent.html">data.core.Component.CollisionComponent</a></li>
+  <li><a href="../classes/data.core.Component.InputComponent.html">data.core.Component.InputComponent</a></li>
+  <li><a href="../classes/data.core.Component.PhysicsComponent.html">data.core.Component.PhysicsComponent</a></li>
+  <li><a href="../classes/data.core.Component.State.html">data.core.Component.State</a></li>
+  <li><a href="../classes/data.core.Component.StateMachineComponent.html">data.core.Component.StateMachineComponent</a></li>
+  <li><a href="../classes/data.core.Component.TransformComponent.html">data.core.Component.TransformComponent</a></li>
+  <li><strong>data.core.GameObject</strong></li>
+  <li><a href="../classes/data.core.GameObjectFactory.html">data.core.GameObjectFactory</a></li>
+  <li><a href="../classes/lib.TileCollider.html">lib.TileCollider</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/data.core.Loader.html">core.Loader</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>data.core.GameObject</code></h1>
+
+<p>The objects that represent anything in a stage.</p>
+<p> Players, enemies, powerups,
+ stage artifacts&hellip; all of them should be GameObjects. GameObjects are classless
+ objects, so there is no class inheritance. Instead, you should manipulate the GameObject&rsquo;s
+ components. Also, do not dynamically add methods to a GameObject, as it may interfere with the
+ callback mechanism.</p>
+
+
+<h2><a href="#Methods">Methods </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject:addComponent">GameObject:addComponent (newComponent)</a></td>
+	<td class="summary">Adds a component to this GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject:register">GameObject:register (event, component)</a></td>
+	<td class="summary">Registers a component to be called upon a specified event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject:setEventHandler">GameObject:setEventHandler (event, handler)</a></td>
+	<td class="summary">Sets a global handler for <i>event</i>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.new">GameObject.new ()</a></td>
+	<td class="summary">Creates and returns a new GameObject.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Methods"></a>Methods </h2>
+        Methods
+    <dl class="function">
+    <dt>
+    <a name = "GameObject:addComponent"></a>
+    <strong>GameObject:addComponent (newComponent)</strong>
+    </dt>
+    <dd>
+    Adds a component to this GameObject.  The component may add itself as one of the GameObject&rsquo;s
+ fields. Be sure to not add more than one component of each type, as one will only partially
+ overwrite the other. Future releases might include the removal of components.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newComponent</span>
+            <span class="types"><span class="type">Component</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject:register"></a>
+    <strong>GameObject:register (event, component)</strong>
+    </dt>
+    <dd>
+    Registers a component to be called upon a specified event.  The method <i>event</i> of <i>component</i>
+ will be called whenever the <i>event</i> method is called on this GameObject.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The event name
+        </li>
+        <li><span class="parameter">component</span>
+            <span class="types"><span class="type">Component</span></span>
+         The component to register.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject:setEventHandler"></a>
+    <strong>GameObject:setEventHandler (event, handler)</strong>
+    </dt>
+    <dd>
+    Sets a global handler for <i>event</i>.  The handler will be called before the
+ registered objects.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The event to register
+        </li>
+        <li><span class="parameter">handler</span>
+            <span class="types"><span class="type">function</span></span>
+         The global handler to set.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.new"></a>
+    <strong>GameObject.new ()</strong>
+    </dt>
+    <dd>
+    Creates and returns a new GameObject.  Strings that cannot be registered as events are:
+ addComponent, register and setEventHandler.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">GameObject</span></span>
+        The newly created GameObject.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

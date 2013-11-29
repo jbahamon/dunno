@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods </a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/data.core.BaseComponent.html">data.core.BaseComponent</a></li>
+  <li><a href="../classes/data.core.Component.AnimationComponent.html">data.core.Component.AnimationComponent</a></li>
+  <li><a href="../classes/data.core.Component.CollisionComponent.html">data.core.Component.CollisionComponent</a></li>
+  <li><a href="../classes/data.core.Component.InputComponent.html">data.core.Component.InputComponent</a></li>
+  <li><a href="../classes/data.core.Component.PhysicsComponent.html">data.core.Component.PhysicsComponent</a></li>
+  <li><strong>data.core.Component.State</strong></li>
+  <li><a href="../classes/data.core.Component.StateMachineComponent.html">data.core.Component.StateMachineComponent</a></li>
+  <li><a href="../classes/data.core.Component.TransformComponent.html">data.core.Component.TransformComponent</a></li>
+  <li><a href="../classes/data.core.GameObject.html">data.core.GameObject</a></li>
+  <li><a href="../classes/data.core.GameObjectFactory.html">data.core.GameObjectFactory</a></li>
+  <li><a href="../classes/lib.TileCollider.html">lib.TileCollider</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/data.core.Loader.html">core.Loader</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>data.core.Component.State</code></h1>
+
+<p>A StateMachineComponent&rsquo;s basic State.</p>
+<p>
+</p>
+
+
+<h2><a href="#Methods">Methods </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#State.__call">State.__call (name)</a></td>
+	<td class="summary">Builds a new State with no flags nor transitions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#State:addTransition">State:addTransition (condition, targetState, position)</a></td>
+	<td class="summary">Adds a transition to the state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#State:addFlag">State:addFlag (flag)</a></td>
+	<td class="summary">Sets a state&rsquo;s flag as on.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#State:removeFlag">State:removeFlag (flag)</a></td>
+	<td class="summary">Sets a state&rsquo;s flag as off.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#State:getFlags">State:getFlags ()</a></td>
+	<td class="summary">Retrieves a state&rsquo;s flags.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#State:clearFlags">State:clearFlags (flag)</a></td>
+	<td class="summary">Sets every flag of this state as off.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Methods"></a>Methods </h2>
+        Methods
+    <dl class="function">
+    <dt>
+    <a name = "State.__call"></a>
+    <strong>State.__call (name)</strong>
+    </dt>
+    <dd>
+    Builds a new State with no flags nor transitions.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The state&rsquo;s name.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">State</span></span>
+        The newly created State.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "State:addTransition"></a>
+    <strong>State:addTransition (condition, targetState, position)</strong>
+    </dt>
+    <dd>
+    Adds a transition to the state.
+ position indicates the priority of the transition with respect to the others.
+ (1 meaning the new transition will be checked before all those added before)
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">condition</span>
+
+
+        </li>
+        <li><span class="parameter">targetState</span>
+
+
+        </li>
+        <li><span class="parameter">position</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "State:addFlag"></a>
+    <strong>State:addFlag (flag)</strong>
+    </dt>
+    <dd>
+    Sets a state&rsquo;s flag as on.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flag</span>
+         The name of the flag to turn on.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "State:removeFlag"></a>
+    <strong>State:removeFlag (flag)</strong>
+    </dt>
+    <dd>
+    Sets a state&rsquo;s flag as off.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flag</span>
+         The name of the flag to turn off.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "State:getFlags"></a>
+    <strong>State:getFlags ()</strong>
+    </dt>
+    <dd>
+    Retrieves a state&rsquo;s flags.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The state&rsquo;s flags. as a table
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> foo = state:getFlags()
+<span class="global">assert</span>(foo[<span class="string">"someStateFlag"</span>], <span class="string">"The 'someStateFlag' flag is not set"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "State:clearFlags"></a>
+    <strong>State:clearFlags (flag)</strong>
+    </dt>
+    <dd>
+    Sets every flag of this state as off.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flag</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

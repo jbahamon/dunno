@@ -1,0 +1,578 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Building_and_destroying">Building and destroying </a></li>
+<li><a href="#State_handling">State handling </a></li>
+<li><a href="#Positioning__dynamics">Positioning, dynamics </a></li>
+<li><a href="#Drawing">Drawing </a></li>
+<li><a href="#Collision_handling">Collision handling </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/data.core.Component.html">core.Component</a></li>
+  <li><strong>core.Component.CollisionComponent</strong></li>
+  <li><a href="../modules/data.core.Component.InputComponent.html">core.Component.InputComponent</a></li>
+  <li><a href="../modules/data.core.Component.PhysicsComponent.html">core.Component.PhysicsComponent</a></li>
+  <li><a href="../modules/data.core.Component.State.html">core.Component.State</a></li>
+  <li><a href="../modules/data.core.Component.StateMachineComponent.html">core.Component.StateMachineComponent</a></li>
+  <li><a href="../modules/data.core.Component.TransformComponent.html">core.Component.TransformComponent</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/lib.TileCollider.html">TileCollider</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Component.AnimationComponent.html">Component.AnimationComponent</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>data.core.Component.CollisionComponent</code></h1>
+
+<p>A Component that represents an element's collision box.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent">CollisionComponent (defaultSize)</a></td>
+	<td class="summary">Builds a new CollisionComponent.</td>
+	</tr>
+</table>
+<h2><a href="#Building_and_destroying">Building and destroying </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:addTo">CollisionComponent:addTo (container)</a></td>
+	<td class="summary">Adds this component to a GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:destroySelf">CollisionComponent:destroySelf ()</a></td>
+	<td class="summary">Allows this object to be garbage-collected</td>
+	</tr>
+</table>
+<h2><a href="#State_handling">State handling </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:changeToState">CollisionComponent:changeToState (nextState)</a></td>
+	<td class="summary">Called when the container GameObject changes state.</td>
+	</tr>
+</table>
+<h2><a href="#Positioning__dynamics">Positioning, dynamics </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:move">CollisionComponent:move (displacement)</a></td>
+	<td class="summary">Moves the CollisionComponent by a certain amount, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:moveTo">CollisionComponent:moveTo (newPosition)</a></td>
+	<td class="summary">Moves the CollisionComponent to a given location, in pixels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:center">CollisionComponent:center ()</a></td>
+	<td class="summary">Returns the center of the CollisionComponent's collision box, in pixels.</td>
+	</tr>
+</table>
+<h2><a href="#Drawing">Drawing </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:draw">CollisionComponent:draw ()</a></td>
+	<td class="summary">If globals.DEBUG is set to <i>true</i>, this method draws the CollisionComponent's current collision box.</td>
+	</tr>
+</table>
+<h2><a href="#Collision_handling">Collision handling </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:setColliders">CollisionComponent:setColliders (tileCollider, activeCollider)</a></td>
+	<td class="summary">Sets the colliders for this CollisionComponent, adding the current collision box to them.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:movementIntoCollidingBox">CollisionComponent:movementIntoCollidingBox (box)</a></td>
+	<td class="summary">Calculates the displacement needed to move the CollisionComponent into a colliding box.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:resetCollisionFlags">CollisionComponent:resetCollisionFlags ()</a></td>
+	<td class="summary">Resets the CollisionComponent's collision flags.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:onTileCollide">CollisionComponent:onTileCollide (dt, tileCollisionComponent, tile, position)</a></td>
+	<td class="summary">Called when colliding with a tile from the stage's collision layer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:resolveTileCollisions">CollisionComponent:resolveTileCollisions (sampleTile, tileSize)</a></td>
+	<td class="summary">Resolves collisions with tiles.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:onDynamicCollide">CollisionComponent:onDynamicCollide (dt, otherCollisionComponent)</a></td>
+	<td class="summary">Called when colliding with an active CollisionComponent in the world (interactive CollisionComponent, enemy, etc).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:getHitBy">CollisionComponent:getHitBy (otherObject)</a></td>
+	<td class="summary">Called when hit by something (read: something that does damage)-
+ Currently sets the hit flag in the collisionFlags field.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:setCollisionBox">CollisionComponent:setCollisionBox (newSize)</a></td>
+	<td class="summary">Sets the current collision box for the CollisionComponent.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:disableTileCollisions">CollisionComponent:disableTileCollisions ()</a></td>
+	<td class="summary">Disables the CollisionComponent's collisions against tiles.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CollisionComponent:enableTileCollisions">CollisionComponent:enableTileCollisions ()</a></td>
+	<td class="summary">Enables the CollisionComponent's collisions against tiles.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "CollisionComponent"></a>
+    <strong>CollisionComponent (defaultSize)</strong>
+    </dt>
+    <dd>
+    Builds a new CollisionComponent.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">defaultSize</span>
+         The size of the CollisionComponent's default collision box, as a vector, in pixels.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created CollisionComponent.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Building_and_destroying"></a>Building and destroying </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CollisionComponent:addTo"></a>
+    <strong>CollisionComponent:addTo (container)</strong>
+    </dt>
+    <dd>
+    Adds this component to a GameObject.  This method registers
+ the move, moveTo, draw, changeToState, destroySelf and getHitBy methods
+ with the container GameObject. The CollisionComponent will be added as the collision field of
+ the GameObject.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">container</span>
+         The GameObject this component is being added to.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:destroySelf"></a>
+    <strong>CollisionComponent:destroySelf ()</strong>
+    </dt>
+    <dd>
+    Allows this object to be garbage-collected
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="State_handling"></a>State handling </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CollisionComponent:changeToState"></a>
+    <strong>CollisionComponent:changeToState (nextState)</strong>
+    </dt>
+    <dd>
+    Called when the container GameObject changes state.
+ This method changes the component's collision box to the target state's
+ collision box if it differs from the current one.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">nextState</span>
+         The target state.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Positioning__dynamics"></a>Positioning, dynamics </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CollisionComponent:move"></a>
+    <strong>CollisionComponent:move (displacement)</strong>
+    </dt>
+    <dd>
+    Moves the CollisionComponent by a certain amount, in pixels.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">displacement</span>
+         The displacement to be applied, as a hump vector, in pixels.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:moveTo"></a>
+    <strong>CollisionComponent:moveTo (newPosition)</strong>
+    </dt>
+    <dd>
+    Moves the CollisionComponent to a given location, in pixels.
+ The CollisionComponent's collision box is moved so that the CollisionComponent's
+ new position lies at the bottom-center of the collision box.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newPosition</span>
+         The target position, as a hump vector, in pixels.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:center"></a>
+    <strong>CollisionComponent:center ()</strong>
+    </dt>
+    <dd>
+    Returns the center of the CollisionComponent's collision box, in pixels.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The center's position, as a vector.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Drawing"></a>Drawing </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CollisionComponent:draw"></a>
+    <strong>CollisionComponent:draw ()</strong>
+    </dt>
+    <dd>
+    If globals.DEBUG is set to <i>true</i>, this method draws the CollisionComponent's current collision box.
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Collision_handling"></a>Collision handling </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CollisionComponent:setColliders"></a>
+    <strong>CollisionComponent:setColliders (tileCollider, activeCollider)</strong>
+    </dt>
+    <dd>
+    Sets the colliders for this CollisionComponent, adding the current collision box to them. <br/>
+ If the Component already had colliders, it is removed from them.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tileCollider</span>
+         The tileCollider to set.
+        </li>
+        <li><span class="parameter">activeCollider</span>
+         The activeCollider to set.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:movementIntoCollidingBox"></a>
+    <strong>CollisionComponent:movementIntoCollidingBox (box)</strong>
+    </dt>
+    <dd>
+    Calculates the displacement needed to move the CollisionComponent into a colliding box.
+ The movement is performed in the axis with the smallest distance to the target
+ box. Useful for room transitions, for example.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">box</span>
+         The collision box to move the CollisionComponent into.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The needed displacement that should be applied.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:resetCollisionFlags"></a>
+    <strong>CollisionComponent:resetCollisionFlags ()</strong>
+    </dt>
+    <dd>
+    Resets the CollisionComponent's collision flags.
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:onTileCollide"></a>
+    <strong>CollisionComponent:onTileCollide (dt, tileCollisionComponent, tile, position)</strong>
+    </dt>
+    <dd>
+    Called when colliding with a tile from the stage's collision layer. <br/>
+ Essentially, it adds the collision event to the pendingCollisions field.
+ This function should not be overriden; if you want to implement your own collision
+ resolution for tiles, override <a href="../modules/data.core.Component.CollisionComponent.html#CollisionComponent:resolveTileCollisions">CollisionComponent:resolveTileCollisions</a>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The time slice for the collision frame.
+        </li>
+        <li><span class="parameter">tileCollisionComponent</span>
+         A sample tile that can be used to recreate the collision (should be removed).
+        </li>
+        <li><span class="parameter">tile</span>
+         The tile CollisionComponent with which the CollisionComponent is colliding.
+        </li>
+        <li><span class="parameter">position</span>
+         The position of the colliding tile, measured in tiles, as a hump vector.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/data.core.Component.CollisionComponent.html#CollisionComponent:resolveTileCollisions">CollisionComponent:resolveTileCollisions</a></li>
+         <li><a href="../modules/data.core.Component.CollisionComponent.html#CollisionComponent:resetCollisionFlags">CollisionComponent:resetCollisionFlags</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:resolveTileCollisions"></a>
+    <strong>CollisionComponent:resolveTileCollisions (sampleTile, tileSize)</strong>
+    </dt>
+    <dd>
+    Resolves collisions with tiles.
+ Iterates over the registered collision events and resolves them appropriately.
+ This function can be overriden to implement custom tile collision resolution, but be careful
+ to treat every tile type.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">sampleTile</span>
+         A tile of the appropriate size that can be moved around to simulate
+ the collisions.
+        </li>
+        <li><span class="parameter">tileSize</span>
+         A vector that contains the size of the stage's tiles, in pixels.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/data.core.Component.CollisionComponent.html#CollisionComponent:onTileCollide">CollisionComponent:onTileCollide</a></li>
+         <li><a href="../modules/data.core.Component.CollisionComponent.html#CollisionComponent:resetCollisionFlags">CollisionComponent:resetCollisionFlags</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:onDynamicCollide"></a>
+    <strong>CollisionComponent:onDynamicCollide (dt, otherCollisionComponent)</strong>
+    </dt>
+    <dd>
+    Called when colliding with an active CollisionComponent in the world (interactive CollisionComponent, enemy, etc).
+ Currently calls getHitBy on the other CollisionComponent's container if this CollisionComponent damages on contact.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The time slice for the collision frame.
+        </li>
+        <li><span class="parameter">otherCollisionComponent</span>
+         The CollisionComponent that is colliding with this one.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:getHitBy"></a>
+    <strong>CollisionComponent:getHitBy (otherObject)</strong>
+    </dt>
+    <dd>
+    Called when hit by something (read: something that does damage)-
+ Currently sets the hit flag in the collisionFlags field.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">otherObject</span>
+         The GameObject hitting this CollisionComponent
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:setCollisionBox"></a>
+    <strong>CollisionComponent:setCollisionBox (newSize)</strong>
+    </dt>
+    <dd>
+    Sets the current collision box for the CollisionComponent.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newSize</span>
+         The size of the new collision box in pixels, as a vector.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:disableTileCollisions"></a>
+    <strong>CollisionComponent:disableTileCollisions ()</strong>
+    </dt>
+    <dd>
+    Disables the CollisionComponent's collisions against tiles.
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/data.core.Component.CollisionComponent.html#CollisionComponent:enableTileCollisions">CollisionComponent:enableTileCollisions</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "CollisionComponent:enableTileCollisions"></a>
+    <strong>CollisionComponent:enableTileCollisions ()</strong>
+    </dt>
+    <dd>
+    Enables the CollisionComponent's collisions against tiles.
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/data.core.Component.CollisionComponent.html#CollisionComponent:disableTileCollisions">CollisionComponent:disableTileCollisions</a>
+    </ul>
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -32,17 +32,10 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
+<li><a href="#Methods">Methods </a></li>
 </ul>
 
 
-<h2>Modules</h2>
-<ul class="nowrap">
-  <li><a href="../modules/data.core.Loader.html">core.Loader</a></li>
-  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
-  <li><strong>TileCollider</strong></li>
-  <li><a href="../modules/main.html">main</a></li>
-</ul>
 <h2>Classes</h2>
 <ul class="nowrap">
   <li><a href="../classes/data.core.BaseComponent.html">data.core.BaseComponent</a></li>
@@ -55,23 +48,30 @@
   <li><a href="../classes/data.core.Component.TransformComponent.html">data.core.Component.TransformComponent</a></li>
   <li><a href="../classes/data.core.GameObject.html">data.core.GameObject</a></li>
   <li><a href="../classes/data.core.GameObjectFactory.html">data.core.GameObjectFactory</a></li>
+  <li><strong>lib.TileCollider</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/data.core.Loader.html">core.Loader</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/main.html">main</a></li>
 </ul>
 
 </div>
 
 <div id="content">
 
-<h1>Module <code>lib.TileCollider</code></h1>
+<h1>Class <code>lib.TileCollider</code></h1>
 
 <p>A module that processes collisions between GameObjects and stage tiles.</p>
 <p>
 </p>
 
 
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Methods">Methods </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#State">State (stage)</a></td>
+	<td class="name" nowrap><a href="#lib.TileCollider:__call">lib.TileCollider:__call (stage)</a></td>
 	<td class="summary">Builds a new TileCollider with no elements, based on a given Stage.</td>
 	</tr>
 	<tr>
@@ -80,7 +80,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#TileCollider:remove">TileCollider:remove (element)</a></td>
-	<td class="summary">Removes an Element from the TileCollider.</td>
+	<td class="summary">Removes a shape from the TileCollider.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#TileCollider:update">TileCollider:update (dt)</a></td>
@@ -92,11 +92,12 @@
 <br/>
 
 
-    <h2><a name="Functions"></a>Functions</h2>
+    <h2><a name="Methods"></a>Methods </h2>
+        Methods
     <dl class="function">
     <dt>
-    <a name = "State"></a>
-    <strong>State (stage)</strong>
+    <a name = "lib.TileCollider:__call"></a>
+    <strong>lib.TileCollider:__call (stage)</strong>
     </dt>
     <dd>
     Builds a new TileCollider with no elements, based on a given Stage.
@@ -129,7 +130,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">element</span>
-         The Element object to be added to the TileCollider.
+            <span class="types"><span class="type">Shape</span></span>
+         The HardonCollider shape to be added to the TileCollider.
         </li>
     </ul>
 
@@ -143,13 +145,14 @@
     <strong>TileCollider:remove (element)</strong>
     </dt>
     <dd>
-    Removes an Element from the TileCollider.  The TileCollider is NOT removed in any way
- to the Element. Nothing is done if the Element was not added to the TileCollider previously.
+    Removes a shape from the TileCollider.  The TileCollider is NOT removed in any way
+ from the Shape or other objects. Nothing is done if the Element was not previously added to the TileCollider.
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">element</span>
-         The Element object to be removed from the TileCollider.
+            <span class="types"><span class="type">Shape</span></span>
+         The HardonCollider shape to be removed from the TileCollider.
         </li>
     </ul>
 
@@ -170,6 +173,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">dt</span>
+            <span class="types"><span class="type">number</span></span>
          Time since the last update, in seconds.
         </li>
     </ul>

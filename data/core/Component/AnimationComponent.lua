@@ -1,26 +1,32 @@
---- A game AnimationComponent implementation.
--- @class module
--- @name data.core.AnimationComponent
+--- A Component that represents an element's sprites and animations.
+-- @classmod data.core.Component.AnimationComponent
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 local anim8 = require 'lib.anim8'
 
-local Component = require 'data.core.Component'
-
---- Builds a new AnimationComponent with a collision box and no states.
--- @class function
--- @name AnimationComponent
--- @param defaultSize The size of the AnimationComponent's default collision box, as a vector, in pixels.
--- @return The newly created AnimationComponent.
+local BaseComponent = require 'data.core.Component.BaseComponent'
 
 local AnimationComponent = Class {
     name = 'AnimationComponent',
-    __includes = Component
+    __includes = BaseComponent
 }
 
+
+-----------------------------------------------------------------
+--- Building and destroying
+-- @section building
+
+--- Builds a new AnimationComponent.
+-- @class function
+-- @name AnimationComponent.__call
+-- @tparam string|Image spriteData The component's sprites. Can be supplied as a file path (as a string) or 
+--  as an already loaded (using love.graphics.newImage) sprite sheet.
+-- @tparam vector spriteSize The sprite size for the animation in pixels.
+-- @tparam[opt] vector spriteOffset The sprite offset for the animation in pixels. Default is no offset.
+-- @treturn AnimationComponent The newly created AnimationComponent.
 function AnimationComponent:init(spriteData, spriteSize, spriteOffset)
-    Component.init(self)
+    BaseComponent.init(self)
 
     local sprites 
 
@@ -37,16 +43,13 @@ function AnimationComponent:init(spriteData, spriteSize, spriteOffset)
     self.animations = {}
 end    
 
------------------------------------------------------------------
---- Building and destroying
--- @section building
-
 --- Adds this component to a GameObject. This method registers
--- the update and changeToState methods with the container
--- GameObject.
--- @param container The GameObject this component is being added to.
+-- the update, changeToState and draw methods with the container
+-- GameObject. The AnimationComponent will be added as the animation field of
+-- the GameObject.
+-- @tparam @{data.core.GameObject} container The GameObject this component is being added to.
 function AnimationComponent:addTo(container)
-    Component.addTo(self, container)
+    BaseComponent.addTo(self, container)
     container:register("changeToState", self)
     container:register("update", self)
     container:register("draw", self)
@@ -58,24 +61,23 @@ end
 -- Drawing and animation data
 -- @section drawing
 
---- Draws the AnimationComponent's current box. If globals.DEBUG is set to <i>true</i>, 
--- The collision box is drawn over the AnimationComponent's sprite.
+--- Draws the AnimationComponent's current animation. The default positioning is such that the
+--  animation's bottom-center overlaps the container GameObject's position.
 function AnimationComponent:draw()    
     self.currentAnimation.flippedH = self.container.transform.facing < 0
     self.currentAnimation:draw(self.sprites,
                 self.container.transform.position.x - self.spriteSize.x/2 + self.spriteOffset.x,
                 self.container.transform.position.y - self.spriteSize.y + self.spriteOffset.y,
-                0, 1, 1)
-
+                0, 1, 1) 
 end
 
---- Sets the Element's sprite data for it to be drawn.
--- @param spriteData The sprite sheet image, as loaded by love.graphics.newImage. May be
---                        supplied as a path too.
--- Sprites in the sheet must be arranged in a grid where every cell must have the same size.
--- @param spriteSize The size of a sprite's cell in the sheet, as a hump vector, in pixels.
--- @param offset The sprites' offset, as a vector, in pixels. 
-function AnimationComponent:setSpriteData(spriteData, spriteSize, offset)
+--- Sets the AnimationComponent's sprite data for it to be drawn. This method is called when 
+-- the Component is initialized, so you should only call it if you want to alter sprite data dynamically.
+-- @tparam string|Image spriteData The component's sprites. Can be supplied as a file path (as a string) or 
+--  as an already loaded (using love.graphics.newImage) sprite sheet.
+-- @tparam vector spriteSize The sprite size for the animation in pixels.
+-- @tparam[opt] vector spriteOffset The sprite offset for the animation in pixels. Default is no offset.
+function AnimationComponent:setSpriteData(spriteData, spriteSize, spriteOffset)
 
     self.sprites = type(spriteData) == "string" and love.graphics.newImage(spriteData) or spriteData
 
@@ -86,22 +88,18 @@ function AnimationComponent:setSpriteData(spriteData, spriteSize, offset)
                                          self.sprites:getWidth(),
                                          self.sprites:getHeight())
 
-    if offset then
-        self.spriteOffset = offset:clone()
-    else
-        self.spriteOffset = vector(0,0)
-    end
+    self.spriteOffset = spriteOffset and spriteOffset:clone() or vector(0,0)
 end
 
 --- Adds an animation to the component.
--- @param name The name of the new animation. If the component already
--- had an animation with this name, it is overwritten.
--- @param params A table of animation parameters. Mandatory entries in 
+-- @tparam string name The name of the new animation. If the component already
+-- had an animation with this name, it will be overwritten.
+-- @tparam table params A table of animation parameters. Mandatory entries in 
 -- this table are "mode" (animation mode, which can be "loop", "once" 
 -- or "bounce"); frames, which must be an array of frame coordinates as 
 -- strings; and defaultDelay, the default time for each animation frame.
 -- Optional entries are delays, an array of numbers representing each frame's
--- duration; flippedH and flippedV, the animation's horizontal and vertical,
+-- duration; flippedH and flippedV, the animation's horizontal and vertical
 -- flipping respectively.
 function AnimationComponent:addAnimation(name, params)
     assert(params.mode, "Parameters for animation \"" .. name .. "\" must specify mode")
@@ -122,9 +120,9 @@ function AnimationComponent:addAnimation(name, params)
 end
 
 --- Sets the component's current animation.
--- @param name The name of the animation to set. If no animation with such 
--- name exists, an error is raised. The animation is restarted unless a
--- true noReset parameter is supplied.
+-- @tparam string name The name of the animation to set. If no animation with such 
+-- name exists, an error is raised. 
+-- @tparam[opt=false] bool noReset A flag to prevent restarting the animation if true.
 function AnimationComponent:setAnimation(name, noReset)
     assert(self.animations[name], "No animation named \"" .. name .."\" found.")
     self.currentAnimation = self.animations[name]
@@ -140,27 +138,28 @@ end
 -- @section state
 
 --- Executes a transition to a specified state.
--- The current state's onExitTo and the target state's onEnterFrom
--- are executed, if found. The AnimationComponent's collision box is adjusted if the next
--- state has a different box from the current one.
--- @param nextState The target state.
+-- The next state's animation is set as the current animation, if it differs from
+-- the current one.
+-- @tparam @{data.core.Component.State} nextState The target state.
 function AnimationComponent:changeToState(nextState)
     if nextState.animation and nextState.animation ~= self.currentAnimation then
         self:setAnimation(nextState.animation)
     end
 end
 
---- Updates the Component.
--- @param dt The time interval to apply to the Component.
+--- Updates the Component, advancing the animation.
+-- @tparam number dt The time interval to apply to the Component.
 function AnimationComponent:update(dt)
     -- Animation
     self.currentAnimation:update(dt)
 end
 
+--- Pauses the Component, preventing the animation from advancing.
 function AnimationComponent:pause()
     self.currentAnimation:pause()
 end
 
+--- Resumes the Component, allowing the animation to advance.
 function AnimationComponent:resume()
     self.currentAnimation:resume()
 end

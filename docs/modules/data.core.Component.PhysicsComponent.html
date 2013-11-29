@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Dunno</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Building_and_destroying">Building and destroying </a></li>
+<li><a href="#State_handling">State handling </a></li>
+<li><a href="#Dynamics">Dynamics </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/data.core.Component.html">core.Component</a></li>
+  <li><a href="../modules/data.core.Component.CollisionComponent.html">core.Component.CollisionComponent</a></li>
+  <li><a href="../modules/data.core.Component.InputComponent.html">core.Component.InputComponent</a></li>
+  <li><strong>core.Component.PhysicsComponent</strong></li>
+  <li><a href="../modules/data.core.Component.State.html">core.Component.State</a></li>
+  <li><a href="../modules/data.core.Component.StateMachineComponent.html">core.Component.StateMachineComponent</a></li>
+  <li><a href="../modules/data.core.Component.TransformComponent.html">core.Component.TransformComponent</a></li>
+  <li><a href="../modules/lib.GeometryUtils.html">GeometryUtils</a></li>
+  <li><a href="../modules/lib.TileCollider.html">TileCollider</a></li>
+  <li><a href="../modules/main.html">main</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Component.AnimationComponent.html">Component.AnimationComponent</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>data.core.Component.PhysicsComponent</code></h1>
+
+<p>A Component that represents an element's physics.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#PhysicsComponent">PhysicsComponent (parameters)</a></td>
+	<td class="summary">Builds a new PhysicsComponent with a set of (optional) default parameters.</td>
+	</tr>
+</table>
+<h2><a href="#Building_and_destroying">Building and destroying </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#PhysicsComponent:addTo">PhysicsComponent:addTo (container)</a></td>
+	<td class="summary">Adds this component to a GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PhysicsComponent:setParameters">PhysicsComponent:setParameters (parameters)</a></td>
+	<td class="summary">Sets the dynamic parameters for this Component.</td>
+	</tr>
+</table>
+<h2><a href="#State_handling">State handling </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#PhysicsComponent:changeToState">PhysicsComponent:changeToState (nextState)</a></td>
+	<td class="summary">Executes a transition to a specified state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PhysicsComponent:update">PhysicsComponent:update (dt)</a></td>
+	<td class="summary">Updates the component, applying the current acceleration to the container object.</td>
+	</tr>
+</table>
+<h2><a href="#Dynamics">Dynamics </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#PhysicsComponent:addForce">PhysicsComponent:addForce (identifier, forceValue, duration)</a></td>
+	<td class="summary">Adds an external force under a name and duration to this component.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PhysicsComponent:applyFriction">PhysicsComponent:applyFriction (dt, frictionForce)</a></td>
+	<td class="summary">Applies the provided friction force to the Component.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PhysicsComponent:getAdditionalForces">PhysicsComponent:getAdditionalForces ()</a></td>
+	<td class="summary">Returns the total external force currently applied to this component.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "PhysicsComponent"></a>
+    <strong>PhysicsComponent (parameters)</strong>
+    </dt>
+    <dd>
+    Builds a new PhysicsComponent with a set of (optional) default parameters.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parameters</span>
+         Optional. The default physics parameters for this Component.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created PhysicsComponent.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Building_and_destroying"></a>Building and destroying </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "PhysicsComponent:addTo"></a>
+    <strong>PhysicsComponent:addTo (container)</strong>
+    </dt>
+    <dd>
+    Adds this component to a GameObject.  This method registers
+ the update and changeToState methods with the container
+ GameObject. The PhysicsComponent will be added as the physics field of
+ the GameObject.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">container</span>
+         The GameObject this component is being added to.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PhysicsComponent:setParameters"></a>
+    <strong>PhysicsComponent:setParameters (parameters)</strong>
+    </dt>
+    <dd>
+    Sets the dynamic parameters for this Component.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parameters</span>
+         The dynamics parameters to set.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="State_handling"></a>State handling </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "PhysicsComponent:changeToState"></a>
+    <strong>PhysicsComponent:changeToState (nextState)</strong>
+    </dt>
+    <dd>
+    Executes a transition to a specified state.
+ The current state's onExitTo and the target state's onEnterFrom
+ are executed, if found. The PhysicsComponent's collision box is adjusted if the next
+ state has a different box from the current one.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">nextState</span>
+         The target state.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PhysicsComponent:update"></a>
+    <strong>PhysicsComponent:update (dt)</strong>
+    </dt>
+    <dd>
+    Updates the component, applying the current acceleration to the container object.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The time interval to apply to the Component.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Dynamics"></a>Dynamics </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "PhysicsComponent:addForce"></a>
+    <strong>PhysicsComponent:addForce (identifier, forceValue, duration)</strong>
+    </dt>
+    <dd>
+    Adds an external force under a name and duration to this component.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">identifier</span>
+         The force's name. If two different forces are added
+ under the same identifier, the second will replace the first.
+        </li>
+        <li><span class="parameter">forceValue</span>
+         The external force as a vector, in acceleration units (pixels/seconds^2)
+        </li>
+        <li><span class="parameter">duration</span>
+         How long, in seconds, the force will last. Optional.
+ A missing or negative value represents a force that will last until it
+ is explicitly removed by replacement.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PhysicsComponent:applyFriction"></a>
+    <strong>PhysicsComponent:applyFriction (dt, frictionForce)</strong>
+    </dt>
+    <dd>
+    Applies the provided friction force to the Component.
+ A friction force is always dissipative: it will never cause
+ the Component to reverse its velocity.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The current frame's time slice, in seconds
+        </li>
+        <li><span class="parameter">frictionForce</span>
+         The friction to apply, as a vector, in acceleration units (pixels/seconds^2)
+ This means that every Component has the same mass, for the time being.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PhysicsComponent:getAdditionalForces"></a>
+    <strong>PhysicsComponent:getAdditionalForces ()</strong>
+    </dt>
+    <dd>
+    Returns the total external force currently applied to this component.
+ return The current external force in acceleration units (pixels/seconds^2), as a vector.
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
