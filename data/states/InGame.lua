@@ -12,7 +12,7 @@ return function (state)
         self.manager = WorldManager("")
         self.manager:addViewport(vector(0, 0), vector(512, 480))
         self.manager:setStage(previous.chosenStage)
-        self.manager:addPlayer(previous.chosenCharacter)
+        self.manager:createPlayer(previous.chosenCharacter)
         self.manager:start()
     end
 

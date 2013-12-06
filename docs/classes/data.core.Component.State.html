@@ -38,8 +38,8 @@
 
 <h2>Classes</h2>
 <ul class="nowrap">
-  <li><a href="../classes/data.core.BaseComponent.html">data.core.BaseComponent</a></li>
   <li><a href="../classes/data.core.Component.AnimationComponent.html">data.core.Component.AnimationComponent</a></li>
+  <li><a href="../classes/data.core.Component.BaseComponent.html">data.core.Component.BaseComponent</a></li>
   <li><a href="../classes/data.core.Component.CollisionComponent.html">data.core.Component.CollisionComponent</a></li>
   <li><a href="../classes/data.core.Component.InputComponent.html">data.core.Component.InputComponent</a></li>
   <li><a href="../classes/data.core.Component.PhysicsComponent.html">data.core.Component.PhysicsComponent</a></li>
@@ -75,7 +75,7 @@
 	<td class="summary">Builds a new State with no flags nor transitions.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#State:addTransition">State:addTransition (condition, targetState, position)</a></td>
+	<td class="name" nowrap><a href="#State:addTransition">State:addTransition (condition, targetState[, position=1])</a></td>
 	<td class="summary">Adds a transition to the state.</td>
 	</tr>
 	<tr>
@@ -91,7 +91,7 @@
 	<td class="summary">Retrieves a state&rsquo;s flags.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#State:clearFlags">State:clearFlags (flag)</a></td>
+	<td class="name" nowrap><a href="#State:clearFlags">State:clearFlags ()</a></td>
 	<td class="summary">Sets every flag of this state as off.</td>
 	</tr>
 </table>
@@ -131,26 +131,27 @@
 </dd>
     <dt>
     <a name = "State:addTransition"></a>
-    <strong>State:addTransition (condition, targetState, position)</strong>
+    <strong>State:addTransition (condition, targetState[, position=1])</strong>
     </dt>
     <dd>
     Adds a transition to the state.
- position indicates the priority of the transition with respect to the others.
- (1 meaning the new transition will be checked before all those added before)
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">condition</span>
-
-
+            <span class="types"><span class="type">function</span></span>
+         The condition function that shall be evaluated to
+ determine if the transition should be performed.
         </li>
         <li><span class="parameter">targetState</span>
-
-
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The name of the state the transition will lead to.
         </li>
         <li><span class="parameter">position</span>
-
-
+            <span class="types"><span class="type">number</span></span>
+         The priority of the transition with respect to the others.
+ (1 meaning the new transition will be checked before all those added before)
+         (<em>default</em> 1)
         </li>
     </ul>
 
@@ -169,6 +170,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">flag</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          The name of the flag to turn on.
         </li>
     </ul>
@@ -188,6 +190,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">flag</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          The name of the flag to turn off.
         </li>
     </ul>
@@ -222,18 +225,11 @@
 </dd>
     <dt>
     <a name = "State:clearFlags"></a>
-    <strong>State:clearFlags (flag)</strong>
+    <strong>State:clearFlags ()</strong>
     </dt>
     <dd>
     Sets every flag of this state as off.
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">flag</span>
-
-
-        </li>
-    </ul>
 
 
 

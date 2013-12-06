@@ -23,9 +23,9 @@ local CameraManager = Class {
 	name = "CameraManager",
 }
 
-function CameraManager:init(players, stage, topLeft, bottomRight)
-	self.players = players
+function CameraManager:init(world, stage, topLeft, bottomRight)
 	self.stage = stage
+	self.world = world
 
 	self.topLeft = topLeft
 	self.bottomRight = bottomRight
@@ -59,7 +59,7 @@ end
 -- The camera will draw the stage ands its elements first, and the players
 -- on top of them.
 -- @param players The players to draw on the stage, as an array.
-function CameraManager:draw(players)
+function CameraManager:draw(objects)
 
 	love.graphics.setColor(self.fullScreenTint)
 	self:setPosition(self.lookingAt)
@@ -68,8 +68,8 @@ function CameraManager:draw(players)
    						self.stage:moveTo(vector(l, t))
 						self.stage:draw()
 
-						for i, player in ipairs(players) do
-							player:draw()
+						for _, object in ipairs(objects) do
+							object:draw()
 							love.graphics.setColor(self.fullScreenTint)
 						end
 

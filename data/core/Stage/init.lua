@@ -325,7 +325,7 @@ end
 
 --- Initializes element spawning for the stage.
 
-function Stage:initialize(tileCollider, activeCollider, topLeft, bottomRight)
+function Stage:start(tileCollider, activeCollider, topLeft, bottomRight)
 	for _, elementType in ipairs(self.elementTypes) do
 		self.elementFactories[elementType.name] = GameObjectFactory(elementType, tileCollider, activeCollider, self:getFolder())
 	end
@@ -394,12 +394,13 @@ end
 -- a spawning point is a point that CAN eventually spawn more stuff
 function Stage:elementLocationOnScreen(elementLocation)
 	elementLocation.onScreen = true
-	newElem = self.elementFactories[elementLocation.name]:createAt(elementLocation.position, elementLocation.facing)
-	newElem.elementLocation = elementLocation
+	local newObject = self.elementFactories[elementLocation.name]:createAt(elementLocation.position, elementLocation.facing)
 
-	table.insert(self.activeElements, newElem)
-	newElem.name = elementLocation.name
-	newElem:start()
+	newObject.elementLocation = elementLocation
+
+	self.world:addObject(newObject)
+	
+	newObject:start()
 	elementLocation.enabled = false
 end
 

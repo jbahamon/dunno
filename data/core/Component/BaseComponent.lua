@@ -1,7 +1,7 @@
 --- The base class for all BaseComponents of a GameObject. 
--- A BaseComponent represents a distinct functionality and/or characteristic of a GameObject. 
--- See other classes of the BaseComponent module.
--- @classmod data.core.BaseComponent
+-- A Component represents a distinct functionality and/or characteristic of a GameObject. 
+-- See other classes of the Component module for examples.
+-- @classmod data.core.Component.BaseComponent
 
 local Class = require 'lib.hump.class'
 

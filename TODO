@@ -8,7 +8,7 @@ Physics
 - Slopes
 
 - Proper walking on ladders (making the top of a ladder a one-directional
-  platform seems a way to do it)
+  platform seems a way to do it) That or making a "laddertop".
 
 ========================================================================
 Enemies and Stage Elements
@@ -29,8 +29,6 @@ Characters
 Elements (stage elements AND characters)
 ========================================================================
 
-- change the way transitions are specified. maybe a section dedicated to
-  transitions in a player/element's definition.
 - Add "drawPriority"
 
 ========================================================================
@@ -45,20 +43,20 @@ Stages
 Managers (World, Camera)
 ========================================================================
 
-- move elements to the world/camera manager
-- add references to players and elements to the camera manager, or get
-  them passed to it by the worldmanager
+- World might be a container (a la GameObject) for world components (a la 
+TransformComponent, etc.). This should happen if there are more world 
+components
+
 - fix bugs with the scrolling camera (try entering tourian's second room
   while jumping/walking) Might have something to do with the camera's 
   getVisible(). Actually, we should play Metroid and see how the camera 
   works in-game.
+  
 ========================================================================
 Other (documentation, global stuff, etc)
 ========================================================================
 
 - list public table values for each class (e.g. element.collisionFlags, 
 element.dynamics, etc)
-
-- add ldoc comments to some functions that are missing them
 
 - write up a readme.md
