@@ -400,7 +400,10 @@ function Stage:elementLocationOnScreen(elementLocation)
 
 	self.world:addObject(newObject)
 	
-	newObject:start()
+	if newObject.start then
+		newObject:start()
+	end
+	
 	elementLocation.enabled = false
 end
 

@@ -64,6 +64,11 @@ local game = {
         template = require 'data.states.Test',
         parent = "Title"
     },
+
+    GameEnded = {
+        template = require 'data.states.GameEnded',
+        parent = "InGame"
+    },
   }
 }
 
@@ -106,4 +111,10 @@ end
 
 function love.keypressed(key, code)
 	game.states.head:keypressed(key, code)
+end
+
+function love.mousepressed(x, y, button)
+    if game.states.head.mousepressed then
+        game.states.head:keypressed(x, y, button)
+    end
 end

@@ -151,7 +151,7 @@ local params = {
 			condition 	= 
 				function (currentState, collisionFlags)
 		            if collisionFlags.canMoveDown then
-		                currentState.dynamics.velocity.x = 0
+		                currentState.owner.physics.velocity.x = 0
 		                return true
 		            else  
 		                return false
@@ -242,7 +242,7 @@ local params = {
 			condition = 
 	        	function(currentState, collisionFlags) 
 	        		if (not currentState.owner.control["jump"]) then
-	        			currentState.dynamics.velocity.y = 0
+	        			currentState.owner.physics.velocity.y = 0
 	        			return true
 	        		else
 	        			return (currentState.owner.physics.stateTime > currentState.dynamics.jumpTime)

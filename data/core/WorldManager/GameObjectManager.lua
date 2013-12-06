@@ -25,6 +25,8 @@ local GameObjectManager = Class {
 function GameObjectManager:init(world)
     self.world = world
     self.managedObjects = {}
+    self.updatableObjects = {}
+    self.lateUpdatableObjects = {}
     self.players = {}
 end
 
@@ -61,7 +63,15 @@ end
 --- Adds a GameObject to the GameObjectManager.
 -- @param playerName The name of the player's folder
 function GameObjectManager:addObject(newObject)
+    
     table.insert(self.managedObjects, newObject)
+    if newObject.update then
+        table.insert(self.updatableObjects, newObject)
+    end
+
+    if newObject.lateUpdate then
+        table.insert(self.lateUpdatableObjects, newObject)
+    end
 end
 
 --- Adds a Player GameObject to the GameObjectManager. 
@@ -80,7 +90,7 @@ end
 -- and the camera.
 -- @param dt The time slice for the update.
 function GameObjectManager:update(dt)
-    for _, gameObject in ipairs(self.managedObjects) do
+    for _, gameObject in ipairs(self.updatableObjects) do
         gameObject:update(dt)
     end
     
@@ -94,7 +104,7 @@ function GameObjectManager:update(dt)
     self.activeCollider:update(dt)
     
     -- Now the late updates
-    for _, gameObject in ipairs(self.managedObjects) do
+    for _, gameObject in ipairs(self.lateUpdatableObjects) do
         gameObject:lateUpdate(dt)
     end
 
@@ -177,6 +187,18 @@ function GameObjectManager.onDynamicCollide(dt, shapeA, shapeB)
         shapeA.parent:onDynamicCollide(dt, shapeB.parent)
         shapeB.parent:onDynamicCollide(dt, shapeA.parent)
     end
+end
+
+function GameObjectManager:destroySelf()
+    for _, object in ipairs(self.managedObjects) do
+        object.world = nil
+        object:destroySelf()
+    end
+
+    self.managedObjects = nil
+
+    self.activeCollider = nil
+    self.tileCollider = nil
 end
 
 return GameObjectManager

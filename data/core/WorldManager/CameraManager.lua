@@ -486,4 +486,8 @@ function CameraManager:fadeToColor(rampTime, color, numSteps)
 
 
 end
+
+function CameraManager:destroySelf()
+end
+
 return CameraManager

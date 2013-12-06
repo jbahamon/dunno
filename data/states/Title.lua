@@ -31,6 +31,7 @@ return function (state)
 
         self.grid:init(self.gui, gridschema)
         self.gui.keyboard.clearFocus()
+        self.drawGrid = false
     end
 
     function state:leave(previous)

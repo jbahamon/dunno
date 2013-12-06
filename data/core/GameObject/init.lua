@@ -63,7 +63,8 @@ function GameObject.new()
 		{	_inner = InnerGameObject(),
 			addComponent = GameObject.addComponent,
 			register = GameObject.register,
-			setEventHandler = GameObject.setEventHandler },
+			setEventHandler = GameObject.setEventHandler,
+		},
 		{	__index = function (t, key)
 				if t._inner.events[key] then
 					return function(self, ...)

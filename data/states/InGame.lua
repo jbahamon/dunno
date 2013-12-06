@@ -4,11 +4,10 @@ local vector = require 'lib.hump.vector'
 return function (state)
 
     function state:init()
-        self.manager = nil
+        
     end
 
     function state:enter(previous)
-
         self.manager = WorldManager("")
         self.manager:addViewport(vector(0, 0), vector(512, 480))
         self.manager:setStage(previous.chosenStage)
@@ -19,13 +18,22 @@ return function (state)
 
     function state:leave(previous)
         self.doExit = nil
+        self.manager:destroySelf()
+        self.manager = nil
     end
 
     function state:update(dt)
+
         if self.doExit then
-            -- TODO: self.manager:destroySelf()
-            self.manager = nil
             return self.parent
+        end
+
+        if self.manager.gameFinished then
+            self.summary = {
+                endState = self.manager.endState,
+            }
+            
+            return "GameEnded"
         end
 
         if dt <= 1/60.0 then
@@ -37,10 +45,9 @@ return function (state)
         self.manager:draw()
     end
 
-
     function state:keypressed(key, code)
         if key == "escape" then
-            self.doExit = function () return self.parent end
+            self.doExit = true
         end
   
     end

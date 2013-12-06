@@ -16,6 +16,8 @@ end
 function Hit:onEnterFrom(otherState)
 	self.owner.collision.invincible = true
 
+	self.owner.world:lose()
+
 	Timer.add(
 		self.dynamics.invincibleTime,
 		function()

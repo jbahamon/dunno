@@ -82,6 +82,8 @@ function WorldManager:start()
 	self.cameraManager:start()
 
 	self.paused = false
+	self.over = false
+	
 end
 
 --- Loads a player from a folder and adds it to the world.
@@ -97,6 +99,7 @@ end
 
 function WorldManager:addObject(newObject)
 	self.gameObjectManager:addObject(newObject)
+	newObject.world = self
 end
 
 
@@ -138,6 +141,18 @@ function WorldManager:update(dt)
 	self.stage:refreshElementSpawning(self.cameraManager:getVisible())
 end
 
+function WorldManager:win()
+	self:pauseGame()
+	self.gameFinished = true
+	self.endState = "Win"
+end
+
+function WorldManager:lose()
+	self:pauseGame()
+	self.gameFinished = true
+	self.endState = "Lose"
+end
+
 
 -----------------------------------------------------------------
 -- Effects
@@ -176,6 +191,11 @@ function WorldManager.onDynamicCollide(dt, shapeA, shapeB)
    		shapeA.parent:onDynamicCollide(dt, shapeB.parent)
    		shapeB.parent:onDynamicCollide(dt, shapeA.parent)
    	end
+end
+
+function WorldManager:destroySelf()
+	self.gameObjectManager:destroySelf()
+	self.cameraManager:destroySelf()
 end
 
 return WorldManager

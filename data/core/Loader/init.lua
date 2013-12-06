@@ -84,6 +84,7 @@ function Loader.loadCharacter(name)
     character.folder = globals.characterFolder .. string.gsub(name, "[^%a%d-_/]", "")
     character.name = name
 
+    character.elementType = "Player"
     character:addComponent(TransformComponent())
     character:addComponent(InputComponent())
     character:addComponent(PhysicsComponent())

@@ -11283,5 +11283,7 @@
     <property name="facing" value="-1"/>
    </properties>
   </object>
+  <object name="Goal" type="Goal" x="2704" y="352" width="16" height="16"/>
+  <object name="Goal" type="Goal" x="176" y="368" width="16" height="16"/>
  </objectgroup>
 </map>

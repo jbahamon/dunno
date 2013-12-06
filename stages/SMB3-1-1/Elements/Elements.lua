@@ -1,6 +1,20 @@
 local vector = require 'lib.hump.vector'
 
-local enemyTypes = {
+local elementTypes = {
+
+	{
+		name = "Goal",
+		elementType = "Neutral",
+		size = vector(16, 16),
+
+		postBuild = function (element)
+			element.collision.onDynamicCollide = function (self, dt, otherComponent)
+				if otherComponent.container.elementType == "Player" then
+					self.container.world:win()
+				end
+			end
+		end
+	},
 
 	{ 
 		name = "RedKoopa",
@@ -10,7 +24,7 @@ local enemyTypes = {
 		size = vector(14, 14),
 		
 		sprites = {
-			sheet = "Enemies/Sprites/RedKoopa.png",
+			sheet = "Elements/Sprites/RedKoopa.png",
 			spriteSize = vector(18, 27),
 			spriteOffset = vector(0, 1)
 		},
@@ -26,8 +40,8 @@ local enemyTypes = {
 		states = {
 
 			walking = {
-				class = "Enemies/States/RedKoopaWalk.lua",
-				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
+				class = "Elements/States/RedKoopaWalk.lua",
+				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
 				animation = "walk"
 			}
 		},
@@ -43,7 +57,7 @@ local enemyTypes = {
 		size = vector(14, 14),
 		
 		sprites = {
-			sheet = "Enemies/Sprites/GreenParaKoopa.png",
+			sheet = "Elements/Sprites/GreenParaKoopa.png",
 			spriteSize = vector(18, 28),
 			spriteOffset = vector(0, 1)
 		},
@@ -63,13 +77,13 @@ local enemyTypes = {
 
 		states = {
 			jumping = {
-				class = "Enemies/States/Jump.lua",
-				dynamics = "Enemies/Dynamics/EnemyJump.dyn",
+				class = "Elements/States/Jump.lua",
+				dynamics = "Elements/Dynamics/EnemyJump.dyn",
 				animation = "jump"
 			},
 
 			walking = {
-				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
+				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
 				animation = "walk"
 			}
 		},
@@ -105,7 +119,7 @@ local enemyTypes = {
 		size = vector(14, 14),
 		
 		sprites = {
-			sheet = "Enemies/Sprites/RedParaGoomba.png",
+			sheet = "Elements/Sprites/RedParaGoomba.png",
 			spriteSize = vector(20, 24),
 			spriteOffset = vector(0, 1)
 		},
@@ -139,24 +153,24 @@ local enemyTypes = {
 		states = {
 
 			walkingWithWings = {
-				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
+				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
 				animation = "winged"
 			},
 
 			walking = {
-				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
+				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
 				animation = "walk"
 			},
 
 			hopping = {
-				class = "Enemies/States/Hop.lua",
-				dynamics = "Enemies/Dynamics/EnemyHop.dyn",
+				class = "Elements/States/Hop.lua",
+				dynamics = "Elements/Dynamics/EnemyHop.dyn",
 				animation = "hop"
 			},
 
 			jumping = {
-				class = "Enemies/States/Jump.lua",
-				dynamics = "Enemies/Dynamics/EnemyJump.dyn",
+				class = "Elements/States/Jump.lua",
+				dynamics = "Elements/Dynamics/EnemyJump.dyn",
 				animation = "jump"
 			}
 
@@ -227,7 +241,7 @@ local enemyTypes = {
 		size = vector(14, 14),
 		
 		sprites = {
-			sheet = "Enemies/Sprites/GreenParaKoopa.png",
+			sheet = "Elements/Sprites/GreenParaKoopa.png",
 			spriteSize = vector(18, 28),
 			spriteOffset = vector(0, 1)
 		},
@@ -243,8 +257,8 @@ local enemyTypes = {
 		states = {
 
 			walking = {
-				class = "Enemies/States/Walk.lua",
-				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
+				class = "Elements/States/Walk.lua",
+				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
 				animation = "walk"
 			}
 		},
@@ -260,7 +274,7 @@ local enemyTypes = {
 		size = vector(14, 14),
 		
 		sprites = {
-			sheet = "Enemies/Sprites/ParaGoomba.png",
+			sheet = "Elements/Sprites/ParaGoomba.png",
 			spriteSize = vector(20, 24),
 			spriteOffset = vector(0, 1)
 		},
@@ -276,8 +290,8 @@ local enemyTypes = {
 		states = {
 
 			walking = {
-				class = "Enemies/States/Walk.lua",
-				dynamics = "Enemies/Dynamics/EnemyWalk.dyn",
+				class = "Elements/States/Walk.lua",
+				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
 				animation = "walk"
 			}
 		},
@@ -288,11 +302,11 @@ local enemyTypes = {
 	{
 		name = 'GreenPiranhaPlant',
 		elementType = "Enemy",
-		class = 'Enemies/Classes/PiranhaPlant.lua',
+		class = 'Elements/Classes/PiranhaPlant.lua',
 		size = vector(14, 25),
 
 		sprites = {
-			sheet = "Enemies/Sprites/GreenPiranhaPlant.png",
+			sheet = "Elements/Sprites/GreenPiranhaPlant.png",
 			spriteSize = vector(32, 25),
 		},
 
@@ -309,7 +323,7 @@ local enemyTypes = {
 
 			{	
 				sprites = {
-					sheet = "Enemies/Sprites/Pipe.png",
+					sheet = "Elements/Sprites/Pipe.png",
 					spriteSize = vector(32, 32)
 				},
 
@@ -325,24 +339,24 @@ local enemyTypes = {
 		states = {
 
 			hidden = {
-				dynamics = "Enemies/Dynamics/PiranhaPlantStatic.dyn",
+				dynamics = "Elements/Dynamics/PiranhaPlantStatic.dyn",
 				animation = "default"
 			},
 
 			up = {
-				dynamics = "Enemies/Dynamics/PiranhaPlantStatic.dyn",
+				dynamics = "Elements/Dynamics/PiranhaPlantStatic.dyn",
 				animation = "default"
 			},
 
 			movingUp = {
-				class = "Enemies/States/PiranhaPlantMoving.lua",
-				dynamics = "Enemies/Dynamics/PiranhaPlantMovingUp.dyn",
+				class = "Elements/States/PiranhaPlantMoving.lua",
+				dynamics = "Elements/Dynamics/PiranhaPlantMovingUp.dyn",
 				animation = "default"
 			},
 
 			movingDown = {
-				class = "Enemies/States/PiranhaPlantMoving.lua",
-				dynamics = "Enemies/Dynamics/PiranhaPlantMovingDown.dyn",
+				class = "Elements/States/PiranhaPlantMoving.lua",
+				dynamics = "Elements/Dynamics/PiranhaPlantMovingDown.dyn",
 				animation = "default"
 			},
 		},
@@ -396,4 +410,4 @@ local enemyTypes = {
 
 }	
 
-return enemyTypes
+return elementTypes

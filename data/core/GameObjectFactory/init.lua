@@ -40,6 +40,10 @@ function GameObjectFactory:init(parameters, tileCollider, activeCollider, folder
 	self.activeCollider = activeCollider
 	self.folder = folder
 
+    
+    self.name = parameters.name
+
+
     if parameters.size then
 	   assert(vector.isvector(parameters.size), "GameObject factory size must be a vector.")
        self.shape = shapes.newPolygonShape(
@@ -98,7 +102,7 @@ function GameObjectFactory:create()
 
 
     newGameObject:addComponent(TransformComponent())
-    newGameObject:addComponent(PhysicsComponent())
+    
 
     if self.sprites and self.parameters.animations then
 
@@ -131,7 +135,7 @@ function GameObjectFactory:create()
         end
 
 		newGameObject.stateMachine.initialState = self.parameters.initialState
-
+        newGameObject:addComponent(PhysicsComponent())
 	end
 
 	if self.parameters.postBuild then
