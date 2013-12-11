@@ -77,7 +77,8 @@ end
 --  as an already loaded (using love.graphics.newImage) sprite sheet.
 -- @tparam vector spriteSize The sprite size for the animation in pixels.
 -- @tparam[opt] vector spriteOffset The sprite offset for the animation in pixels. Default is no offset.
-function AnimationComponent:setSpriteData(spriteData, spriteSize, spriteOffset)
+-- @tparam[opt] vector spriteOffset The sprite offset for the animation in pixels. Default is no offset.
+function AnimationComponent:setSpriteData(spriteData, spriteSize, spriteOffset, spriteGrid)
 
     self.sprites = type(spriteData) == "string" and love.graphics.newImage(spriteData) or spriteData
 

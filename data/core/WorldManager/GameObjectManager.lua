@@ -63,7 +63,7 @@ end
 --- Adds a GameObject to the GameObjectManager.
 -- @param playerName The name of the player's folder
 function GameObjectManager:addObject(newObject)
-    
+    print(newObject.name)
     table.insert(self.managedObjects, newObject)
     if newObject.update then
         table.insert(self.updatableObjects, newObject)

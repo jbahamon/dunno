@@ -2,90 +2,94 @@ local vector = require 'lib.hump.vector'
 
 local params = {
 	
-	includeBasicStates = true,
-
-	size = vector(16, 20),
-
-	sprites = {
-		sheet = "Sprites.png",
-		spriteSize = vector(31, 32),
-		spriteOffset = vector(0, 0)
+	collision = {
+		size = vector(16, 20),
 	},
 
-	animations = {
-		jump = { 
-			mode = "loop",
-			frames = "1,3",
-			defaultDelay = 0.2
+	animation = {	
+		sprites = {
+			sheet = "Sprites.png",
+			spriteSize = vector(31, 32),
+			spriteOffset = vector(0, 0)
 		},
 
-		stand = {
-			mode = "loop",
-			frames = "1-2,1",
-			defaultDelay = 0.2,
-			delays = {2, 0.2}
-		},
+		animations = {
+			jump = { 
+				mode = "loop",
+				frames = "1,3",
+				defaultDelay = 0.2
+			},
 
-		climb = {
-			mode = "loop",
-			frames = "1-2,5",
-			defaultDelay = 10/60.0
-		},
+			stand = {
+				mode = "loop",
+				frames = "1-2,1",
+				defaultDelay = 0.2,
+				delays = {2, 0.2}
+			},
 
-		walk = {
-			mode = "loop",
-			frames = "1-4,2",
-			defaultDelay = 0.2
-		},
+			climb = {
+				mode = "loop",
+				frames = "1-2,5",
+				defaultDelay = 10/60.0
+			},
 
-		hit = {
-			mode = "loop",
-			frames = "1-2,6",
-			defaultDelay = 2/60.0
-		}
-	},
+			walk = {
+				mode = "loop",
+				frames = "1-4,2",
+				defaultDelay = 0.2
+			},
 
-	basicStates = {
-		jump = {
-			dynamics = "States/jump.dyn",
-			class = "States/Jump.lua",
-			animation = "jump",
-			transitions = {
-			 	{ 	condition = 
-			        	function(currentState, collisionFlags) 
-			            	return currentState.owner.physics.velocity.y >= currentState.dynamics.jumpClipVelocity
-			        	end,
-			        targetState = "fall" }
+			hit = {
+				mode = "loop",
+				frames = "1-2,6",
+				defaultDelay = 2/60.0
 			}
 		},
+	},
 
-		stand = {
-			animation = "stand",
-			dynamics = "States/stand.dyn",
-		},
+	stateMachine = 
+		basicStates = {
+			jump = {
+				dynamics = "States/jump.dyn",
+				class = "States/Jump.lua",
+				animation = "jump",
+				transitions = {
+				 	{ 	condition = 
+				        	function(currentState, collisionFlags) 
+				            	return currentState.owner.physics.velocity.y >= currentState.dynamics.jumpClipVelocity
+				        	end,
+				        targetState = "fall" }
+				}
+			},
 
-		climb = {
-			dynamics = "States/Climb.dyn",
-			animation = "climb"
-		},
+			stand = {
+				animation = "stand",
+				dynamics = "States/stand.dyn",
+			},
 
-		walk = {
-			dynamics = "States/walk.dyn",
-			animation = "walk"
-		},
+			climb = {
+				dynamics = "States/Climb.dyn",
+				animation = "climb"
+			},
 
-		fall = {
-			dynamics = "States/fall.dyn",
-			animation = "jump"
-		},
+			walk = {
+				dynamics = "States/walk.dyn",
+				animation = "walk"
+			},
 
-		hit = {
-			dynamics = "States/hit.dyn",
-			animation = "hit"
-		}
-	},	
+			fall = {
+				dynamics = "States/fall.dyn",
+				animation = "jump"
+			},
 
-	initialState = "stand"
+			hit = {
+				dynamics = "States/hit.dyn",
+				animation = "hit"
+			}
+		},	
+
+		initialState = "stand"
+	}
 }
 
 return params

@@ -7,16 +7,6 @@ local Loader = globals.Loader
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
-local anim8 = require 'lib.anim8'
-local shapes = require 'lib.HardonCollider.shapes'
-local GameObject = require 'data.core.GameObject'
-
-local TransformComponent = require 'data.core.Component.TransformComponent'
-local CollisionComponent = require 'data.core.Component.CollisionComponent'
-local AnimationComponent = require 'data.core.Component.AnimationComponent'
-local StateMachineComponent = require 'data.core.Component.StateMachineComponent'
-local InputComponent = require 'data.core.Component.InputComponent'
-local PhysicsComponent = require 'data.core.Component.PhysicsComponent'
 
 local GameObjectFactory = Class {
 	name = 'GameObjectFactory'
@@ -40,53 +30,17 @@ function GameObjectFactory:init(parameters, tileCollider, activeCollider, folder
 	self.activeCollider = activeCollider
 	self.folder = folder
 
-    
-    self.name = parameters.name
+    -- Image preloading
+    if parameters.animation and parameters.animation.sprites then
 
-
-    if parameters.size then
-	   assert(vector.isvector(parameters.size), "GameObject factory size must be a vector.")
-       self.shape = shapes.newPolygonShape(
-        - math.floor(parameters.size.x/2), 0,
-          math.ceil(parameters.size.x/2), 0,
-          math.ceil(parameters.size.x/2), - parameters.size.y,
-        - math.floor(parameters.size.x/2), - parameters.size.y)
-    end
-
-    if self.parameters.states then
-        assert(self.parameters.initialState and type(self.parameters.initialState) == "string", "Must specify a valid initial state")
-    end
-
-
-    if self.parameters.sprites and self.parameters.animations then
-        assert(self.parameters.sprites.sheet and 
-               self.parameters.sprites.spriteSize, "sheet and spriteSize must be defined for new GameObject " .. parameters.name)
-
-        assert(vector.isvector(parameters.sprites.spriteSize),
-            "Sprite size must be a vector")
-
+        assert(parameters.animation.sprites.sheet, "Sprite sheet must be specified (as animation.sprites.sheet)")   
 
         local folder = parameters.sprites.folder or folder or ""
-
         local sprites = folder .. "/" .. string.gsub(parameters.sprites.sheet, '[^%a%d-_/.]', '')
 
         assert(love.filesystem.isFile(sprites), "Spritesheet \'".. sprites .."\' supplied is not a file")   
 
-        self.sprites = love.graphics.newImage(sprites)
-        self.sprites:setFilter('nearest', 'nearest')
-
-        self.spriteSize = parameters.sprites.spriteSize
-
-        if parameters.sprites.spriteOffset then
-            self.spriteOffset = parameters.sprites.spriteOffset
-        else
-            self.spriteOffset = vector(0,0)
-        end
-
-        self.spritesGrid = anim8.newGrid(self.spriteSize.x,
-                             self.spriteSize.y,
-                             self.sprites:getWidth(),
-                             self.sprites:getHeight())
+        self.parameters.animation.sprites.sheet = love.graphics.newImage(sprites)
     end
 
 
@@ -96,56 +50,16 @@ end
 -- @treturn GameObject The newly created GameObject.
 function GameObjectFactory:create()
 
-    local newGameObject = GameObject.new()
+    local newGameObject = Loader.loadObjectFromParameters(self.parameters)
+
     newGameObject.folder = self.folder
     newGameObject.name = self.name
-
-
-    newGameObject:addComponent(TransformComponent())
-    
-
-    if self.sprites and self.parameters.animations then
-
-        newGameObject:addComponent(AnimationComponent(self.sprites, 
-                                                    self.spriteSize, 
-                                                    self.spriteOffset))
-
-        for k, v in pairs(self.parameters.animations) do
-            newGameObject.animation:addAnimation(k, v)
-        end
-    end    
-
-    if self.parameters.size then
-        newGameObject:addComponent(CollisionComponent(self.parameters.size))
-        newGameObject.collision:setColliders(self.tileCollider, self.activeCollider)
-
-        if self.parameters.elementType == "Enemy" then
-            newGameObject.collision.damagesOnContact = true
-        end
-    end    
-    
-    if self.parameters.states then
-        newGameObject:addComponent(StateMachineComponent())
-
-        --FIXME: why is globals required here?
-		globals.Loader.loadStates(newGameObject, self.parameters.states)
-
-        if self.parameters.transitions then
-		  globals.Loader.loadTransitions(newGameObject, self.parameters.transitions)
-        end
-
-		newGameObject.stateMachine.initialState = self.parameters.initialState
-        newGameObject:addComponent(PhysicsComponent())
-	end
-
-	if self.parameters.postBuild then
-        self.parameters.postBuild(newGameObject)
+   
+    if self.parameters.elementType == "Enemy" then
+        newGameObject.collision.damagesOnContact = true
     end
 
-
-    if self.parameters.onStart then
-        newGameObject:setEventHandler("start", self.parameters.onStart)
-    end
+    newGameObject.collision:setColliders(self.tileCollider, self.activeCollider)
 
 	return newGameObject
 

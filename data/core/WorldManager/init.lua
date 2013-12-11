@@ -91,7 +91,7 @@ end
 -- but should be added at some point.
 -- @param playerName The name of the player's folder
 function WorldManager:createPlayer(playerName)
-	local player = Loader.loadCharacter(playerName)
+	local player = Loader.loadCharacterFromName(playerName)
 	player.world = self
 	self.gameObjectManager:addPlayer(player)
 end

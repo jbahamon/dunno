@@ -1,3 +1,4 @@
+
 --- A module for loading and building game elements from user files.
 -- @module data.core.Loader
 
@@ -75,71 +76,121 @@ end
 -- in the character's parameters.
 -- @tparam string name The Player character's folder's name.
 -- @return GameObject The newly created Player character.
-function Loader.loadCharacter(name)
+function Loader.loadCharacterFromName(name)
    
     local path = globals.characterFolder .. string.gsub(name, "[^%a%d-_/]", "") .. "/config.lua"    
+
     local parameters = Loader.loadFile(path)
+    parameters.name = parameters.name or name
 
-    local character = GameObject.new()
-    character.folder = globals.characterFolder .. string.gsub(name, "[^%a%d-_/]", "")
-    character.name = name
+    local folder = globals.characterFolder .. string.gsub(name, "[^%a%d-_/]", "")
+    local character = Loader.loadObjectFromParameters(parameters, folder)
 
-    character.elementType = "Player"
-    character:addComponent(TransformComponent())
-    character:addComponent(InputComponent())
-    character:addComponent(PhysicsComponent())
-
-    if parameters.sprites and parameters.animations then
-        assert(parameters.sprites.sheet and 
-               parameters.sprites.spriteSize, "sheet and spriteSize must be defined for character " .. name)
-
-        character:addComponent(AnimationComponent(globals.characterFolder ..  string.gsub(name, "[^%a%d-_/]", "") 
-                                                        .. "/" .. parameters.sprites.sheet, 
-                                                    parameters.sprites.spriteSize, 
-                                                    parameters.sprites.spriteOffset))
-
-        for k, v in pairs(parameters.animations) do
-            character.animation:addAnimation(k, v)
-        end
-    end    
-
-    if parameters.size then
-        character:addComponent(CollisionComponent(parameters.size))
-
-        if parameters.elementType == "Enemy" then
-            character.collision.damagesOnContact = true
-        end
-    end    
+    character.elementType = character.elementType or "Player"
     
-    if parameters.states or parameters.basicStates then
+    return character
 
-        assert(parameters.initialState and type(parameters.initialState) == "string", "Must specify a valid initial state")
-        character:addComponent(StateMachineComponent())
+end
 
-        if parameters.basicStates then
-            Loader.loadBasicStates(character, parameters.basicStates)
-        end
+function Loader.loadObjectFromParameters(parameters, folder)
+    local object = GameObject.new()
+    object.folder = folder
+    object.name = parameters.name
 
-        if parameters.states then
-            Loader.loadStates(character, parameters.states)
-        end
-
-        if parameters.transitions then
-            Loader.loadTransitions(character, parameters.transitions)
-        end
-
-        character.stateMachine.initialState = parameters.initialState
-    end
+    Loader.loadComponents(object, parameters)
 
     if parameters.postBuild then
-        parameters.postBuild(character)
+        parameters.postBuild(object)
     end
 
     if parameters.onStart then
-        character:setEventHandler("start", parameters.onStart)
+        object:setEventHandler("start", parameters.onStart)
     end
 
-    return character
+    return object
+end
+
+function Loader.loadComponents(character, parameters)
+    
+    character:addComponent(TransformComponent(character))
+
+    if parameters.input ~= false then
+        Loader.loadInput(character)
+    end
+
+    if parameters.physics ~= false then
+        Loader.loadPhysics(character)
+    end 
+
+    if parameters.animation then
+        Loader.loadAnimation(character, parameters.animation)
+    end    
+
+    if parameters.collision then
+        Loader.loadCollision(character, parameters.collision)
+    end    
+    
+    if parameters.stateMachine then
+        Loader.loadStateMachine(character, parameters.stateMachine)     
+    end
+
+end
+
+function Loader.loadPhysics(character)
+    character:addComponent(PhysicsComponent())
+end
+
+function Loader.loadTransform(character)
+    character:addComponent(TransformComponent())
+end
+
+function Loader.loadInput(character)
+    character:addComponent(InputComponent())
+end
+
+function Loader.loadAnimation(character, parameters)
+    assert(parameters.sprites and 
+           parameters.animations, "Both sprites and animations must be defined for animation component of character " .. character.name)
+
+    assert(parameters.sprites.sheet and 
+           parameters.sprites.spriteSize, "sheet and spriteSize must be defined for character " .. character.name)
+
+    character:addComponent(AnimationComponent(globals.characterFolder ..  string.gsub(character.name, "[^%a%d-_/]", "") 
+                                                    .. "/" .. parameters.sprites.sheet, 
+                                                parameters.sprites.spriteSize, 
+                                                parameters.sprites.spriteOffset))
+
+    for k, v in pairs(parameters.animations) do
+        character.animation:addAnimation(k, v)
+    end
+end
+
+function Loader.loadStateMachine(character, parameters)
+   assert(parameters.initialState and type(parameters.initialState) == "string", "Must specify a valid initial state")
+
+    character:addComponent(StateMachineComponent())
+
+    if parameters.basicStates then
+        Loader.loadBasicStates(character, parameters.basicStates)
+    end
+
+    if parameters.states then
+        Loader.loadStates(character, parameters.states)
+    end
+
+    if parameters.transitions then
+        Loader.loadTransitions(character, parameters.transitions)
+    end
+
+    character.stateMachine.initialState = parameters.initialState
+end
+
+function Loader.loadCollision(character, parameters)
+    character:addComponent(CollisionComponent(parameters.size))
+
+    if parameters.elementType == "Enemy" then
+        character.collision.damagesOnContact = true
+    end
 
 end
 
