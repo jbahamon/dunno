@@ -25,7 +25,7 @@ local GameObjectFactory = Class {
 function GameObjectFactory:init(parameters, tileCollider, activeCollider, folder)
 
 	self.parameters = parameters
-
+    self.name = self.parameters.name .. "Factory"
 	self.tileCollider = tileCollider
 	self.activeCollider = activeCollider
 	self.folder = folder
@@ -35,8 +35,8 @@ function GameObjectFactory:init(parameters, tileCollider, activeCollider, folder
 
         assert(parameters.animation.sprites.sheet, "Sprite sheet must be specified (as animation.sprites.sheet)")   
 
-        local folder = parameters.sprites.folder or folder or ""
-        local sprites = folder .. "/" .. string.gsub(parameters.sprites.sheet, '[^%a%d-_/.]', '')
+        local folder = parameters.animation.sprites.folder or folder or ""
+        local sprites = folder .. "/" .. string.gsub(parameters.animation.sprites.sheet, '[^%a%d-_/.]', '')
 
         assert(love.filesystem.isFile(sprites), "Spritesheet \'".. sprites .."\' supplied is not a file")   
 
@@ -50,10 +50,10 @@ end
 -- @treturn GameObject The newly created GameObject.
 function GameObjectFactory:create()
 
-    local newGameObject = Loader.loadObjectFromParameters(self.parameters)
+    local newGameObject = globals.Loader.loadObjectFromParameters(self.parameters, self.folder)
 
     newGameObject.folder = self.folder
-    newGameObject.name = self.name
+    newGameObject.name = self.parameters.name
    
     if self.parameters.elementType == "Enemy" then
         newGameObject.collision.damagesOnContact = true

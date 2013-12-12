@@ -163,7 +163,7 @@
    </properties>
   </tile>
  </tileset>
- <layer name="background" width="178" height="40" visible="0">
+ <layer name="background" width="178" height="40">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -7287,7 +7287,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="collision" width="178" height="40">
+ <layer name="collision" width="178" height="40" visible="0">
   <data>
    <tile gid="103"/>
    <tile gid="103"/>
@@ -14411,7 +14411,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <objectgroup name="elementLocations" width="178" height="40">
+ <objectgroup name="elementLocations" width="178" height="40" visible="0">
   <object name="Goomba1" type="Goomba" x="240" y="416" width="16" height="16">
    <properties>
     <property name="facing" value="-1"/>
@@ -14457,7 +14457,7 @@
     <property name="facing" value="-1"/>
    </properties>
   </object>
-  <object name="RedKoopa2" type="GreenKoopa" x="1488" y="416" width="16" height="16">
+  <object name="RedKoopa2" type="RedKoopa" x="1488" y="416" width="16" height="16">
    <properties>
     <property name="facing" value="-1"/>
    </properties>

@@ -5,7 +5,10 @@ local elementTypes = {
 	{
 		name = "Goal",
 		elementType = "Neutral",
-		size = vector(16, 16),
+		physics = false,
+		collision = {
+			size = vector(16, 16),
+		},
 
 		postBuild = function (element)
 			element.collision.onDynamicCollide = function (self, dt, otherComponent)
@@ -21,32 +24,37 @@ local elementTypes = {
 
 		elementType = "Enemy",
 
-		size = vector(14, 14),
-		
-		sprites = {
-			sheet = "Elements/Sprites/RedKoopa.png",
-			spriteSize = vector(18, 27),
-			spriteOffset = vector(0, 1)
+		collision = {
+			size = vector(14, 14),
 		},
-
-		animations = {
-			walk = {
-				mode = "loop",
-				frames = "1-2,1",
-				defaultDelay = 8/60
+		
+		animation = {
+			sprites = {
+				sheet = "Elements/Sprites/RedKoopa.png",
+				spriteSize = vector(18, 27),
+				spriteOffset = vector(0, 1)
+			},
+	
+			animations = {
+				walk = {
+					mode = "loop",
+					frames = "1-2,1",
+					defaultDelay = 8/60
+				},
 			},
 		},
 
-		states = {
-
-			walking = {
-				class = "Elements/States/RedKoopaWalk.lua",
-				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
-				animation = "walk"
-			}
-		},
-
-		initialState = "walking"
+		stateMachine = {
+			states = {
+				walking = {
+						class = "Elements/States/RedKoopaWalk.lua",
+						dynamics = "Elements/Dynamics/EnemyWalk.dyn",
+						animation = "walk"
+				}
+			},
+	
+			initialState = "walking"
+		}
 	},
 
 	{
@@ -54,61 +62,67 @@ local elementTypes = {
 
 		elementType = "Enemy",
 
-		size = vector(14, 14),
+		collision = {
+			size = vector(14, 14),
+		},
 		
-		sprites = {
-			sheet = "Elements/Sprites/GreenParaKoopa.png",
-			spriteSize = vector(18, 28),
-			spriteOffset = vector(0, 1)
+		animation = {
+			sprites = {
+				sheet = "Elements/Sprites/GreenParaKoopa.png",
+				spriteSize = vector(18, 28),
+				spriteOffset = vector(0, 1)
+			},
+	
+			animations = {
+				jump = {
+					mode = "loop",
+					frames = "1-4,1",
+					defaultDelay = 4/60
+				},
+				walk = {
+					mode = "loop",
+					frames = "5-6,1",
+					defaultDelay = 8/60
+				},
+			},
 		},
 
-		animations = {
-			jump = {
-				mode = "loop",
-				frames = "1-4,1",
-				defaultDelay = 4/60
+		stateMachine = {
+			states = {
+				jumping = {
+					class = "Elements/States/Jump.lua",
+					dynamics = "Elements/Dynamics/EnemyJump.dyn",
+					animation = "jump"
+				},
+	
+				walking = {
+					dynamics = "Elements/Dynamics/EnemyWalk.dyn",
+					animation = "walk"
+				}
 			},
-			walk = {
-				mode = "loop",
-				frames = "5-6,1",
-				defaultDelay = 8/60
+	
+			transitions = {
+				{	
+					from		= { "jumping" },
+					to 			= "jumping",
+					condition = 
+						function (currentState, collisionFlags)
+							return (not collisionFlags.canMoveDown) and currentState.owner.physics.velocity.y > 0
+						end,
+				},
+	
+				{	
+					from		= { "jumping" },
+					to 			= "walking",
+					condition = 
+						function (currentState, collisionFlags)
+							return collisionFlags.hit and false -- TODO: life
+						end
+				}
 			},
-		},
-
-		states = {
-			jumping = {
-				class = "Elements/States/Jump.lua",
-				dynamics = "Elements/Dynamics/EnemyJump.dyn",
-				animation = "jump"
-			},
-
-			walking = {
-				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
-				animation = "walk"
-			}
-		},
-
-		transitions = {
-			{	
-				from		= { "jumping" },
-				to 			= "jumping",
-				condition = 
-					function (currentState, collisionFlags)
-						return (not collisionFlags.canMoveDown) and currentState.owner.physics.velocity.y > 0
-					end,
-			},
-
-			{	
-				from		= { "jumping" },
-				to 			= "walking",
-				condition = 
-					function (currentState, collisionFlags)
-						return collisionFlags.hit and false -- TODO: life
-					end
-			}
-		},
-
-		initialState = "jumping"
+	
+			initialState = "jumping"
+		}
 	},
 
 	{ 
@@ -116,120 +130,124 @@ local elementTypes = {
 
 		elementType = "Enemy",
 
-		size = vector(14, 14),
+		collision = {
+			size = vector(14, 14),
+		},
 		
-		sprites = {
-			sheet = "Elements/Sprites/RedParaGoomba.png",
-			spriteSize = vector(20, 24),
-			spriteOffset = vector(0, 1)
-		},
-
-		animations = {
-			winged = {
-				mode = "loop",
-				frames = "1-2,1",
-				defaultDelay = 8/60
+		animation = {
+			sprites = {
+				sheet = "Elements/Sprites/RedParaGoomba.png",
+				spriteSize = vector(20, 24),
+				spriteOffset = vector(0, 1)
 			},
-
-			walk = {
-				mode = "loop",
-				frames = "1-2,2",
-				defaultDelay = 8/60
-			},
-
-			hop = {
-				mode = "loop",
-				frames = "1-4,1",
-				defaultDelay = 4/60
-			},
-
-			jump = {
-				mode = "loop",
-				frames = "1-4,1",
-				defaultDelay = 4/60
-			},
-		},
-
-		states = {
-
-			walkingWithWings = {
-				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
-				animation = "winged"
-			},
-
-			walking = {
-				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
-				animation = "walk"
-			},
-
-			hopping = {
-				class = "Elements/States/Hop.lua",
-				dynamics = "Elements/Dynamics/EnemyHop.dyn",
-				animation = "hop"
-			},
-
-			jumping = {
-				class = "Elements/States/Jump.lua",
-				dynamics = "Elements/Dynamics/EnemyJump.dyn",
-				animation = "jump"
-			}
-
-		},
-
-
-		transitions = {
-			{	
-				from		= { "jumping" },
-				to 			= "walkingWithWings",
-				condition = 
-					function (currentState, collisionFlags)
-						return (not collisionFlags.canMoveDown) and 
-								currentState.owner.physics.velocity.y > 0 
-					end
-			},
-
-			{	
-				from		= { "hopping" },
-				to 			= "hopping",
-				condition =
-					function (currentState, collisionFlags)
-						return (not collisionFlags.canMoveDown) and 
-								currentState.owner.physics.velocity.y > 0 and 
-								currentState.hopCount <= 3
-					end
-			},
-
-		 	{
-				from		= { "hopping" },
-				to 			= "jumping",
-				condition =
-					function (currentState, collisionFlags)
-						return (not collisionFlags.canMoveDown) and 
-								currentState.owner.physics.velocity.y > 0 and 
-								currentState.hopCount > 3
-					end
-			},
-
-			{
-				from		= { "jumping", "walkingWithWings", "hopping" },
-				to 			= "walking",
-				condition = 
-					function (currentState, collisionFlags)
-						return collisionFlags.hit and false -- TODO: life
-					end
-			},
-
-			{	from		= "walkingWithWings",
-				to 			= "hopping",
-				condition = 	
-					function (currentState, collisionFlags)
-						return currentState.owner.physics.stateTime > 32/60 
-					end,
-			}
-		},
 	
+			animations = {
+				winged = {
+					mode = "loop",
+					frames = "1-2,1",
+					defaultDelay = 8/60
+				},
+	
+				walk = {
+					mode = "loop",
+					frames = "1-2,2",
+					defaultDelay = 8/60
+				},
+	
+				hop = {
+					mode = "loop",
+					frames = "1-4,1",
+					defaultDelay = 4/60
+				},
+	
+				jump = {
+					mode = "loop",
+					frames = "1-4,1",
+					defaultDelay = 4/60
+				},
+			},
+		},
 
-		initialState = "hopping"
+		stateMachine = {
+			states = {
+				walkingWithWings = {
+					dynamics = "Elements/Dynamics/EnemyWalk.dyn",
+					animation = "winged"
+				},
+	
+				walking = {
+					dynamics = "Elements/Dynamics/EnemyWalk.dyn",
+					animation = "walk"
+				},
+	
+				hopping = {
+					class = "Elements/States/Hop.lua",
+					dynamics = "Elements/Dynamics/EnemyHop.dyn",
+					animation = "hop"
+				},
+	
+				jumping = {
+					class = "Elements/States/Jump.lua",
+					dynamics = "Elements/Dynamics/EnemyJump.dyn",
+					animation = "jump"
+				}
+			},
+	
+	
+			transitions = {
+				{	
+					from		= { "jumping" },
+					to 			= "walkingWithWings",
+					condition = 
+						function (currentState, collisionFlags)
+							return (not collisionFlags.canMoveDown) and 
+									currentState.owner.physics.velocity.y > 0 
+						end
+				},
+	
+				{	
+					from		= { "hopping" },
+					to 			= "hopping",
+					condition =
+						function (currentState, collisionFlags)
+							return (not collisionFlags.canMoveDown) and 
+									currentState.owner.physics.velocity.y > 0 and 
+									currentState.hopCount <= 3
+						end
+				},
+	
+			 	{
+					from		= { "hopping" },
+					to 			= "jumping",
+					condition =
+						function (currentState, collisionFlags)
+							return (not collisionFlags.canMoveDown) and 
+									currentState.owner.physics.velocity.y > 0 and 
+									currentState.hopCount > 3
+						end
+				},
+	
+				{
+					from		= { "jumping", "walkingWithWings", "hopping" },
+					to 			= "walking",
+					condition = 
+						function (currentState, collisionFlags)
+							return collisionFlags.hit and false -- TODO: life
+						end
+				},
+	
+				{	from		= "walkingWithWings",
+					to 			= "hopping",
+					condition = 	
+						function (currentState, collisionFlags)
+							return currentState.owner.physics.stateTime > 32/60 
+						end,
+				}
+			},
+		
+	
+			initialState = "hopping"
+		},
 	},
 
 
@@ -238,32 +256,36 @@ local elementTypes = {
 
 		elementType = "Enemy",
 
-		size = vector(14, 14),
+		collision = {
+			size = vector(14, 14),
+		},
 		
-		sprites = {
-			sheet = "Elements/Sprites/GreenParaKoopa.png",
-			spriteSize = vector(18, 28),
-			spriteOffset = vector(0, 1)
+		animation = {
+			sprites = {
+				sheet = "Elements/Sprites/GreenParaKoopa.png",
+				spriteSize = vector(18, 28),
+				spriteOffset = vector(0, 1)
+			},
+	
+			animations = {
+				walk = {
+					mode = "loop",
+					frames = "5-6,1",
+					defaultDelay = 8/60
+				}
+			},
+	
+			states = {
+	
+				walking = {
+					class = "Elements/States/Walk.lua",
+					dynamics = "Elements/Dynamics/EnemyWalk.dyn",
+					animation = "walk"
+				}
+			},
+	
+			initialState = "walking"
 		},
-
-		animations = {
-			walk = {
-				mode = "loop",
-				frames = "5-6,1",
-				defaultDelay = 8/60
-			}
-		},
-
-		states = {
-
-			walking = {
-				class = "Elements/States/Walk.lua",
-				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
-				animation = "walk"
-			}
-		},
-
-		initialState = "walking"
 	},
 
 
@@ -271,51 +293,60 @@ local elementTypes = {
 		name = "Goomba",
 		elementType = "Enemy",
 
-		size = vector(14, 14),
+		collision = {
+			size = vector(14, 14),
+		},
 		
-		sprites = {
-			sheet = "Elements/Sprites/ParaGoomba.png",
-			spriteSize = vector(20, 24),
-			spriteOffset = vector(0, 1)
+		animation = {
+			sprites = {
+				sheet = "Elements/Sprites/ParaGoomba.png",
+				spriteSize = vector(20, 24),
+				spriteOffset = vector(0, 1)
+			},
+	
+			animations = {
+				walk = {
+					mode = "loop",
+					frames = "1-2,2",
+					defaultDelay = 8/60
+				}
+			},
 		},
 
-		animations = {
-			walk = {
-				mode = "loop",
-				frames = "1-2,2",
-				defaultDelay = 8/60
-			}
-		},
-
-		states = {
-
-			walking = {
-				class = "Elements/States/Walk.lua",
-				dynamics = "Elements/Dynamics/EnemyWalk.dyn",
-				animation = "walk"
-			}
-		},
-
-		initialState = "walking"
+		stateMachine = {
+			states = {
+				walking = {
+					class = "Elements/States/Walk.lua",
+					dynamics = "Elements/Dynamics/EnemyWalk.dyn",
+					animation = "walk"
+				}
+			},
+	
+			initialState = "walking"
+		}
 	},
 
 	{
 		name = 'GreenPiranhaPlant',
 		elementType = "Enemy",
-		class = 'Elements/Classes/PiranhaPlant.lua',
-		size = vector(14, 25),
-
-		sprites = {
-			sheet = "Elements/Sprites/GreenPiranhaPlant.png",
-			spriteSize = vector(32, 25),
+		
+		collision = {
+			size = vector(14, 25),
 		},
 
-		animations = {
-			default = {
-				mode = "loop",
-				frames = "1-2,1",
-				defaultDelay = 8/60
-			}
+		animation = {
+			sprites = {
+				sheet = "Elements/Sprites/GreenPiranhaPlant.png",
+				spriteSize = vector(32, 25),
+			},
+	
+			animations = {
+				default = {
+					mode = "loop",
+					frames = "1-2,1",
+					defaultDelay = 8/60
+				}
+			},
 		},
 
 		helperAnimations = {
@@ -336,72 +367,73 @@ local elementTypes = {
 			}
 		},
 
-		states = {
-
-			hidden = {
-				dynamics = "Elements/Dynamics/PiranhaPlantStatic.dyn",
-				animation = "default"
+		stateMachine = {
+			states = {
+	
+				hidden = {
+					dynamics = "Elements/Dynamics/PiranhaPlantStatic.dyn",
+					animation = "default"
+				},
+	
+				up = {
+					dynamics = "Elements/Dynamics/PiranhaPlantStatic.dyn",
+					animation = "default"
+				},
+	
+				movingUp = {
+					class = "Elements/States/PiranhaPlantMoving.lua",
+					dynamics = "Elements/Dynamics/PiranhaPlantMovingUp.dyn",
+					animation = "default"
+				},
+	
+				movingDown = {
+					class = "Elements/States/PiranhaPlantMoving.lua",
+					dynamics = "Elements/Dynamics/PiranhaPlantMovingDown.dyn",
+					animation = "default"
+				},
 			},
-
-			up = {
-				dynamics = "Elements/Dynamics/PiranhaPlantStatic.dyn",
-				animation = "default"
+	
+			transitions = {
+				{	
+					from 		= { "hidden" },
+					to  		= "movingUp",
+					condition 	=
+						function (currentState, collisionFlags)
+							return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
+						end
+				},
+	
+				{	
+					from 		= { "movingUp" },
+					to  		= "up",
+					condition 	=
+						function (currentState, collisionFlags)
+							return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
+						end
+				},
+	
+				{	
+					from 		= { "up" },
+					to  		= "movingDown",
+					condition 	=
+						function (currentState, collisionFlags)
+							return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
+						end
+				},
+	
+				{	
+					from 		= { "movingDown" },
+					to  		= "hidden",
+					condition 	=
+						function (currentState, collisionFlags)
+							return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
+						end
+				},
+	
 			},
-
-			movingUp = {
-				class = "Elements/States/PiranhaPlantMoving.lua",
-				dynamics = "Elements/Dynamics/PiranhaPlantMovingUp.dyn",
-				animation = "default"
-			},
-
-			movingDown = {
-				class = "Elements/States/PiranhaPlantMoving.lua",
-				dynamics = "Elements/Dynamics/PiranhaPlantMovingDown.dyn",
-				animation = "default"
-			},
+	
+			initialState = "hidden",
 		},
-
-		transitions = {
-
-			{	
-				from 		= { "hidden" },
-				to  		= "movingUp",
-				condition 	=
-					function (currentState, collisionFlags)
-						return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
-					end
-			},
-
-			{	
-				from 		= { "movingUp" },
-				to  		= "up",
-				condition 	=
-					function (currentState, collisionFlags)
-						return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
-					end
-			},
-
-			{	
-				from 		= { "up" },
-				to  		= "movingDown",
-				condition 	=
-					function (currentState, collisionFlags)
-						return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
-					end
-			},
-
-			{	
-				from 		= { "movingDown" },
-				to  		= "hidden",
-				condition 	=
-					function (currentState, collisionFlags)
-						return currentState.owner.physics.stateTime > currentState.dynamics.maxStateTime
-					end
-			},
-
-		},
-
-		initialState = "hidden",
 
 		onStart = function(plant)
 				plant.collision:disableTileCollisions()

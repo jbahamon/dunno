@@ -81,7 +81,9 @@ function Loader.loadCharacterFromName(name)
     local path = globals.characterFolder .. string.gsub(name, "[^%a%d-_/]", "") .. "/config.lua"    
 
     local parameters = Loader.loadFile(path)
+
     parameters.name = parameters.name or name
+    parameters.input = parameters.input or true
 
     local folder = globals.characterFolder .. string.gsub(name, "[^%a%d-_/]", "")
     local character = Loader.loadObjectFromParameters(parameters, folder)
@@ -114,13 +116,13 @@ function Loader.loadComponents(character, parameters)
     
     character:addComponent(TransformComponent(character))
 
-    if parameters.input ~= false then
-        Loader.loadInput(character)
-    end
-
     if parameters.physics ~= false then
         Loader.loadPhysics(character)
     end 
+
+    if parameters.input then
+        Loader.loadInput(character)
+    end
 
     if parameters.animation then
         Loader.loadAnimation(character, parameters.animation)
@@ -136,60 +138,63 @@ function Loader.loadComponents(character, parameters)
 
 end
 
-function Loader.loadPhysics(character)
-    character:addComponent(PhysicsComponent())
+function Loader.loadPhysics(object)
+    object:addComponent(PhysicsComponent())
 end
 
-function Loader.loadTransform(character)
-    character:addComponent(TransformComponent())
+function Loader.loadTransform(object)
+    object:addComponent(TransformComponent())
 end
 
-function Loader.loadInput(character)
-    character:addComponent(InputComponent())
+function Loader.loadInput(object)
+    object:addComponent(InputComponent())
 end
 
-function Loader.loadAnimation(character, parameters)
+function Loader.loadAnimation(object, parameters)
     assert(parameters.sprites and 
-           parameters.animations, "Both sprites and animations must be defined for animation component of character " .. character.name)
+           parameters.animations, "Both sprites and animations must be defined for animation component of object " .. object.name)
 
     assert(parameters.sprites.sheet and 
-           parameters.sprites.spriteSize, "sheet and spriteSize must be defined for character " .. character.name)
+           parameters.sprites.spriteSize, "sheet and spriteSize must be defined for object " .. object.name)
 
-    character:addComponent(AnimationComponent(globals.characterFolder ..  string.gsub(character.name, "[^%a%d-_/]", "") 
-                                                    .. "/" .. parameters.sprites.sheet, 
-                                                parameters.sprites.spriteSize, 
-                                                parameters.sprites.spriteOffset))
+    object:addComponent(AnimationComponent(parameters.sprites.sheet, 
+                                            parameters.sprites.spriteSize, 
+                                            parameters.sprites.spriteOffset, object.folder))
 
     for k, v in pairs(parameters.animations) do
-        character.animation:addAnimation(k, v)
+        object.animation:addAnimation(k, v)
+    end
+
+    if parameters.initialAnimation then
+        object.animation:setAnimation(parameters.initialAnimation)
     end
 end
 
-function Loader.loadStateMachine(character, parameters)
+function Loader.loadStateMachine(object, parameters)
    assert(parameters.initialState and type(parameters.initialState) == "string", "Must specify a valid initial state")
 
-    character:addComponent(StateMachineComponent())
+    object:addComponent(StateMachineComponent())
 
     if parameters.basicStates then
-        Loader.loadBasicStates(character, parameters.basicStates)
+        Loader.loadBasicStates(object, parameters.basicStates)
     end
 
     if parameters.states then
-        Loader.loadStates(character, parameters.states)
+        Loader.loadStates(object, parameters.states)
     end
 
     if parameters.transitions then
-        Loader.loadTransitions(character, parameters.transitions)
+        Loader.loadTransitions(object, parameters.transitions)
     end
 
-    character.stateMachine.initialState = parameters.initialState
+    object.stateMachine.initialState = parameters.initialState
 end
 
-function Loader.loadCollision(character, parameters)
-    character:addComponent(CollisionComponent(parameters.size))
+function Loader.loadCollision(object, parameters)
+    object:addComponent(CollisionComponent(parameters.size))
 
     if parameters.elementType == "Enemy" then
-        character.collision.damagesOnContact = true
+        object.collision.damagesOnContact = true
     end
 
 end

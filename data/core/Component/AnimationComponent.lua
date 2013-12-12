@@ -24,14 +24,16 @@ local AnimationComponent = Class {
 --  as an already loaded (using love.graphics.newImage) sprite sheet.
 -- @tparam vector spriteSize The sprite size for the animation in pixels.
 -- @tparam[opt] vector spriteOffset The sprite offset for the animation in pixels. Default is no offset.
+-- @tparam[opt] string folder The base folder to load the sprites from. Default value is the empty string.
 -- @treturn AnimationComponent The newly created AnimationComponent.
-function AnimationComponent:init(spriteData, spriteSize, spriteOffset)
+function AnimationComponent:init(spriteData, spriteSize, spriteOffset, folder)
     BaseComponent.init(self)
 
     local sprites 
 
     if type(spriteData) == "string" then
-        sprites = string.gsub(spriteData, '[^%a%d-_/.]', '')
+        folder = folder and (folder .. "/") or ""
+        sprites = folder .. string.gsub(spriteData, '[^%a%d-_/.]', '')
         assert(love.filesystem.isFile(sprites), "Spritesheet \'".. spriteData .."\' supplied is not a file")   
     else
         sprites = spriteData
