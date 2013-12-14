@@ -353,7 +353,7 @@ end
 function Loader.loadFile(path)
     assert(love.filesystem.isFile(path), "File \'".. path .. "\' not found")
     local ok, paramsFile = pcall(love.filesystem.load, path)
-    assert(ok, "Loaded file " .. path .. " has syntax errors: " .. tostring(playerFile))
+    assert(ok, "Loaded file " .. path .. " has syntax errors: " .. tostring(paramsFile))
     local parameters = paramsFile()
     assert(type(parameters) == "table", "Loaded file \'" .. path .. "\' must return a table")
     return parameters

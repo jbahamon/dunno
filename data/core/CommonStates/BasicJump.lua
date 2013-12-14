@@ -1,5 +1,4 @@
 local Class = require 'lib.hump.class'
-local vector = require 'lib.hump.vector'
 local State = require 'data.core.Component.State'
 
 local BasicJump = Class {

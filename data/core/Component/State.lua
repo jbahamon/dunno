@@ -1,9 +1,6 @@
 --- A StateMachineComponent's basic State.
 -- @classmod data.core.Component.State
-
 local Class = require 'lib.hump.class'
-local vector = require 'lib.hump.vector'
-
 
 local State = Class {
 	name = "State"

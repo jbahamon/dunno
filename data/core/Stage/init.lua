@@ -5,7 +5,6 @@
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 
-local SpatialHash = require 'lib.HardonCollider.spatialhash'
 local shapes = require 'lib.HardonCollider.shapes'
 local GeometryUtils = require 'lib.GeometryUtils'
 local GameObjectFactory = require 'data.core.GameObjectFactory'
@@ -31,6 +30,8 @@ function Stage:init(mapPath)
 	self.rooms = {}
 	self.defaultRoom = "_defaultRoom"
 
+	self.tension = vector(0,0)
+
 end
 
 --- Class that represents the stage (platforms, static elements, etc) where the elements live and interact.
@@ -53,9 +54,6 @@ end
 --- Retrieves the Stage's camera tension setting.
 -- @return A vector containing the stage's camera tension. 
 function Stage:getTension()
-	if not self.tension then
-		self.tension = vector(0,0)
-	end
 	return self.tension
 end
 

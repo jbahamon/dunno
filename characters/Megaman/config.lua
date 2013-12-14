@@ -47,7 +47,7 @@ local params = {
 		},
 	},
 
-	stateMachine = 
+	stateMachine = {
 		basicStates = {
 			jump = {
 				dynamics = "States/jump.dyn",

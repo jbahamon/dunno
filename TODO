@@ -2,6 +2,22 @@ TODO:
 
 
 ========================================================================
+Components
+========================================================================
+
+Enabling/disabling and/or adding/removing (that's a lot of slashes) components 
+(e.g. Mario's transformations imply different abilities) A dirty solution 
+could be gameObject replacement, but yeah, that would be weird.
+
+Implement the following components:
+    HelperComponent (e.g Piranha Plant's pipe)
+    ElementFactoryComponent (e.g. Mega Buster)
+    HitboxComponent 
+
+Clean up the resolveTileCollisions method.
+
+
+========================================================================
 Physics
 ========================================================================
 

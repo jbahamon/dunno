@@ -221,15 +221,11 @@ end
 -- @see CollisionComponent:resolveTileCollisions, CollisionComponent:resetCollisionFlags
 function CollisionComponent:onTileCollide(dt, tileCollisionComponent, tile, position)
 
-    if tile.properties.solid or tile.properties.oneWayPlatform or tile.properties.ladder then
-        
-        local collisionEvent = { position = position:clone(), tile = tile }
+    local collisionEvent = { position = position:clone(), tile = tile }
 
-        collisionEvent.area = GeometryUtils.getCollisionArea(tileCollisionComponent, self.box)
+    collisionEvent.area = GeometryUtils.getCollisionArea(tileCollisionComponent, self.box)
 
-        table.insert(self.pendingCollisions, collisionEvent)
-
-    end
+    table.insert(self.pendingCollisions, collisionEvent)
 end
 
 --- Resolves collisions with tiles.
@@ -256,6 +252,10 @@ function CollisionComponent:resolveTileCollisions(sampleTile, tileSize)
         collides, dx, dy = self.box:collidesWith(sampleTile)
 
         if collides then
+            
+            if event.tile.properties.deadly then
+                self.collisionFlags.hit = true
+            end    
 
             if event.tile.properties.ladder then
                 if (not highestLadderEvent) or highestLadderEvent.position.y > event.position.y then
@@ -310,7 +310,7 @@ function CollisionComponent:resolveTileCollisions(sampleTile, tileSize)
                         self.collisionFlags.standingOnSolid = true
                     end
                 end
-            end     
+            end
         end
     end
                 

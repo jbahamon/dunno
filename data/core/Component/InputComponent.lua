@@ -3,7 +3,6 @@
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
-local anim8 = require 'lib.anim8'
 
 local BaseComponent = require 'data.core.Component.BaseComponent'
 

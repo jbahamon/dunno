@@ -3,16 +3,10 @@
 -- @class module
 -- @name data.core.CameraManager
 
-
 local Class = require 'lib.hump.class'
-local Stage = require 'data.core.Stage'
 local Camera = require 'lib.gamera'
 
-local ActiveCollider = require 'lib.HardonCollider'
-local TileCollider = require 'lib.TileCollider'
-
 local vector = require 'lib.hump.vector'
-
 local Timer = globals.Timer
 
 --- Builds a new, empty CameraManager

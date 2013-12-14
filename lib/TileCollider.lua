@@ -82,7 +82,7 @@ function TileCollider:update(dt)
 													elemWidth,
 													elemHeight) do
 
-		        if tile and (tile.properties.solid or tile.properties.oneWayPlatform or tile.properties.ladder) then
+		        if tile then
 		        	
 		        	self.sampleTile:moveTo(x * tileSize.x + tileSize.x/2.0,
 		        						   y * tileSize.y + tileSize.y/2.0)

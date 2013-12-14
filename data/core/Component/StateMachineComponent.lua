@@ -2,12 +2,7 @@
 -- @classmod data.core.Component.StateMachineComponent
 
 local Class = require 'lib.hump.class'
-local vector = require 'lib.hump.vector'
-
 local BaseComponent = require 'data.core.Component.BaseComponent'
-local State = require 'data.core.Component.State'
-local GeometryUtils = require 'lib.GeometryUtils'
-local shapes = require 'lib.HardonCollider.shapes'
 
 local StateMachineComponent = Class {
     name = 'StateMachineComponent',

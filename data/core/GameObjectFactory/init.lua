@@ -4,9 +4,7 @@
 -- @classmod data.core.GameObjectFactory
 
 local Loader = globals.Loader
-
 local Class = require 'lib.hump.class'
-local vector = require 'lib.hump.vector'
 
 local GameObjectFactory = Class {
 	name = 'GameObjectFactory'

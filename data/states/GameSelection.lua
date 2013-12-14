@@ -6,7 +6,8 @@ return function (state)
             "Samus",
             "Megaman",
             "Scrooge",
-            "Bayonetta"
+            "Bayonetta",
+            "Kirby"
         }
 
         self.stages = {
@@ -39,7 +40,7 @@ return function (state)
 
         local gridschema = {
             columns = {150, 10, 150, 10, 150, 10, 150 },
-            rows = { 50, 10, 30, 5, 30, 5, 30, 5, 30, 5, 30, 5, 30},
+            rows = { 50, 10, 30, 5, 30, 5, 30, 5, 30, 5, 30, 5, 30, 5, 30},
             alignment = {
                 horizontal = "center",
                 vertical = "center"

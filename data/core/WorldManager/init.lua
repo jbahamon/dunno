@@ -10,9 +10,6 @@ local Loader = globals.Loader
 local GameObjectManager = require 'data.core.WorldManager.GameObjectManager'
 local CameraManager = require 'data.core.WorldManager.CameraManager'
 
-local ActiveCollider = require 'lib.HardonCollider'
-local TileCollider = require 'lib.TileCollider'
-
 local vector = require 'lib.hump.vector'
 
 local Timer = globals.Timer

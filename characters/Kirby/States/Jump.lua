@@ -12,10 +12,11 @@ end
 
 
 function Jump:lateUpdate(dt)
-
-	if self.owner.physics.velocity.y  < self.dynamics.jumpReleaseVelocity and
+	
+	if self.owner.physics.velocity.y < self.dynamics.jumpReleaseVelocity and
 		not self.owner.control["jump"] then
-		self.owner.physics.velocity.y  = self.dynamics.jumpClipVelocity
+        print("wow")
+		self.owner.physics.velocity.y = self.dynamics.jumpClipVelocity
 	end
 
 end

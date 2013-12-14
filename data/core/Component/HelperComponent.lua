@@ -1,12 +1,12 @@
---- A Component that represents an element's position and orientation. Every GameObject has a TransformComponent.
--- @classmod data.core.Component.TransformComponent
+--- A Component that represents an element's helper object (companion, special effects animations, etc).
+-- @classmod data.core.Component.HelperComponent
 
 local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 
 local BaseComponent = require 'data.core.Component.BaseComponent'
 
-local TransformComponent = Class {
+local HelperComponent = Class {
     name = 'TransformComponent',
     __includes = BaseComponent
 }
