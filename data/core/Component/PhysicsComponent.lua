@@ -164,7 +164,6 @@ end
 function PhysicsComponent:getAdditionalForces()
     local externalForce = vector(0,0)
 
-
     for id, force in pairs(self.externalForces) do
         externalForce = externalForce + force.value
     end

@@ -135,6 +135,20 @@ function AnimationComponent:setAnimation(name, noReset)
     end
 end
 
+--- Sets the component's current animation frame.
+-- @tparam number index The index of the frame to set.
+function AnimationComponent:goToFrame(index)
+    self.currentAnimation:gotoFrame(index)
+end
+
+
+
+--- Returns the current animation's status
+-- @tparam number index The index of the frame to set.
+function AnimationComponent:getStatus()
+    return self.currentAnimation.status
+end
+
 
 -----------------------------------------------------------------
 -- State handling

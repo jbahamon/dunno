@@ -10,10 +10,10 @@ local scale = originalFrameRate
 dynamics.maxVelocity = vector(1.296875, 1) * scale
 
 -- Accelerations    
-dynamics.friction = vector(0, 0)
-dynamics.noInputFriction = vector(0.0546875, 0) * scale * scale
+dynamics.friction = vector(0.0546875, 0) * scale * scale
+dynamics.noInputFriction = vector(0, 0)
 dynamics.defaultAcceleration = vector(0,0)
-dynamics.inputAcceleration = vector(0.125, 0) * scale * scale
+dynamics.inputAcceleration = vector(0, 0)
 dynamics.gravity = vector(0, 0.25) * scale * scale
 
 return dynamics

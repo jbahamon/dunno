@@ -16,8 +16,8 @@ dynamics.inputAcceleration = vector(0.125, 0) * scale * scale
 dynamics.gravity = vector(0, 0.125) * scale * scale
 
 -- Other Properties, Counters and Flags
-dynamics.jumpVelocity = - 3.4375 * scale
-dynamics.jumpReleaseVelocity = - 0.52625 * scale
-dynamics.jumpClipVelocity = - 0.52625 * scale
+dynamics.jumpVelocity = - 3.5625 * scale
+dynamics.jumpReleaseVelocity = - 0.65125 * scale
+dynamics.jumpClipVelocity = - 0.65125 * scale
 
 return dynamics	

@@ -99,17 +99,19 @@ end
 -- are executed, if found.
 -- @tparam State nextState The target state.
 function StateMachineComponent:changeToState(nextState)
-    
+
     if self.currentState and self.currentState.onExitTo then
         self.currentState:onExitTo(nextState)
     end
 
-    if nextState.onEnterFrom then
-        nextState:onEnterFrom(self.currentState)
-    end
-
+    local oldState = self.currentState
     self.currentState = nextState
+
     self.container:changeToState(nextState)
+
+    if nextState.onEnterFrom then
+        nextState:onEnterFrom(oldState)
+    end
 end
 
 --- Returns the current state's flags.

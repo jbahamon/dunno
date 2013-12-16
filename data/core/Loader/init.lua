@@ -244,6 +244,7 @@ function Loader.loadBasicStates(object, stateParams)
     end
        
     Loader.loadStates(object, stateParams)
+
     Loader.loadTransitions(object, Loader.basicTransitions)
 
     for stateName, state in pairs(stateParams) do
@@ -271,7 +272,6 @@ function Loader.loadStates(object, states)
     local CustomState, newState
 
     for stateName, stateParams in pairs(states) do
-
         if stateParams.class then
             if type(stateParams.class) == "string" then
                 local ok, classFile = pcall(love.filesystem.load, object.folder ..  '/' .. stateParams.class)
@@ -283,7 +283,7 @@ function Loader.loadStates(object, states)
         else
             CustomState = State
         end
-
+        
         newState = CustomState(stateName)
         Loader.loadSingleState(object, newState, stateParams)
     end
@@ -321,7 +321,7 @@ function Loader.normalizeDynamics(dynamics)
     dynamics.noInputFriction = dynamics.noInputFriction or vector(0, 0)
     dynamics.defaultAcceleration = dynamics.defaultAcceleration or vector(0, 0)
     dynamics.inputAcceleration = dynamics.inputAcceleration or vector(0, 0)
-    dynamics.gravity = dynamics.gravity or 0
+    dynamics.gravity = dynamics.gravity or vector(0, 0)
 end
 
 --- Creates and adds transition from a parameter table.
