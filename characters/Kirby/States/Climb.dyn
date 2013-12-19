@@ -9,7 +9,7 @@ local scale = originalFrameRate
 dynamics.size = vector(10, 20)
 
 -- Velocities
-dynamics.maxVelocity = vector(0, 1.5) * scale
+dynamics.maxVelocity = vector(0, 1.2) * scale
 
 -- Accelerations    
 dynamics.friction = vector(0, 0)

@@ -14,7 +14,7 @@ globals = {
     characterFolder = 'characters/',
     stageFolder = 'stages/',
 	scale = 2,
-	DEBUG = false,
+	DEBUG = true,
 	debugSettings = {
 		collisionBoxColor = {0, 0, 255, 100},
 		hitBoxColor = {255, 0, 0, 100}
@@ -60,8 +60,8 @@ local game = {
       template = require 'data.states.InGameOptions',
       parent = "InGame"
     },
-    Test = {
-        template = require 'data.states.Test',
+    Settings = {
+        template = require 'data.states.Settings',
         parent = "Title"
     },
 

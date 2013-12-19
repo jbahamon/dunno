@@ -1,6 +1,7 @@
 return function (state)
 
     function state:init()
+
         self.drawGrid = false
 
         self.colors = require 'lib.colors'
@@ -10,53 +11,45 @@ return function (state)
         self.debugName = "Title"
 
         self.fonts = {
-            title = love.graphics.newFont("data/fonts/joystixmono.otf", 50),
+            title = love.graphics.newFont("data/fonts/joystixmono.otf", 24),
             subtitle = love.graphics.newFont("data/fonts/joystixmono.otf", 12),
             menu = love.graphics.newFont("data/fonts/joystixmono.otf", 16)
 
         }
 
         self.gridschema = {
-
             columns = {160, 310, 160 },
-            rows = { 100, 20, 30, 30, 10, 30, 10, 30 },
+            rows = { 50, 10, 30, 10, 30, 10, 30 },
             alignment = {
                 horizontal = "center",
                 vertical = "center"
             },
+
             margin = { left = 0, top = 0, right = 0, bottom = 0 }
         }
-
     end
 
     function state:enter(previous)
         self.gui.keyboard.clearFocus()
-        self.drawGrid = false
         self.grid:init(self.gui, self.gridschema)
     end
 
-    function state:leave(previous)
-        self.doExit = nil
-    end
-
     function state:update(dt)
-        if self.doExit then return self.doExit() end
+        if self.doExit then return self.parent end
 
-        self.grid:Label("DUNNO", 1, 1, 3, 1, 'center', self.fonts["title"])
-        self.grid:Label("'cause we didn't know what to name it", 1, 2, 3, 1, "center", self.fonts["subtitle"])
+        self.grid:Label("Settings", 1, 1, 3, 1, 'center', self.fonts["title"])
 
-        if self.grid:Button("Single Player", 2, 4, 1, 1, self.fonts["menu"]) then
-            return "GameSelection"
+        if self.grid:Button("Input settings", 2, 3, 1, 1, self.fonts["menu"]) then
+            return "InputSettings"
         end
 
-        if self.grid:Button("Settings", 2, 6, 1, 1, self.fonts["menu"]) then
-            return "Settings"
+        if self.grid:Button("Display settings", 2, 5, 1, 1, self.fonts["menu"]) then
+            return "DisplaySettings"
         end
 
-        if self.grid:Button("Quit", 2, 8, 1, 1, self.fonts["menu"]) then
-            love.event.push("quit")
+        if self.grid:Button("Back", 2, 7, 1, 1, self.fonts["menu"]) then
+            return self.parent
         end
-
     end
 
     function state:draw()
@@ -72,12 +65,9 @@ return function (state)
         end
 
         if key == "escape" then
-            love.event.push("quit")
+            self.doExit = self.parent
         end
     end
 
     return state
-
 end
-
-

@@ -5,7 +5,7 @@ local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 
 local BaseComponent = require 'data.core.Component.BaseComponent'
-
+local TLBind = love.filesystem.load("lib/TLbind.lua")()
 -----------------------------------------------------------------
 --- Building and destroying
 -- @section building
@@ -35,10 +35,9 @@ function InputComponent:init(bindings)
         up="up", left="left", down="down", right="right", z="jump", rctrl="attack", x="attack"
     }
 
-    self.binds, self.control = love.filesystem.load("lib/TLBind.lua")()
+    self.binds, self.control = TLBind.giveInstance(bindings)
     self.binds.keys = bindings
     self.hasControl = true
-    
 end    
 
 --- Adds this component to a GameObject. This method registers

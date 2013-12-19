@@ -32,14 +32,10 @@ return function (state)
 
         }
 
-         self.maxElems = 6
-    end
+        self.maxElems = 6
 
-    function state:enter(previous)
-        self.gui.keyboard.clearFocus()
-
-        local gridschema = {
-            columns = {150, 10, 150, 10, 150, 10, 150 },
+        self.gridschema = {
+            columns = {160, 310, 160 },
             rows = { 50, 10, 30, 5, 30, 5, 30, 5, 30, 5, 30, 5, 30, 5, 30},
             alignment = {
                 horizontal = "center",
@@ -49,7 +45,12 @@ return function (state)
             margin = { left = 0, top = 0, right = 0, bottom = 0 }
         }
 
-        self.grid:init(self.gui, gridschema)
+        
+    end
+
+    function state:enter(previous)
+        self.gui.keyboard.clearFocus()
+        self.grid:init(self.gui, self.gridschema)
 
         self.chosenCharacter = nil
         self.chosenStage = nil
@@ -63,19 +64,19 @@ return function (state)
     end
 
     function state:leave(previous)
-        self.doExit = nil
+        self.doExit = false
     end
 
     function state:update(dt)
 
-        if self.doExit then return self.doExit() end
+        if self.doExit then return self.parent end
 
         if not self.chosenCharacter then
 
-            self.grid:Label("Choose your character", 1, 1, 7, 1, 'center', self.fonts["title"])
+            self.grid:Label("Choose your character", 2, 1, 1, 1, 'center', self.fonts["title"])
 
             for i = self.minCharIndex, math.min(self.maxElems, #self.characters) do
-                if self.grid:Button(self.characters[i], 3, 2 * i + 1, 3, 1, self.fonts["menu"], "char-" .. i ) then
+                if self.grid:Button(self.characters[i], 2, 2 * i + 1, 1, 1, self.fonts["menu"], "char-" .. i ) then
                     self.chosenCharacter = self.characters[i]
                 end
 
@@ -83,7 +84,7 @@ return function (state)
 
             local i = math.min(self.maxElems, #self.characters) + 1
 
-            if self.grid:Button("Cancel", 3, 2 * i + 1, 3, 1, self.fonts["menu"]) then
+            if self.grid:Button("Back", 2, 2 * i + 1, 1, 1, self.fonts["menu"]) then
                 return self.parent
             end
 
@@ -94,12 +95,10 @@ return function (state)
 
         elseif not self.chosenStage then
 
-            self.grid:Label("Choose a stage", 1, 1, 7, 1, 'center', self.fonts["title"])
-            
-            local i 
+            self.grid:Label("Choose a stage", 2, 1, 1, 1, 'center', self.fonts["title"])
 
             for i = self.minStageIndex, math.min(self.maxElems, #self.stages) do
-                if self.grid:Button(self.stages[i], 3, 2 * i + 1, 3, 1, self.fonts["menu"], "stage-" .. i ) then
+                if self.grid:Button(self.stages[i], 2, 2 * i + 1, 1, 1, self.fonts["menu"], "stage-" .. i ) then
                     self.chosenStage = self.stages[i]
                 end
 
@@ -107,7 +106,7 @@ return function (state)
 
             local i = math.min(self.maxElems, #self.stages) + 1
 
-            if self.grid:Button("Cancel", 3, 2 * i + 1, 3, 1, self.fonts["menu"]) then
+            if self.grid:Button("Back", 2, 2 * i + 1, 1, 1, self.fonts["menu"]) then
                 self.chosenCharacter = nil
             end
 
@@ -125,12 +124,16 @@ return function (state)
     function state:keypressed(key, code)
         self.gui.keyboard.pressed(key, code)
 
-        if globals.debug and key == "g" then
+        if globals.DEBUG and key == "g" then
             self.drawGrid = not self.drawGrid
         end
 
         if key == "escape" then
-            self.doExit = function () return self.parent end
+            if self.chosenCharacter then 
+                self.chosenCharacter = nil
+            else 
+                self.doExit = true
+            end
         end
     end
 

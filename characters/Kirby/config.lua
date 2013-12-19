@@ -30,14 +30,13 @@ local params = {
 			inflateAir = {
 				mode = "once",
 				frames = {"4,5", "4,2", "3,6", "3,3"},
-				defaultDelay = 7/60, 
+				defaultDelay = 6/60, 
 			},
 
 			deflateAir = {
 				mode = "once",
 				frames = {"3,3", "3,6", "4,2", "4,5"},
-				defaultDelay = 7/60, 
-				delays = { 13/60, 4/60, 5/60, 4/60 }
+				defaultDelay = 6/60, 
 			},
 
 			jump = { 
@@ -215,7 +214,7 @@ local params = {
 				to			= "inflate",
 				condition 	= 
 					function (currentState, collisionFlags)
-			            return currentState.owner.control["jump"]
+			            return currentState.owner.control.tap["jump"]
 			        end
 			},
 

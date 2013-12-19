@@ -19,7 +19,7 @@ return function (state)
     function state:enter(previous)
         self.timer = 0
         self.gui.keyboard.clearFocus()
-         self.title = (previous.summary.endState == "Win") and "You won!" or "You lost!"
+        self.title = (previous.summary.endState == "Win") and "You won!" or "You lost!"
 
         local gridschema = {
             columns = {150, 10, 310 , 10, 150 },
