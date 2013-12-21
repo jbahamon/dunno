@@ -19,6 +19,44 @@ globals = {
 		collisionBoxColor = {0, 0, 255, 100},
 		hitBoxColor = {255, 0, 0, 100}
 	},
+
+  playerKeys = {
+    {
+      up = "up",
+      down = "down",
+      left = "left",
+      right = "right",
+      jump = "z",
+      special = "x"
+    },
+
+    {
+      up = "i",
+      down = "j",
+      left = "k",
+      right = "l",
+      jump = "t",
+      special = "y"
+    },
+
+    {
+      up = "up",
+      down = "down",
+      left = "left",
+      right = "right",
+      jump = "z",
+      special = "x"
+    },
+
+    {
+      up = "up",
+      down = "down",
+      left = "left",
+      right = "right",
+      jump = "z",
+      special = "x"
+    },
+  }
 }
 
 globals.Timer = require 'lib.hump.timer'
@@ -64,7 +102,14 @@ local game = {
         template = require 'data.states.Settings',
         parent = "Title"
     },
-
+    InputSettings = {
+        template = require 'data.states.InputSettings',
+        parent = "Settings"
+    },
+    DisplaySettings = {
+        template = require 'data.states.DisplaySettings',
+        parent = "Settings"
+    },
     GameEnded = {
         template = require 'data.states.GameEnded',
         parent = "InGame"
@@ -115,6 +160,6 @@ end
 
 function love.mousepressed(x, y, button)
     if game.states.head.mousepressed then
-        game.states.head:keypressed(x, y, button)
+        game.states.head:mousepressed(x, y, button)
     end
 end

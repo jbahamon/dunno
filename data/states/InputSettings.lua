@@ -18,8 +18,8 @@ return function (state)
         }
 
         self.gridschema = {
-            columns = {160, 310, 160 },
-            rows = { 50, 10, 30, 10, 30, 10, 30 },
+            columns = {75, 10, 75, 10, 75, 10, 50, 5, 20},
+            rows = { 50, 10, 30, 10, 30, 10, 30, 10, 30, 10, 30, 10, 30, 10, 30, 10, 30, 10, 30 },
             alignment = {
                 horizontal = "center",
                 vertical = "center"
@@ -27,28 +27,78 @@ return function (state)
 
             margin = { left = 0, top = 0, right = 0, bottom = 0 }
         }
+        self.checkboxSizes = {1, 1, 1, 2}
+
+        self.currentDisplacement = 0
+        self.minGridPos = 7
+        self.keyOrder = {"up", "down", "left", "right", "jump", "special"}
+
+        self.numItems = 5
+
+
     end
 
     function state:enter(previous)
         self.gui.keyboard.clearFocus()
         self.grid:init(self.gui, self.gridschema)
+        self.selectedPlayer = 1
+        self.changeKeyPrompt = false
+        self.currentDisplacement = 0
+        self.sliderData = {value = 1, max = 1, min = #self.keyOrder - self.numItems + 1, step = -1}
     end
 
     function state:update(dt)
+
+        self.sliderData.value = self.currentDisplacement + 1
+
         if self.doExit then return self.parent end
 
-        self.grid:Label("Settings", 1, 1, 3, 1, 'center', self.fonts["title"])
+        self.grid:Label("Input Settings", 1, 1, 8, 1, 'center', self.fonts["title"])
+        self.grid:Label("Select player: ", 1, 3, 1, 1, 'left', self.fonts["menu"] )
 
-        if self.grid:Button("Input settings", 2, 3, 1, 1, self.fonts["menu"]) then
-            return "InputSettings"
+
+        for i = 1, 4 do
+            if self.grid:Checkbox(tostring(i), 1 + (i - 1) * 2, 5, 2, 1, 
+                'left', self.fonts["menu"], self.selectedPlayer == i, "checkbox"..i) then
+                self.selectedPlayer = i
+            end
         end
 
-        if self.grid:Button("Display settings", 2, 5, 1, 1, self.fonts["menu"]) then
-            return "DisplaySettings"
-        end
-
-        if self.grid:Button("Back", 2, 7, 1, 1, self.fonts["menu"]) then
+        if self.grid:Button("Set All", 1, 7, 9, 1, self.fonts["menu"], "all") then
             return self.parent
+        end
+
+
+        if self.grid:Slider(self.sliderData, 9, self.minGridPos + 2, 1, self.numItems * 2 - 1, true, "slider") then
+            self.sliderData.value = math.floor(self.sliderData.value + 0.5)
+            self.currentDisplacement = self.sliderData.value - 1
+        end
+
+
+        for i = 1, self.numItems do
+
+            self.grid:Label(self.keyOrder[i + self.currentDisplacement], 1, 
+                self.minGridPos + 2 * i, 3, 1, 'left', self.fonts["menu"]) 
+            
+            if self.grid:Button(globals.playerKeys[self.selectedPlayer][self.keyOrder[self.currentDisplacement + i]], 
+                5, self.minGridPos + 2 * i, 3, 1, 
+                self.fonts["menu"], 
+                "control"..tostring(self.currentDisplacement + i)) then
+
+                self.changeKeyPrompt  = true
+                self.selectedControlIndex = self.currentDisplacement + i
+
+            end            
+        end
+
+        if self.grid:Button("Back", 2, 19, 5, 1, self.fonts["menu"], "back") then
+            return self.parent
+        end
+
+        if self.changeKeyPrompt then
+            self.gui.BoxedLabel{text = "Press key/button to set", pos = "center", size = {"tight", "tight"}}
+            self.gui.mouse.disable()
+            self.gui.keyboard.disable()
         end
     end
 
@@ -58,14 +108,81 @@ return function (state)
     end
 
     function state:keypressed(key, code)
-        self.gui.keyboard.pressed(key, code)
 
-        if globals.DEBUG and key == "g" then
+        if self.changeKeyPrompt then
+            -- If we are actually creating a new binding, we ignore everything else.
+            if key ~= "escape" then 
+                globals.playerKeys[self.selectedPlayer][self.keyOrder[self.selectedControlIndex]] = key
+            end
+            self.changeKeyPrompt = false
+            self.gui.mouse.enable()
+            self.gui.keyboard.enable()
+            self:controlsForward(self.selectedControlIndex)
+
+        elseif key == "escape" then
+            -- Exiting
+            self.doExit = self.parent
+
+        elseif type(self.gui.keyboard.getFocus()) == "string" and 
+            self.gui.keyboard.getFocus():find("^checkbox") and
+            (key == "left" or key == "right" or
+             key == "up" or key == "down") then
+
+            -- Custom navigation according to the layout
+            if key == "left" or key == "right" then
+                local inc = key == "left" and -1 or 1
+                local newIndex = ((tonumber(self.gui.keyboard.getFocus():sub(9)) - 1) + inc) % 4 + 1
+                self.gui.keyboard.setFocus("checkbox".. newIndex)
+            elseif key == "up" then
+                self.gui.keyboard.setFocus("back")
+            elseif key == "down" then
+                self.gui.keyboard.setFocus("all")
+            end
+        
+        elseif type(self.gui.keyboard.getFocus()) == "string" and 
+            self.gui.keyboard.getFocus():find("^control") and
+            (key == "up" or key == "down" or key == "right") then
+            local controlIndex = tonumber(self.gui.keyboard.getFocus():sub(8))
+
+            if key == "up" then
+                self:controlsBack(controlIndex)
+            elseif key == "down" then
+                self:controlsForward(controlIndex)
+            end
+
+        elseif self.gui.keyboard.hasFocus("all") and key == "down" then
+            self.gui.keyboard.setFocus("control"..tostring(self.currentDisplacement + 1))
+        elseif globals.DEBUG and key == "g" then
             self.drawGrid = not self.drawGrid
+        else
+            -- The library handles all other keypresses.
+            self.gui.keyboard.pressed(key, code)
         end
 
-        if key == "escape" then
-            self.doExit = self.parent
+       
+
+    end
+
+
+    function state:controlsForward(controlIndex)
+        if controlIndex - self.currentDisplacement < self.numItems then
+            self.gui.keyboard.setFocus("control"..tostring(controlIndex + 1))
+        elseif controlIndex < #self.keyOrder then
+            self.currentDisplacement = self.currentDisplacement + 1
+            self.gui.keyboard.setFocus("control"..tostring(controlIndex + 1))
+        else
+            self.gui.keyboard.setFocus("back")
+        end
+    end
+
+    function state:controlsBack(controlIndex)
+        if controlIndex - self.currentDisplacement > 1 then
+            self.gui.keyboard.setFocus("control"..tostring(controlIndex - 1))
+        elseif self.currentDisplacement > 0 then
+            self.currentDisplacement = self.currentDisplacement - 1
+            self.gui.keyboard.setFocus("control"..tostring(controlIndex - 1))
+        else
+            self.gui.keyboard.setFocus("all")
         end
     end
 

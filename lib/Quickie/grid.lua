@@ -185,6 +185,12 @@ function export:getShape(column, row, columnspan, rowspan, align)
     end
   end
 
+  if rowspan > 1 then
+    local lastRow = row + rowspan
+    for r=row+1,lastRow-1 do
+      height = height + self.grid.cells[column][r].height
+    end
+  end
   return x, y, width, height
 end
 
@@ -201,14 +207,23 @@ function export:Button(content, column, row, columnspan, rowspan, font, id)
   if font then
     love.graphics.setFont(font)
   end
-  return self.quickie.Button{text = content, pos = {x, y}, size = {width, height}}
+  return self.quickie.Button{text = content, pos = {x, y}, size = {width, height}, id = id}
 end
 
 function export:Slider(info, column, row, columnspan, rowspan, vertical, id)
   local x, y, width, height = self:getShape(column, row, columnspan, rowspan)
-
   return self.quickie.Slider{info = info, pos = {x, y}, size = {width, height}, vertical = vertical, id = id} 
 end
+
+function export:Checkbox(content, column, row, columnspan, rowspan, align, font, checked, id)
+  local x, y, width, height = self:getShape(column, row, columnspan, rowspan)
+  if font then
+    love.graphics.setFont(font)
+  end
+  -- {checked = status, text = "", align = "left", pos = {x, y}, size={w, h}, widgetHit=widgetHit, draw=draw}
+  return self.quickie.Checkbox{text = content, pos = {x, y}, size = {width, height}, align = align, checked = checked, id = id}
+end
+
 
 
 return export
