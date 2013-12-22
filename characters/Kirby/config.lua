@@ -232,7 +232,7 @@ local params = {
 				to			= "deflate",
 				condition 	= 
 					function (currentState, collisionFlags)
-			            return currentState.owner.control["attack"]
+			            return currentState.owner.control["special"]
 			        end
 			},
 

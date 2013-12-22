@@ -26,36 +26,19 @@ globals = {
       down = "down",
       left = "left",
       right = "right",
-      jump = "z",
-      special = "x"
+      z = "jump",
+      x = "special"
     },
 
     {
-      up = "i",
-      down = "j",
-      left = "k",
-      right = "l",
-      jump = "t",
-      special = "y"
+      i = "up",
+      j = "down",
+      k = "left",
+      l = "right",
+      t = "jump",
+      y = "special",
     },
 
-    {
-      up = "up",
-      down = "down",
-      left = "left",
-      right = "right",
-      jump = "z",
-      special = "x"
-    },
-
-    {
-      up = "up",
-      down = "down",
-      left = "left",
-      right = "right",
-      jump = "z",
-      special = "x"
-    },
   }
 }
 

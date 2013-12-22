@@ -30,10 +30,6 @@ local InputComponent = Class {
 -- See <a href="http://love2d.org/wiki/TLbind">TLbind's documentation</a> for details (under bind.keys).
 function InputComponent:init(bindings)
     BaseComponent.init(self)
-    bindings = bindings or {
-        w="up", a="left", s="down", d="right", [" "]="jump", lctrl="attack", escape="menu",
-        up="up", left="left", down="down", right="right", z="jump", rctrl="attack", x="attack"
-    }
 
     self.binds, self.control = TLBind.giveInstance(bindings)
     self.binds.keys = bindings

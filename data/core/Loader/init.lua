@@ -147,7 +147,8 @@ function Loader.loadTransform(object)
 end
 
 function Loader.loadInput(object)
-    object:addComponent(InputComponent())
+    local playerIndex = index or 1
+    object:addComponent(InputComponent(globals.playerKeys[1]))
 end
 
 function Loader.loadAnimation(object, parameters)

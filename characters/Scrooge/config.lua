@@ -174,7 +174,7 @@ local params = {
 				to 			= "pogoFall",
 				condition 	= 
 		        	function(currentState, collisionFlags) 
-		            	return currentState.owner.control["attack"] and collisionFlags.canMoveDown 
+		            	return currentState.owner.control["special"] and collisionFlags.canMoveDown 
 		        	end
 		    },
 
@@ -192,7 +192,7 @@ local params = {
 				to 			= "fall",
 				condition 	=
 		    	    function (currentState, collisionFlags) 
-			            if not currentState.owner.control["attack"] then
+			            if not currentState.owner.control["special"] then
 			            	if currentState.name == "pogoJump" then
 			                	currentState.owner.physics.velocity.y = 0
 			                end
@@ -208,7 +208,7 @@ local params = {
 				to 			= "pogoJump",
 				condition 	=
 		    	    function (currentState, collisionFlags)
-						return currentState.owner.control["attack"] and not collisionFlags.canMoveDown 
+						return currentState.owner.control["special"] and not collisionFlags.canMoveDown 
 					end
 			},
 		
@@ -232,7 +232,7 @@ local params = {
 				to 			= "stand",
 				condition =
 		    	     function (currentState, collisionFlags) 
-				          return (not currentState.owner.control["attack"]) and (not collisionFlags.canMoveDown)
+				          return (not currentState.owner.control["special"]) and (not collisionFlags.canMoveDown)
 			        end
 			},
 
@@ -258,7 +258,7 @@ local params = {
 
 	postBuild = 
 		function (player)
-			player.stateMachine.states["pogoJump"]:setHoldControl("attack")
+			player.stateMachine.states["pogoJump"]:setHoldControl("special")
 			player.stateMachine.states["jump"]:setHoldControl("jump")
 		end,
 

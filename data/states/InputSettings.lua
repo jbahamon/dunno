@@ -31,7 +31,7 @@ return function (state)
 
         self.currentDisplacement = 0
         self.minGridPos = 7
-        self.keyOrder = {"up", "down", "left", "right", "jump", "special"}
+        self.bindsOrder = {"up", "down", "left", "right", "jump", "special"}
 
         self.numItems = 5
 
@@ -43,8 +43,17 @@ return function (state)
         self.grid:init(self.gui, self.gridschema)
         self.selectedPlayer = 1
         self.changeKeyPrompt = false
-        self.currentDisplacement = 0
-        self.sliderData = {value = 1, max = 1, min = #self.keyOrder - self.numItems + 1, step = -1}
+        self.currentDisplacement = 1
+        self.sliderData = {value = 1, max = 1, min = #self.bindsOrder - self.numItems + 1, step = -1}
+
+        self.playerKeys = {}
+        for _, bindings in ipairs(globals.playerKeys) do
+            local binds = {}
+            for key, command in pairs(bindings) do
+                binds[command] = key
+            end
+            table.insert(self.playerKeys, binds)
+        end
     end
 
     function state:update(dt)
@@ -77,10 +86,11 @@ return function (state)
 
         for i = 1, self.numItems do
 
-            self.grid:Label(self.keyOrder[i + self.currentDisplacement], 1, 
+            self.grid:Label(self.bindsOrder[i + self.currentDisplacement], 1, 
                 self.minGridPos + 2 * i, 3, 1, 'left', self.fonts["menu"]) 
             
-            if self.grid:Button(globals.playerKeys[self.selectedPlayer][self.keyOrder[self.currentDisplacement + i]], 
+
+            if self.grid:Button(self.playerKeys[self.selectedPlayer][self.bindsOrder[self.currentDisplacement + i]], 
                 5, self.minGridPos + 2 * i, 3, 1, 
                 self.fonts["menu"], 
                 "control"..tostring(self.currentDisplacement + i)) then
@@ -112,7 +122,16 @@ return function (state)
         if self.changeKeyPrompt then
             -- If we are actually creating a new binding, we ignore everything else.
             if key ~= "escape" then 
-                globals.playerKeys[self.selectedPlayer][self.keyOrder[self.selectedControlIndex]] = key
+                local oldKey = self.playerKeys[self.selectedPlayer][self.bindsOrder[self.selectedControlIndex]]
+
+                if globals.playerKeys[self.selectedPlayer][key] then
+                    self.playerKeys[self.selectedPlayer][globals.playerKeys[self.selectedPlayer][key]] = oldKey  
+                    globals.playerKeys[self.selectedPlayer][oldKey] = globals.playerKeys[self.selectedPlayer][key]
+                end
+
+                self.playerKeys[self.selectedPlayer][self.bindsOrder[self.selectedControlIndex]] = key                
+                globals.playerKeys[self.selectedPlayer][key] = self.bindsOrder[self.selectedControlIndex]
+
             end
             self.changeKeyPrompt = false
             self.gui.mouse.enable()
@@ -167,7 +186,7 @@ return function (state)
     function state:controlsForward(controlIndex)
         if controlIndex - self.currentDisplacement < self.numItems then
             self.gui.keyboard.setFocus("control"..tostring(controlIndex + 1))
-        elseif controlIndex < #self.keyOrder then
+        elseif controlIndex < #self.bindsOrder then
             self.currentDisplacement = self.currentDisplacement + 1
             self.gui.keyboard.setFocus("control"..tostring(controlIndex + 1))
         else
