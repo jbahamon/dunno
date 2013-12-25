@@ -86,8 +86,7 @@ local params = {
 
 			skid = {
 				dynamics = "States/skid.dyn",
-				animation = "skid",
-				class = "States/Skid.lua"
+				animation = "skid"
 			}
 		},
 

@@ -35,7 +35,6 @@ return function (state)
 
         self.numItems = 5
 
-
     end
 
     function state:enter(previous)
@@ -43,7 +42,7 @@ return function (state)
         self.grid:init(self.gui, self.gridschema)
         self.selectedPlayer = 1
         self.changeKeyPrompt = false
-        self.currentDisplacement = 1
+        self.currentDisplacement = 0
         self.sliderData = {value = 1, max = 1, min = #self.bindsOrder - self.numItems + 1, step = -1}
 
         self.playerKeys = {}
@@ -56,11 +55,17 @@ return function (state)
         end
     end
 
+    function state:leave(previous)
+        self.doExit = false
+    end
+
     function state:update(dt)
 
         self.sliderData.value = self.currentDisplacement + 1
 
-        if self.doExit then return self.parent end
+        if self.doExit then 
+            return self.doExit
+        end
 
         self.grid:Label("Input Settings", 1, 1, 8, 1, 'center', self.fonts["title"])
         self.grid:Label("Select player: ", 1, 3, 1, 1, 'left', self.fonts["menu"] )
@@ -140,6 +145,9 @@ return function (state)
 
         elseif key == "escape" then
             -- Exiting
+            self.gui.mouse.enable()
+            self.gui.keyboard.enable()
+            self.changeKeyPrompt = false
             self.doExit = self.parent
 
         elseif type(self.gui.keyboard.getFocus()) == "string" and 

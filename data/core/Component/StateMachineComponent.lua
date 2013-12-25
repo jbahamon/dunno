@@ -99,6 +99,9 @@ end
 -- are executed, if found.
 -- @tparam State nextState The target state.
 function StateMachineComponent:changeToState(nextState)
+    if globals.DEBUG then
+        print("to "..nextState.name)
+    end
 
     if self.currentState and self.currentState.onExitTo then
         self.currentState:onExitTo(nextState)

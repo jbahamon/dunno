@@ -8,6 +8,12 @@ local scale = originalFrameRate
 -- Velocities
 dynamics.maxVelocity = vector(1.296875, math.huge) * scale
 
+dynamics.maxVelocitySmall = vector(1.296875, math.huge) * scale
+dynamics.maxVelocityBig = vector(1.796875, math.huge) * scale
+
+dynamics.velocityThreshold = vector(1.296875, math.huge) * scale
+
+
 -- Accelerations    
 dynamics.friction = vector(0, 0)
 dynamics.noInputFriction = vector(0.0546875, 0) * scale * scale

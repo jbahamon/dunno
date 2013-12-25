@@ -14,7 +14,7 @@ globals = {
     characterFolder = 'characters/',
     stageFolder = 'stages/',
 	scale = 2,
-	DEBUG = true,
+	DEBUG = false,
 	debugSettings = {
 		collisionBoxColor = {0, 0, 255, 100},
 		hitBoxColor = {255, 0, 0, 100}
@@ -56,9 +56,7 @@ globals.Loader = require 'data.core.Loader'
 -- greater than or equal to min_val
 
 function math.clamp(input, min_val, max_val)
-	input = math.min(input, max_val)
-	input = math.max(input, min_val)
-	return input
+	return math.max(math.min(input, max_val), min_val)
 end
 
 local game = {

@@ -71,6 +71,12 @@ local params = {
 				delays = {10/60, 8/60, 10/60, 8/60}
 			},
 
+			run = {
+				mode = "loop",
+				frames = {"3,5", "5,4", "2,6", "5,4"},
+				defaultDelay = 3.5/60
+			},
+
 			hit = {
 				mode = "loop",
 				frames = "4,1",
@@ -81,7 +87,13 @@ local params = {
 				mode = "once",
 				frames = "2,2",
 				defaultDelay = 5/60
-			}
+			},
+
+			skid = {
+				mode = "once",
+				frames = "3,4",
+				defaultDelay = 5/60.0
+			},
 		},
 	},
 
@@ -122,6 +134,11 @@ local params = {
 
 		states = {
 
+			run = {
+				dynamics = "States/run.dyn",
+				animation = "run"
+			},
+
 			crouch = {
 				dynamics = "States/Crouch.dyn",
 				animation = "crouch",
@@ -155,9 +172,87 @@ local params = {
 				size = vector(16,16)
 			},
 
+			skid = {
+				dynamics = "States/skid.dyn",
+				animation = "skid",
+			}
+
 		},
 
 		transitions = {
+			{
+				from = {"walk", "run"},
+				to = "skid",
+				condition = 
+					function(currentState, collisionFlags)
+						return (currentState.owner.control["right"] and (not currentState.owner.control["left"])
+							and currentState.owner.physics.velocity.x < 0 and currentState.owner.transform.facing < 0) or 
+							(currentState.owner.control["left"] and (not currentState.owner.control["right"])
+							and currentState.owner.physics.velocity.x > 0 and currentState.owner.transform.facing > 0)
+					end
+			},
+
+			{
+				from = "skid",
+				to = "walk",
+				condition =
+					function(currentState, collisionFlags)
+						return ((not currentState.owner.control["right"] or 
+									currentState.owner.control["left"]) and 
+								currentState.owner.transform.facing < 0) or
+							((not currentState.owner.control["left"] or  
+									currentState.owner.control["right"]) and 
+								currentState.owner.transform.facing > 0)
+					end
+			},
+
+			{
+				from = {"skid", "run"}
+				,
+				to = "walk",
+				condition =
+					function(currentState, collisionFlags)
+						return (not currentState.owner.control["right"]) and (not currentState.owner.control["left"])
+					end
+			},
+
+			{
+				from = {"skid", "run"},
+				to = "fall",
+				condition =
+					function(currentState, collisionFlags)
+						return collisionFlags.canMoveDown
+					end
+			},
+
+			{	
+				from		= "walk",
+				to			= "run",
+				condition 	= 
+					function (currentState, collisionFlags)
+			            return (currentState.owner.control.tap["right"] and (not currentState.owner.control["left"])
+							and currentState.owner.physics.velocity.x > 0 and currentState.owner.transform.facing > 0) or 
+							(currentState.owner.control.tap["left"] and (not currentState.owner.control["right"])
+							and currentState.owner.physics.velocity.x < 0 and currentState.owner.transform.facing < 0)
+			        end
+			},
+			{
+				from = {"skid", "run"},
+				to = "jump",
+				condition =
+					function(currentState, collisionFlags)
+						return currentState.owner.control["jump"]
+					end
+			},
+
+			{
+				from = "skid",
+				to = "stand",
+				condition =
+					function(currentState, collisionFlags)
+						return currentState.owner.physics.velocity.x == 0
+					end
+			},
 
 			{ 
 				from 		= "jump",
@@ -169,7 +264,7 @@ local params = {
 			},
 
 			{	
-				from		= {"crouch", "inflate", "deflate", "floatUp", "floatDown"},
+				from		= {"crouch", "inflate", "deflate", "floatUp", "floatDown", "run", "skid"},
 				to 			= "hit",
 				condition 	= 
 					function (currentState, collisionFlags)

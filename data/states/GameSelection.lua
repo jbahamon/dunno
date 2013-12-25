@@ -131,6 +131,7 @@ return function (state)
         if key == "escape" then
             if self.chosenCharacter then 
                 self.chosenCharacter = nil
+                self.gui.keyboard.clearFocus()
             else 
                 self.doExit = true
             end
