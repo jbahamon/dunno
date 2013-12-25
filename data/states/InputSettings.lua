@@ -34,12 +34,14 @@ return function (state)
         self.bindsOrder = {"up", "down", "left", "right", "jump", "special"}
 
         self.numItems = 5
+        self.numPlayers = 2
 
     end
 
     function state:enter(previous)
         self.gui.keyboard.clearFocus()
         self.grid:init(self.gui, self.gridschema)
+
         self.selectedPlayer = 1
         self.changeKeyPrompt = false
         self.currentDisplacement = 0
@@ -71,7 +73,7 @@ return function (state)
         self.grid:Label("Select player: ", 1, 3, 1, 1, 'left', self.fonts["menu"] )
 
 
-        for i = 1, 4 do
+        for i = 1, self.numPlayers do
             if self.grid:Checkbox(tostring(i), 1 + (i - 1) * 2, 5, 2, 1, 
                 'left', self.fonts["menu"], self.selectedPlayer == i, "checkbox"..i) then
                 self.selectedPlayer = i

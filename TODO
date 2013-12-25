@@ -59,10 +59,6 @@ Stages
 Managers (World, Camera)
 ========================================================================
 
-- World might be a container (a la GameObject) for world components (a la 
-TransformComponent, etc.). This should happen if there are more world 
-components
-
 - fix bugs with the scrolling camera (try entering tourian's second room
   while jumping/walking) Might have something to do with the camera's 
   getVisible(). Actually, we should play Metroid and see how the camera 
