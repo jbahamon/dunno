@@ -62,7 +62,7 @@ function CameraManager:draw(objects)
    						self.stage:moveTo(vector(l, t))
 						self.stage:draw()
 
-						for _, object in ipairs(objects) do
+						for _, object in pairs(objects) do
 							object:draw()
 							love.graphics.setColor(self.fullScreenTint)
 						end

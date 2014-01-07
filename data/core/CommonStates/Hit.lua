@@ -8,11 +8,6 @@ local Hit = Class {
 	__includes = State
 }
 
-function Hit:init(name)
-	State.init(self, name)
-end
-
-
 function Hit:onEnterFrom(otherState)
 	self.owner.collision.invincible = true
 

@@ -112,28 +112,34 @@ function Loader.loadObjectFromParameters(parameters, folder)
     return object
 end
 
-function Loader.loadComponents(character, parameters)
+function Loader.loadComponents(object, parameters)
     
-    character:addComponent(TransformComponent(character))
+    object:addComponent(TransformComponent(object))
 
     if parameters.physics ~= false then
-        Loader.loadPhysics(character)
+        Loader.loadPhysics(object)
     end 
 
     if parameters.input then
-        Loader.loadInput(character)
+        Loader.loadInput(object)
     end
 
     if parameters.animation then
-        Loader.loadAnimation(character, parameters.animation)
+        Loader.loadAnimation(object, parameters.animation)
     end    
 
     if parameters.collision then
-        Loader.loadCollision(character, parameters.collision)
+        Loader.loadCollision(object, parameters.collision)
     end    
     
     if parameters.stateMachine then
-        Loader.loadStateMachine(character, parameters.stateMachine)     
+        Loader.loadStateMachine(object, parameters.stateMachine)     
+    end
+
+    if parameters.customComponents then
+        for _, customComponent in ipairs(parameters.customComponents) do
+            Loader.loadCustomComponent(object, customComponent.class, customComponent.parameters)
+        end
     end
 
 end
@@ -200,6 +206,15 @@ function Loader.loadCollision(object, parameters)
 
 end
 
+function Loader.loadCustomComponent(object, class, parameters)
+    assert(class, "Custom component class must be defined for object " .. object.name )
+    local classPath = object.folder .. '/' .. class
+    local CustomComponent = Loader.loadFile(classPath)
+
+    object:addComponent(CustomComponent(parameters))
+
+end
+
 
 --- Adds a set of basic player states to a GameObject. The GameObject should have
 -- a StateMachine, Animation, Transform, Input, Collision and Physics components.
@@ -224,6 +239,7 @@ function Loader.loadBasicStates(object, stateParams)
            stateParams.climb.dynamics and
            stateParams.hit.dynamics,
         "All six basic state dynamics must be specified for basic state inclusion")
+
     assert(stateParams.stand.animation and 
            stateParams.walk.animation and 
            stateParams.jump.animation and 
@@ -352,7 +368,7 @@ end
 -- @tparam string path The path of the file to be loaded.
 -- @treturn table The loaded table.
 function Loader.loadFile(path)
-    assert(love.filesystem.isFile(path), "File \'".. path .. "\' not found")
+    assert(love.filesystem.isFile(path), "File \'".. path .. "\' does not exist")
     local ok, paramsFile = pcall(love.filesystem.load, path)
     assert(ok, "Loaded file " .. path .. " has syntax errors: " .. tostring(paramsFile))
     local parameters = paramsFile()
@@ -361,6 +377,7 @@ function Loader.loadFile(path)
 end
 
 --- Transitions between basic states.
+-- @table basicTransitions
 Loader.basicTransitions =
     {
         { 

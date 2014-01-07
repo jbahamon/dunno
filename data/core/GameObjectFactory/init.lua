@@ -33,14 +33,14 @@ function GameObjectFactory:init(parameters, tileCollider, activeCollider, folder
 
         assert(parameters.animation.sprites.sheet, "Sprite sheet must be specified (as animation.sprites.sheet)")   
 
-        local folder = parameters.animation.sprites.folder or folder or ""
-        local sprites = folder .. "/" .. string.gsub(parameters.animation.sprites.sheet, '[^%a%d-_/.]', '')
+        if type(parameters.animation.sprites.sheet) == "string" then
+            local folder = parameters.animation.sprites.folder or folder or ""
+            local sprites = folder .. "/" .. string.gsub(parameters.animation.sprites.sheet, '[^%a%d-_/.]', '')
+            assert(love.filesystem.isFile(sprites), "Spritesheet \'".. sprites .."\' supplied is not a file")   
+            self.parameters.animation.sprites.sheet = love.graphics.newImage(sprites)
+        end
 
-        assert(love.filesystem.isFile(sprites), "Spritesheet \'".. sprites .."\' supplied is not a file")   
-
-        self.parameters.animation.sprites.sheet = love.graphics.newImage(sprites)
     end
-
 
 end
 
@@ -53,11 +53,13 @@ function GameObjectFactory:create()
     newGameObject.folder = self.folder
     newGameObject.name = self.parameters.name
    
-    if self.parameters.elementType == "Enemy" then
-        newGameObject.collision.damagesOnContact = true
-    end
+    if newGameObject.collision then
+        if self.parameters.elementType == "Enemy" then
+            newGameObject.collision.damagesOnContact = true
+        end
 
-    newGameObject.collision:setColliders(self.tileCollider, self.activeCollider)
+        newGameObject.collision:setColliders(self.tileCollider, self.activeCollider)
+    end
 
 	return newGameObject
 

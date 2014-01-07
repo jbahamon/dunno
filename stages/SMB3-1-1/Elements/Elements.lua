@@ -349,24 +349,6 @@ local elementTypes = {
 			},
 		},
 
-		helperAnimations = {
-			Pipe = 
-
-			{	
-				sprites = {
-					sheet = "Elements/Sprites/Pipe.png",
-					spriteSize = vector(32, 32)
-				},
-
-				animation = {
-					mode = "once",
-					frames = "1,1",
-					defaultDelay = 0.1
-				}
-
-			}
-		},
-
 		stateMachine = {
 			states = {
 	
@@ -433,6 +415,31 @@ local elementTypes = {
 			},
 	
 			initialState = "hidden",
+		},
+
+		customComponents = {
+
+			{
+				class = "Elements/Components/PipeComponent.lua",
+				parameters = {
+					name = "Pipe",
+					physics = false,
+					animation = {
+						sprites = {
+							sheet = "Elements/Sprites/Pipe.png",
+							spriteSize = vector(32, 32)
+						},
+
+						animations = {
+							default = {
+								mode = "once",
+								frames = "1,1",
+								defaultDelay = 0.1
+							}
+						}
+					}
+				}
+			}
 		},
 
 		onStart = function(plant)

@@ -58,7 +58,7 @@ end
 -- addComponent, register and setEventHandler.
 -- @treturn GameObject The newly created GameObject.
 function GameObject.new()
-	return setmetatable(
+	local newObject = setmetatable(
 		{	_inner = InnerGameObject(),
 			addComponent = GameObject.addComponent,
 			register = GameObject.register,
@@ -77,6 +77,10 @@ function GameObject.new()
 				end
 			end
 		})
+
+	newObject:setEventHandler("start", function() end)
+	newObject:setEventHandler("destroySelf", function() end)
+	return newObject
 end
 
 return GameObject

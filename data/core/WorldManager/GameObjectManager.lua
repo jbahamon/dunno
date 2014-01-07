@@ -46,7 +46,7 @@ function GameObjectManager:start(stage)
     self.tileCollider = TileCollider(stage)
     self.activeCollider = ActiveCollider(100, self.onDynamicCollide)
 
-    for _, managedObject in ipairs(self.managedObjects) do
+    for _, managedObject in pairs(self.managedObjects) do
         if managedObject.collision then
             managedObject.collision:setColliders(self.tileCollider, self.activeCollider)
         end
@@ -65,6 +65,7 @@ end
 function GameObjectManager:addObject(newObject)
 
     table.insert(self.managedObjects, newObject)
+
     if newObject.update then
         table.insert(self.updatableObjects, newObject)
     end
@@ -90,7 +91,7 @@ end
 -- and the camera.
 -- @param dt The time slice for the update.
 function GameObjectManager:update(dt)
-    for _, gameObject in ipairs(self.updatableObjects) do
+    for _, gameObject in pairs(self.updatableObjects) do
         gameObject:update(dt)
     end
     
@@ -104,7 +105,7 @@ function GameObjectManager:update(dt)
     self.activeCollider:update(dt)
     
     -- Now the late updates
-    for _, gameObject in ipairs(self.lateUpdatableObjects) do
+    for _, gameObject in pairs(self.lateUpdatableObjects) do
         gameObject:lateUpdate(dt)
     end
 
@@ -112,7 +113,7 @@ end
 
 function GameObjectManager:refreshObjectSpawning(topLeft, bottomRight) 
     
-    for i, obj in ipairs(self.managedObjects) do
+    for i, obj in pairs(self.managedObjects) do
 
         if self.managedObjects.elementType ~= "Player" then
             local offscreen = (obj.collision and (not GeometryUtils.isBoxInRange(obj.collision.box, topLeft -  vector(32, 32), bottomRight +  vector(32, 32))))
@@ -190,7 +191,7 @@ function GameObjectManager.onDynamicCollide(dt, shapeA, shapeB)
 end
 
 function GameObjectManager:destroySelf()
-    for _, object in ipairs(self.managedObjects) do
+    for _, object in pairs(self.managedObjects) do
         object.world = nil
         object:destroySelf()
     end

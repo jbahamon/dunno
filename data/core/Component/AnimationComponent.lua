@@ -120,6 +120,10 @@ function AnimationComponent:addAnimation(name, params)
                                         params.flippedV or false )
 
     self.animations[name] = animation
+
+    if not self.currentAnimation then
+        self.currentAnimation = animation
+    end
 end
 
 --- Sets the component's current animation.
