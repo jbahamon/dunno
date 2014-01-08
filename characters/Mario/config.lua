@@ -73,12 +73,14 @@ local params = {
 			fall = {
 				dynamics = "States/fall.dyn",
 				animation = "jump",
-				class = "States/Fall.lua"
+				class = "States/Fall.lua",
+				hitbox = vector(12, 4),
+				hitboxOffset = vector(0, -4)
 			},
 
 			hit = {
 				dynamics = "States/hit.dyn",
-				animation = "jump"
+				animation = "jump",
 			}
 		},	
 
@@ -166,6 +168,15 @@ local params = {
 		},
 
 		initialState = "stand"
+	},
+
+	customComponents = {
+
+		{
+			class = "data/core/Component/HitboxComponent.lua",
+			parameters = {}
+		}
+
 	}
 }
 

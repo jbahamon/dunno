@@ -185,8 +185,9 @@ end
 -- @param shapeB The second colliding shape, as a <a href="http://vrld.github.com/HardonCollider/">HardonCollider</a> shape.
 function GameObjectManager.onDynamicCollide(dt, shapeA, shapeB)
     if shapeA.parent and shapeB.parent then
-        shapeA.parent:onDynamicCollide(dt, shapeB.parent)
-        shapeB.parent:onDynamicCollide(dt, shapeA.parent)
+        local _, dx, dy = shapeA:collidesWith(shapeB)
+        shapeA.parent:onDynamicCollide(dt, dx/2, dy/2, shapeB.parent)
+        shapeB.parent:onDynamicCollide(dt, dx/2 - dx, dy/2 - dy, shapeA.parent)
     end
 end
 

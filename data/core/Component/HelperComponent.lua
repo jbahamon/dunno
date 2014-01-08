@@ -27,6 +27,7 @@ end
 function HelperComponent:addTo(container)
     BaseComponent.addTo(self, container)
     container:register("start", self)
+    container:register("destroySelf", self)
 end
 
 function HelperComponent:start()
@@ -45,6 +46,5 @@ function HelperComponent:spawnObject()
     newObject:start()
     return newObject
 end
-
 
 return HelperComponent

@@ -176,6 +176,11 @@ function WorldManager:unPauseGame()
 	end
 end
 
+
+function WorldManager:getActiveCollider()
+	return self.gameObjectManager.activeCollider
+end
+
 --- Called when two active elements collide. 
 -- If the collision needs to be resolved in a particular order, this should be the 
 -- place to decide it. For now there is no guarantee on which of the two objects is the first to

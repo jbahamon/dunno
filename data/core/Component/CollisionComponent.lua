@@ -244,6 +244,8 @@ function CollisionComponent:resolveTileCollisions(sampleTile, tileSize)
     local collides, dx, dy
     local highestLadderEvent
 
+    local transform = self.container.transform
+
     for idx, event in pairs(self.pendingCollisions) do
     -- FIXME - this should be improved
 
@@ -274,33 +276,19 @@ function CollisionComponent:resolveTileCollisions(sampleTile, tileSize)
 
             if event.tile.properties.solid then 
 
-                self.container:move(vector(dx, dy))
-                if math.abs(dx) > math.abs(dy) then
-                    if dx > 0 then 
-                        self.collisionFlags.canMoveLeft = false
-                    elseif dx < 0 then
-                        self.collisionFlags.canMoveRight = false
-                    end
-                else
-                    if dy > 0 then 
-                        self.collisionFlags.canMoveUp = false
-                        self.container.physics.velocity.y = math.max(self.container.physics.velocity.y, 0)
-                    elseif dy < 0 then 
-                        self.collisionFlags.canMoveDown = false
-                    end
-                end
+                self:onSolidCollide(dx, dy)
 
                 local centerX, centerY = self.box:center()
 
-                if sampleTile:intersectsRay(centerX, centerY, 0, 200) then
-                    self.collisionFlags.standingOnSolid = true
-                end
+--                if sampleTile:intersectsRay(centerX, centerY, 0, 200) then
+--                    self.collisionFlags.standingOnSolid = true
+--                end
 
             elseif event.tile.properties.oneWayPlatform then
                 
-                local verticalDisplacement = event.position.y * tileSize.y - self.container.transform.position.y
+                local verticalDisplacement = event.position.y * tileSize.y - transform.position.y
                 
-                if event.position.y * tileSize.y >= self.container.transform.lastPosition.y then
+                if event.position.y * tileSize.y >= transform.lastPosition.y then
                     self.container:move(vector(0, verticalDisplacement))
                     self.collisionFlags.canMoveDown = false
 
@@ -314,8 +302,8 @@ function CollisionComponent:resolveTileCollisions(sampleTile, tileSize)
         end
     end
                 
-    if highestLadderEvent and highestLadderEvent.position.y * tileSize.y >= self.container.transform.lastPosition.y then
-        self.container:moveTo(vector(self.container.transform.position.x, highestLadderEvent.position.y * tileSize.y))
+    if highestLadderEvent and highestLadderEvent.position.y * tileSize.y >= transform.lastPosition.y then
+        self.container:moveTo(vector(transform.position.x, highestLadderEvent.position.y * tileSize.y))
         self.collisionFlags.canMoveDown = false
         self.collisionFlags.specialEvents.standingOnLadder = self.collisionFlags.specialEvents.ladder
         self.collisionFlags.specialEvents.ladder = nil
@@ -323,17 +311,47 @@ function CollisionComponent:resolveTileCollisions(sampleTile, tileSize)
 
 end
 
+function CollisionComponent:onSolidCollide(dx, dy)
+    self.container:move(vector(dx, dy))
+    if math.abs(dx) > math.abs(dy) then
+        if dx > 0 then 
+            self.collisionFlags.canMoveLeft = false
+        elseif dx < 0 then
+            self.collisionFlags.canMoveRight = false
+        end
+    else
+        if dy > 0 then 
+            self.collisionFlags.canMoveUp = false
+
+            if self.container.physics then
+                self.container.physics.velocity.y = math.max(self.container.physics.velocity.y, 0)
+            end
+        elseif dy < 0 then 
+            self.collisionFlags.canMoveDown = false
+        end
+    end
+end
+
 --- Called when colliding with an active CollisionComponent in the world (interactive CollisionComponent, enemy, etc).
--- Currently calls getHitBy on the other CollisionComponent's container if this CollisionComponent damages on contact.
+-- Currently calls getHitBy onthe other CollisionComponent's container if this CollisionComponent damages on contact.
+-- Each 
+-- @tparam vector displacement The separating vector between
 -- @tparam number dt The time slice for the collision frame.
 -- @tparam @{data.core.Component.CollisionComponent} otherCollisionComponent The CollisionComponent that is colliding with this one.
-function CollisionComponent:onDynamicCollide(dt, otherCollisionComponent)
+function CollisionComponent:onDynamicCollide(dt, dx, dy, otherCollisionComponent)
     if otherCollisionComponent == self then
         return
     end
 
     if self.damagesOnContact then
         otherCollisionComponent.container:getHitBy(self.parent)
+    end
+
+    
+    if self.container.elementType == "Enemy" and otherCollisionComponent.container.elementType == "Enemy" then
+
+        self:onSolidCollide(dx, dy)
+
     end
 end
 

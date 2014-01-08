@@ -27,10 +27,7 @@ local Loader = {}
 function Loader.loadStage(name)
 
     local folder = globals.stageFolder .. string.gsub(name, '[^%a%d-_/]', '')
-    assert(love.filesystem.isFile(folder .. "/config.lua"), "Stage configuration file \'".. folder .. "/config.lua"   .."\' not found")
-    local ok, stageFile = pcall(love.filesystem.load, folder .. "/config.lua")
-    assert(ok, "Stage file has syntax errors: " .. tostring(stageFile))
-    local parameters = stageFile()
+    local parameters = Loader.loadFile("/config.lua", folder)
 
     assert(type(parameters) == "table", "Stage configuration file must return a table")
 
@@ -78,9 +75,9 @@ end
 -- @return GameObject The newly created Player character.
 function Loader.loadCharacterFromName(name)
    
-    local path = globals.characterFolder .. string.gsub(name, "[^%a%d-_/]", "") .. "/config.lua"    
+    local path = string.gsub(name, "[^%a%d-_/]", "") .. "/config.lua"    
 
-    local parameters = Loader.loadFile(path)
+    local parameters = Loader.loadFile(path, globals.characterFolder)
 
     parameters.name = parameters.name or name
     parameters.input = parameters.input or true
@@ -100,6 +97,8 @@ function Loader.loadObjectFromParameters(parameters, folder)
     object.name = parameters.name
 
     Loader.loadComponents(object, parameters)
+
+    object.elementType = parameters.elementType or "Neutral"
 
     if parameters.postBuild then
         parameters.postBuild(object)
@@ -208,8 +207,7 @@ end
 
 function Loader.loadCustomComponent(object, class, parameters)
     assert(class, "Custom component class must be defined for object " .. object.name )
-    local classPath = object.folder .. '/' .. class
-    local CustomComponent = Loader.loadFile(classPath)
+    local CustomComponent = Loader.loadFile(class, object.folder)
 
     object:addComponent(CustomComponent(parameters))
 
@@ -291,9 +289,7 @@ function Loader.loadStates(object, states)
     for stateName, stateParams in pairs(states) do
         if stateParams.class then
             if type(stateParams.class) == "string" then
-                local ok, classFile = pcall(love.filesystem.load, object.folder ..  '/' .. stateParams.class)
-                assert(ok, "State class file has syntax errors: " .. tostring(classFile))
-                CustomState = classFile()
+                CustomState = Loader.loadFile(stateParams.class, object.folder)
             elseif type(stateParams.class) == "table" or type(stateParams.class) == "function" then
                 CustomState = stateParams.class
             end
@@ -309,17 +305,15 @@ end
 
 function Loader.loadSingleState(object, newState, stateParams)
     local folder = object.folder
-
-    local ok, dynamicsFile = pcall(love.filesystem.load, folder .. "/" .. stateParams.dynamics)
-    
-    assert(ok, "Character dynamics file has syntax errors: " .. tostring(dynamicsFile))
+    local dynamics = Loader.loadFile(stateParams.dynamics, object.folder)
 
     for field, value in pairs(stateParams) do
         newState[field] = value
+        print(field)
     end
 
     if stateParams.dynamics then
-        local dynamics = dynamicsFile()
+        
         newState.dynamics = dynamics
         Loader.normalizeDynamics(dynamics)
     end
@@ -366,13 +360,26 @@ end
 
 --- Loads a table from a file.
 -- @tparam string path The path of the file to be loaded.
+-- @tparam[opt] string folder The folder to load the file from. 
 -- @treturn table The loaded table.
-function Loader.loadFile(path)
-    assert(love.filesystem.isFile(path), "File \'".. path .. "\' does not exist")
-    local ok, paramsFile = pcall(love.filesystem.load, path)
-    assert(ok, "Loaded file " .. path .. " has syntax errors: " .. tostring(paramsFile))
+function Loader.loadFile(path, folder)
+
+    folder = folder and (folder .. "/") or ""
+
+    local fullPath = folder .. path
+
+    if folder and (not love.filesystem.isFile(fullPath)) then
+        fullPath = path
+    end
+
+    assert(love.filesystem.isFile(fullPath), "File \'".. path .. "\' does not exist")
+
+    local ok, paramsFile = pcall(love.filesystem.load, fullPath)
+    assert(ok, "Loaded file " .. path .. " has errors: " .. tostring(paramsFile))
+
     local parameters = paramsFile()
     assert(type(parameters) == "table", "Loaded file \'" .. path .. "\' must return a table")
+
     return parameters
 end
 

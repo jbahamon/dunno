@@ -13,9 +13,15 @@ local PipeComponent = Class {
 
 function PipeComponent:start()
     HelperComponent.start(self)
-    local pipe = self:spawnObject()
-    pipe:moveTo(self.container.transform.position)
+    self.pipe = self:spawnObject()
+    self.pipe:moveTo(self.container.transform.position + vector(0, 10))
 
+end
+
+function PipeComponent:destroySelf()
+    if self.pipe then
+        self.pipe:destroySelf()
+    end
 end
 
 return PipeComponent
