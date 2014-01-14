@@ -14,7 +14,7 @@ local PipeComponent = Class {
 function PipeComponent:start()
     HelperComponent.start(self)
     self.pipe = self:spawnObject()
-    self.pipe:moveTo(self.container.transform.position + vector(0, 10))
+    self.pipe:moveTo(self.container.transform.position)
 
 end
 

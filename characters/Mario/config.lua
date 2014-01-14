@@ -74,8 +74,8 @@ local params = {
 				dynamics = "States/fall.dyn",
 				animation = "jump",
 				class = "States/Fall.lua",
-				hitbox = vector(12, 4),
-				hitboxOffset = vector(0, -4)
+				hitbox = vector(12, 2),
+				hitboxOffset = vector(0, -2)
 			},
 
 			hit = {
@@ -163,7 +163,18 @@ local params = {
 					function(currentState, collisionFlags)
 						return currentState.owner.physics.velocity.x ~= 0 and not collisionFlags.canMoveDown
 					end
+			},
+
+			{	
+				from = "fall",
+				to = "jump",
+				condition = 
+					function(currentState, collisionFlags)
+						return collisionFlags.stomped
+					end
 			}
+
+
 
 		},
 
@@ -173,8 +184,13 @@ local params = {
 	customComponents = {
 
 		{
-			class = "data/core/Component/HitboxComponent.lua",
-			parameters = {}
+			class = "Components/StompHitbox.lua",
+			parameters = {
+				hitDef = {
+					hitType = "contact",
+					target = { Enemy = true }
+				}
+			}
 		}
 
 	}

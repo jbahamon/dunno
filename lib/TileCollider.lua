@@ -64,7 +64,7 @@ function TileCollider:update(dt)
 	local tileSize = self.stage:getTileSize()
 
 	for idx, elem in pairs(self.elements) do
-		if elem.active then
+		if elem.hitsTiles then
 			elem.parent:resetCollisionFlags()
 
 			elem.color = {255, 0, 255, 255}

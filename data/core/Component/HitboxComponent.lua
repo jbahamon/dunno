@@ -5,7 +5,6 @@ local Class = require 'lib.hump.class'
 local vector = require 'lib.hump.vector'
 local BaseComponent = require 'data.core.Component.BaseComponent'
 
-local GeometryUtils = require 'lib.GeometryUtils'
 local shapes = require 'lib.HardonCollider.shapes'
 
 local HitboxComponent = Class {
@@ -29,6 +28,11 @@ function HitboxComponent:init(parameters)
     self.defaultSize = parameters.defaultSize or vector(1,1)
     self.defaultOffset = parameters.defaultOffset or vector(0, 0)
     self:setCollisionBox(self.defaultSize)
+
+    self.hitDef = parameters.hitDef or {}
+    self.hitDef.type = self.hitDef.type or "contact"
+
+    parameters.origin = self
 
 end    
 
@@ -97,7 +101,7 @@ end
 
 --- If globals.DEBUG is set to <i>true</i>, this method draws the HitboxComponent's current collision box.
 function HitboxComponent:draw()
-    if not globals.DEBUG then return end
+    if not globals.DEBUG or not self.active then return end
     local x, y = self.box:center()
     love.graphics.setColor(255, 48, 0, 255)
     love.graphics.rectangle("line", x - self.size.x/2, y - self.size.y/2, self.size.x, self.size.y)
@@ -114,6 +118,11 @@ end
 -- @tparam @{data.core.Component.State} nextState The target state.
 function HitboxComponent:changeToState(nextState)
     if nextState.hitbox and vector.isvector(nextState.hitbox) then
+
+        if nextState.hitDef and nextState.hitDef.type then
+            self.hitDef.type = nextState.hitDef.type or "contact"
+        end
+
         if not self.active then
             self:enable()
         end
@@ -163,9 +172,22 @@ end
 -- @tparam number dt The time slice for the collision frame.
 -- @tparam @{data.core.Component.HitboxComponent} HitboxisionComponent The HitboxComponent that is colliding with this one.
 function HitboxComponent:onDynamicCollide(dt, dx, dy, otherComponent)
-    if self.active then
-        otherComponent.container:getHitBy(self.parent)
+    if otherComponent.container == self.container then
+        return
     end
+
+    if self.active then
+        local result = otherComponent.container.collision:getHitBy(self.hitDef)
+
+        if result == "hit" then
+            self:onHit(otherComponent)
+        elseif result == "dodge" then
+            self:onDodge(otherComponent)
+        elseif result == "block" then
+            self:onBlock(otherComponent)
+        end
+    end
+
 end
 
 
@@ -212,7 +234,6 @@ function HitboxComponent:enable()
 
     self.active = true
     self:moveTo(self.container.transform.position)
-    
 
 end
 
@@ -222,5 +243,32 @@ function HitboxComponent:disable()
     self.activeCollider:setGhost(self.box)
     self.active = false
 end
+
+--- Disables the HitboxComponent's collisions against other objects.
+-- @see HitboxComponent:enable
+function HitboxComponent:disable()
+    self.activeCollider:setGhost(self.box)
+    self.active = false
+end
+
+function HitboxComponent:onHit()
+    if self.container.collision then
+        self.container.collision.invincible = true
+        globals.Timer.add(
+            1/60,
+            function()
+                self.container.collision.invincible = false
+            end
+        )
+    end
+end
+
+function HitboxComponent:onDodge()
+end
+
+function HitboxComponent:onBlock()
+end
+
+
 
 return HitboxComponent

@@ -28,6 +28,9 @@ function GameObjectManager:init(world)
     self.updatableObjects = {}
     self.lateUpdatableObjects = {}
     self.players = {}
+
+    self.indexes = {}
+    setmetatable(self.indexes, { __mode = 'k' })
 end
 
 --- Class that handles interactions between the Stage, the Player(s) and 
@@ -64,23 +67,62 @@ end
 -- @param playerName The name of the player's folder
 function GameObjectManager:addObject(newObject)
 
-    table.insert(self.managedObjects, newObject)
+    local newEntry = { managedIndex = #self.managedObjects + 1 }
+
+    self.managedObjects[newEntry.managedIndex] = newObject
 
     if newObject.update then
-        table.insert(self.updatableObjects, newObject)
+        newEntry.updatableIndex = #self.updatableObjects + 1
+        self.updatableObjects[newEntry.updatableIndex] = newObject
     end
 
     if newObject.lateUpdate then
-        table.insert(self.lateUpdatableObjects, newObject)
+        newEntry.lateUpdatableIndex = #self.lateUpdatableObjects + 1
+        self.lateUpdatableObjects[newEntry.lateUpdatableIndex] = newObject
     end
+
+    self.indexes[newObject] = newEntry
 end
+
+function GameObjectManager:removeObject(object)
+    local index = self.indexes[object]
+
+    object:destroySelf()
+
+    if not index then return end
+
+    self.managedObjects[index.managedIndex] = nil
+
+    if index.updatableIndex then
+        self.updatableObjects[index.updatableIndex] = nil
+    end
+
+    if index.lateUpdatableIndex then
+        self.lateUpdatableObjects[index.lateUpdatableIndex] = nil
+    end
+
+    if index.playerIndex then 
+        self.players[index.playerIndex] = nil
+    end
+
+    self.managedObjects[index.managedIndex] = nil
+
+end
+
 
 --- Adds a Player GameObject to the GameObjectManager. 
 -- Do not call @{GameObjectManager:addObject} on a player object if you use this.
 -- @param playerName The name of the player's folder
 function GameObjectManager:addPlayer(newPlayer)
     self:addObject(newPlayer)
-    table.insert(self.players, newPlayer)
+
+    local playerIndex = #self.players + 1
+    self.players[playerIndex] = newPlayer
+
+    local indexTable = self.indexes[newPlayer]
+    indexTable.playerIndex = playerIndex
+
+
 end
 
 -----------------------------------------------------------------
@@ -125,8 +167,7 @@ function GameObjectManager:refreshObjectSpawning(topLeft, bottomRight)
                     elem.elementLocation.onExitScreen(elem)
                 end
                 
-                elem:destroySelf()
-                table.remove(self.managedObjects, i)
+                self:removeObject(elem)
             end
         end
     end

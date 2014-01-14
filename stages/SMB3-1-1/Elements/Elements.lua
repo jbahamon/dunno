@@ -8,15 +8,12 @@ local elementTypes = {
 		physics = false,
 		collision = {
 			size = vector(16, 16),
-		},
-
-		postBuild = function (element)
-			element.collision.onDynamicCollide = function (self, dt, otherComponent)
+			onDynamicCollide = function (self, dt, otherComponent)
 				if otherComponent.container.elementType == "Player" then
 					self.container.world:win()
 				end
 			end
-		end
+		}
 	},
 
 	{ 
@@ -26,6 +23,10 @@ local elementTypes = {
 
 		collision = {
 			size = vector(14, 14),
+			hitDef = {
+				target = { Player = true },
+				hitType = "contact"
+			}
 		},
 		
 		animation = {
@@ -41,6 +42,13 @@ local elementTypes = {
 					frames = "1-2,1",
 					defaultDelay = 8/60
 				},
+
+				shell = {
+					mode = "once",
+					frames = "3,1",
+					defaultDelay = 1/60
+				}
+
 			},
 		},
 
@@ -50,6 +58,48 @@ local elementTypes = {
 						class = "Elements/States/RedKoopaWalk.lua",
 						dynamics = "Elements/Dynamics/EnemyWalk.dyn",
 						animation = "walk"
+				},
+
+				shell = {
+					dynamics = "Elements/Dynamics/Shell.dyn",
+					animation = "shell",
+					class = "Elements/States/Shell.lua"
+				},
+
+				thrownShell = {
+					dynamics = "Elements/Dynamics/ThrownShell.dyn",
+					animation = "shell",
+					class = "Elements/States/ThrownShell.lua"
+				}
+
+			},
+
+			transitions = {
+				{
+					from		= {"walking", "thrownShell"},
+					to			= "shell",
+					condition   = 
+						function (currentState, collisionFlags)
+							if collisionFlags.hit then
+								currentState.owner.physics.velocity = vector(0, 0)
+								return true
+							end
+						end
+				},
+
+				{
+					from		= "shell",
+					to			= "thrownShell",
+					condition   = 
+						function (currentState, collisionFlags)
+							if collisionFlags.touchedFrom then
+								if collisionFlags.touchedFrom * currentState.owner.transform.facing < 0 then
+									currentState.owner:turn()
+								end
+
+								return true
+							end
+						end
 				}
 			},
 	
@@ -64,6 +114,10 @@ local elementTypes = {
 
 		collision = {
 			size = vector(14, 14),
+			hitDef = {
+				target = { Player = true },
+				hitType = "contact"
+			}
 		},
 		
 		animation = {
@@ -84,6 +138,11 @@ local elementTypes = {
 					frames = "5-6,1",
 					defaultDelay = 8/60
 				},
+				shell = {
+					mode = "once",
+					frames = "7,1",
+					defaultDelay = 1/60
+				}
 			},
 		},
 
@@ -98,10 +157,31 @@ local elementTypes = {
 				walking = {
 					dynamics = "Elements/Dynamics/EnemyWalk.dyn",
 					animation = "walk"
-				}
+				},
+
+				shell = {
+					dynamics = "Elements/Dynamics/Shell.dyn",
+					animation = "shell",
+					class = "Elements/States/Shell.lua"
+				},
+
+				thrownShell = {
+					dynamics = "Elements/Dynamics/ThrownShell.dyn",
+					animation = "shell",
+					class = "Elements/States/ThrownShell.lua"
+				}				
 			},
 	
 			transitions = {
+				{	
+					from		= { "jumping" },
+					to 			= "jumping",
+					condition = 
+						function (currentState, collisionFlags)
+							return (not collisionFlags.canMoveDown) and currentState.owner.physics.velocity.y > 0
+						end,
+				},
+
 				{	
 					from		= { "jumping" },
 					to 			= "jumping",
@@ -116,9 +196,40 @@ local elementTypes = {
 					to 			= "walking",
 					condition = 
 						function (currentState, collisionFlags)
-							return collisionFlags.hit and false -- TODO: life
+							if collisionFlags.hit then
+								currentState.owner.physics.velocity = vector(0, 0)
+								return true
+							end
+						end
+				},
+
+				{
+					from		= {"walking", "thrownShell"},
+					to			= "shell",
+					condition   = 
+						function (currentState, collisionFlags)
+							if collisionFlags.hit then
+								currentState.owner.physics.velocity = vector(0, 0)
+								return true
+							end
+						end
+				},
+
+				{
+					from		= "shell",
+					to			= "thrownShell",
+					condition   = 
+						function (currentState, collisionFlags)
+							if collisionFlags.touchedFrom then
+								if collisionFlags.touchedFrom * currentState.owner.transform.facing < 0 then
+									currentState.owner:turn()
+								end
+
+								return true
+							end
 						end
 				}
+	
 			},
 	
 			initialState = "jumping"
@@ -132,6 +243,10 @@ local elementTypes = {
 
 		collision = {
 			size = vector(14, 14),
+			hitDef = {
+				target = { Player = true },
+				hitType = "contact"
+			}
 		},
 		
 		animation = {
@@ -165,6 +280,12 @@ local elementTypes = {
 					frames = "1-4,1",
 					defaultDelay = 4/60
 				},
+
+				die = {
+					mode = "once",
+					frames = "3,2",
+					defaultDelay = 1
+				}
 			},
 		},
 
@@ -190,7 +311,14 @@ local elementTypes = {
 					class = "Elements/States/Jump.lua",
 					dynamics = "Elements/Dynamics/EnemyJump.dyn",
 					animation = "jump"
+				},
+
+				dying = {
+					class = "Elements/States/Death.lua",
+					dynamics = "Elements/Dynamics/Death.dyn",
+					animation = "die"
 				}
+
 			},
 	
 	
@@ -232,7 +360,10 @@ local elementTypes = {
 					to 			= "walking",
 					condition = 
 						function (currentState, collisionFlags)
-							return collisionFlags.hit and false -- TODO: life
+							if collisionFlags.hit then
+								currentState.owner.physics.velocity.y = 0
+								return true
+							end
 						end
 				},
 	
@@ -242,7 +373,17 @@ local elementTypes = {
 						function (currentState, collisionFlags)
 							return currentState.owner.physics.stateTime > 32/60 
 						end,
+				},
+
+				{
+					from = "walking",
+					to = "dying",
+					condition = function(currentState, collisionFlags)
+						return collisionFlags.hit
+					end
 				}
+
+
 			},
 		
 	
@@ -251,50 +392,18 @@ local elementTypes = {
 	},
 
 
-	{ 
-		name = "GreenKoopa",
-
-		elementType = "Enemy",
-
-		collision = {
-			size = vector(14, 14),
-		},
-		
-		animation = {
-			sprites = {
-				sheet = "Elements/Sprites/GreenParaKoopa.png",
-				spriteSize = vector(18, 28),
-				spriteOffset = vector(0, 1)
-			},
 	
-			animations = {
-				walk = {
-					mode = "loop",
-					frames = "5-6,1",
-					defaultDelay = 8/60
-				}
-			},
-	
-			states = {
-	
-				walking = {
-					class = "Elements/States/Walk.lua",
-					dynamics = "Elements/Dynamics/EnemyWalk.dyn",
-					animation = "walk"
-				}
-			},
-	
-			initialState = "walking"
-		},
-	},
-
-
 	{ 
 		name = "Goomba",
 		elementType = "Enemy",
 
+
 		collision = {
 			size = vector(14, 14),
+			hitDef = {
+				target = { Player = true },
+				hitType = "contact"
+			}
 		},
 		
 		animation = {
@@ -309,6 +418,12 @@ local elementTypes = {
 					mode = "loop",
 					frames = "1-2,2",
 					defaultDelay = 8/60
+				},
+
+				die = {
+					mode = "once",
+					frames = "3,2",
+					defaultDelay = 1
 				}
 			},
 		},
@@ -319,6 +434,22 @@ local elementTypes = {
 					class = "Elements/States/Walk.lua",
 					dynamics = "Elements/Dynamics/EnemyWalk.dyn",
 					animation = "walk"
+				},
+
+				dying = {
+					class = "Elements/States/Death.lua",
+					dynamics = "Elements/Dynamics/Death.dyn",
+					animation = "die"
+				}
+			},
+
+			transitions = {
+				{
+					from = "walking",
+					to = "dying",
+					condition = function(currentState, collisionFlags)
+						return collisionFlags.hit
+					end
 				}
 			},
 	
@@ -332,6 +463,18 @@ local elementTypes = {
 		
 		collision = {
 			size = vector(14, 25),
+			hitDef = {
+				target = { Player = true },
+				hitType = "contact"
+			},
+			getHitBy = function(self, hitDef)
+				if hitDef.hitType == "contact" then 
+					return "dodge"
+				else
+					self.collisionFlags.hit = true
+					return "hit"
+				end
+			end
 		},
 
 		animation = {

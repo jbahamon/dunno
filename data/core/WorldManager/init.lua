@@ -99,6 +99,11 @@ function WorldManager:addObject(newObject)
 	newObject.world = self
 end
 
+function WorldManager:removeObject(object)
+	self.gameObjectManager:removeObject(object)
+	object.world = nil
+end
+
 
 -----------------------------------------------------------------
 -- Drawing and updating

@@ -1,5 +1,4 @@
 local Class = require 'lib.hump.class'
-local vector = require 'lib.hump.vector'
 local State = require 'data.core.Component.State'
 
 --Hopping
@@ -23,11 +22,6 @@ function Hop:onEnterFrom(previousState)
 
 	self.owner.physics.velocity.y = self.dynamics.jumpVelocity
 	
-end
-
-function Hop:getHitBy(otherElement)
-	State.getHitBy(self, otherElement)
-	self:turn()
 end
 
 function Hop:lateUpdate(dt)

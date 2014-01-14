@@ -7,11 +7,6 @@ local Walk = Class {
 	__includes = State
 }
 
-function Walk:getHitBy(otherElement)
-	State.getHitBy(self, otherElement)
-	self:turn()
-end
-
 function Walk:lateUpdate(dt)
 	if (self.owner.physics.velocity.x > 0 and (not self.owner.collision.collisionFlags.canMoveRight)) or
 		(self.owner.physics.velocity.x < 0 and (not self.owner.collision.collisionFlags.canMoveLeft)) then

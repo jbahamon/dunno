@@ -44,6 +44,11 @@ function Jump:onEnterFrom(otherState)
 		self.dynamics.horizontalMaxVelocities[2] or
 		self.dynamics.horizontalMaxVelocities[1]
 	
+	if otherState.name == "fall" then
+		self.owner.physics.velocity.y = self.dynamics.stompJumpVelocity
+		return
+	end
+
 	if math.abs(self.owner.physics.velocity.x) < self.dynamics.jumpVelocityConditions[1] then
 
 		self.owner.physics.velocity.y = self.dynamics.jumpYVelocities[1]

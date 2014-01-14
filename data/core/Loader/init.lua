@@ -81,11 +81,11 @@ function Loader.loadCharacterFromName(name)
 
     parameters.name = parameters.name or name
     parameters.input = parameters.input or true
+    parameters.elementType = parameters.elementType or "Player"
 
     local folder = globals.characterFolder .. string.gsub(name, "[^%a%d-_/]", "")
     local character = Loader.loadObjectFromParameters(parameters, folder)
 
-    character.elementType = character.elementType or "Player"
     
     return character
 
@@ -96,9 +96,10 @@ function Loader.loadObjectFromParameters(parameters, folder)
     object.folder = folder
     object.name = parameters.name
 
+    object.elementType = parameters.elementType or "Neutral"
+
     Loader.loadComponents(object, parameters)
 
-    object.elementType = parameters.elementType or "Neutral"
 
     if parameters.postBuild then
         parameters.postBuild(object)
@@ -199,8 +200,16 @@ end
 function Loader.loadCollision(object, parameters)
     object:addComponent(CollisionComponent(parameters.size))
 
-    if parameters.elementType == "Enemy" then
-        object.collision.damagesOnContact = true
+    if parameters.getHitBy then
+        object.collision.getHitBy = parameters.getHitBy
+    end
+
+    if parameters.onDynamicCollide then
+        object.collision.onDynamicCollide = parameters.onDynamicCollide
+    end
+
+    if parameters.hitDef then
+        object.collision:setHitDef(parameters.hitDef)
     end
 
 end
@@ -309,7 +318,6 @@ function Loader.loadSingleState(object, newState, stateParams)
 
     for field, value in pairs(stateParams) do
         newState[field] = value
-        print(field)
     end
 
     if stateParams.dynamics then

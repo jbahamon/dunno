@@ -12,11 +12,6 @@ function Jump:onEnterFrom(previousState)
 	
 end
 
-function Jump:getHitBy(otherElement)
-	State.getHitBy(self, otherElement)
-	self:turn()
-end
-
 function Jump:lateUpdate(dt)
 	if (self.owner.physics.velocity.x > 0 and (not self.owner.collision.collisionFlags.canMoveRight)) or
 		(self.owner.physics.velocity.x < 0 and (not self.owner.collision.collisionFlags.canMoveLeft)) then

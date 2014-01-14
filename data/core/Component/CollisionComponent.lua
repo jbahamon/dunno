@@ -39,6 +39,16 @@ function CollisionComponent:init(defaultSize)
     self.pendingCollisions = {}
 end    
 
+
+function CollisionComponent:setHitDef(hitDef)
+    if self.hitDef then
+        self.hitDef.source = nil
+    end
+
+    self.hitDef = hitDef
+    hitDef.source = self
+end
+
 --- Adds this component to a GameObject. This method registers
 -- the move, moveTo, draw, changeToState, destroySelf and getHitBy methods
 -- with the container GameObject. The CollisionComponent will be added as the collision field of
@@ -52,8 +62,9 @@ function CollisionComponent:addTo(container)
     container:register("draw", self)
     container:register("changeToState", self)
     container:register("destroySelf", self)
-    container:register("getHitBy", self)
     container.collision = self
+    self.box.hitsObjects = true
+    self.box.hitsTiles = true
 end
 
 --- Allows this object to be garbage-collected
@@ -93,7 +104,7 @@ end
 
 --- If globals.DEBUG is set to <i>true</i>, this method draws the CollisionComponent's current collision box.
 function CollisionComponent:draw()
-    if not globals.DEBUG then return end
+    if not globals.DEBUG or not (self.box.hitsObjects or self.box.hitsTiles) then return end
     local x, y = self.box:center()
     love.graphics.setColor(0, 48, 255, 255)
     love.graphics.rectangle("line", x - self.size.x/2, y - self.size.y/2, self.size.x, self.size.y)
@@ -280,9 +291,9 @@ function CollisionComponent:resolveTileCollisions(sampleTile, tileSize)
 
                 local centerX, centerY = self.box:center()
 
---                if sampleTile:intersectsRay(centerX, centerY, 0, 200) then
---                    self.collisionFlags.standingOnSolid = true
---                end
+                if sampleTile:intersectsRay(centerX, centerY, 0, 200) then
+                    self.collisionFlags.standingOnSolid = true
+                end
 
             elseif event.tile.properties.oneWayPlatform then
                 
@@ -339,29 +350,33 @@ end
 -- @tparam number dt The time slice for the collision frame.
 -- @tparam @{data.core.Component.CollisionComponent} otherCollisionComponent The CollisionComponent that is colliding with this one.
 function CollisionComponent:onDynamicCollide(dt, dx, dy, otherCollisionComponent)
-    if otherCollisionComponent == self then
+    if otherCollisionComponent.container == self.container then
         return
     end
 
-    if self.damagesOnContact then
-        otherCollisionComponent.container:getHitBy(self.parent)
+    if self.hitDef then
+        otherCollisionComponent.container.collision:getHitBy(self.hitDef)
     end
 
-    
-    if self.container.elementType == "Enemy" and otherCollisionComponent.container.elementType == "Enemy" then
-
+    if self.container.elementType == otherCollisionComponent.container.elementType and
+        not (self.passesThroughAllies or otherCollisionComponent.passesThroughAllies) then
         self:onSolidCollide(dx, dy)
-
     end
 end
 
 
 --- Called when hit by something (read: something that does damage)-
 -- Currently sets the hit flag in the collisionFlags field.
--- @tparam @{data.core.GameObject} otherObject The GameObject hitting this CollisionComponent
-function CollisionComponent:getHitBy(otherObject)
-    if not self.invincible then
+-- @tparam table hitDef The table that defines the hit.
+function CollisionComponent:getHitBy(hitDef)
+
+    if self.invincible then return "dodge" end
+
+    if hitDef.target[self.container.elementType] then
         self.collisionFlags.hit = true
+        return "hit"
+    else
+        return "dodge"
     end
 end
 
@@ -393,19 +408,53 @@ function CollisionComponent:setCollisionBox(newSize)
 
     self.box = collisionBox
     self.box.parent = self
-    self.box.active = true
+    self.box.hitsTiles = true
 end
 
 --- Disables the CollisionComponent's collisions against tiles.
 -- @see CollisionComponent:enableTileCollisions
 function CollisionComponent:disableTileCollisions()
-    self.box.active = false
+    self.box.hitsTiles = false
 end
 
 --- Enables the CollisionComponent's collisions against tiles.
 -- @see CollisionComponent:disableTileCollisions
 function CollisionComponent:enableTileCollisions()
-    self.box.active = true
+    self.box.hitsTiles = true
+end
+
+
+--- Disables the CollisionComponent's collisions against objects.
+-- @see CollisionComponent:enableDynamicCollisions
+function CollisionComponent:disableDynamicCollisions()
+    if self.box.hitsObjects then
+        self.box.hitsObjects = false
+        self.activeCollider:setGhost(self.box)
+    end
+end
+
+--- Enables the CollisionComponent's collisions against objects.
+-- @see CollisionComponent:disableDynamicCollisions
+function CollisionComponent:enableDynamicCollisions()
+    if not self.box.hitsObjects then
+        self.box.hitsObjects = true
+        self.activeCollider:setSolid(self.box)
+    end
+end
+
+--- Enables all collisions for this CollisionComponent.
+-- @see CollisionComponent:disable
+function CollisionComponent:enable()
+    self:enableDynamicCollisions()
+    self:enableTileCollisions()
+end
+
+
+--- Disables all collisions for this CollisionComponent.
+-- @see CollisionComponent:disable
+function CollisionComponent:disable()
+    self:disableDynamicCollisions()
+    self:disableTileCollisions()
 end
 
 return CollisionComponent

@@ -335,38 +335,18 @@ function Stage:start(tileCollider, activeCollider, topLeft, bottomRight)
 
 end
 
---- Updates the stage. This means updating every active element on the 
--- stage.
--- @param dt The time slice for the update.
+--- Updates the stage. 
 function Stage:update(dt)
-	for _, elem in ipairs(self.activeElements) do
-		elem:update(dt)
-	end
+
 end
 
+--- Updates the stage. 
 function Stage:lateUpdate(dt)
-    for _, element in ipairs(self.activeElements) do
-		element:lateUpdate(dt)
-	end
+
 end
 
 function Stage:refreshElementSpawning(topLeft, bottomRight) 
-	
-	for i, elem in ipairs(self.activeElements) do
 
-		local offscreen = (elem.collision and (not GeometryUtils.isBoxInRange(elem.collision.box, topLeft -  vector(32, 32), bottomRight +  vector(32, 32))))
-			or not GeometryUtils.isPointInRange(elem.transform.position, topLeft -  vector(32, 32), bottomRight +  vector(32, 32))
-
-		if offscreen then
-			
-			if elem.elementLocation.onExitScreen then
-				elem.elementLocation.onExitScreen(elem)
-			end
-			
-			elem:destroySelf()
-			table.remove(self.activeElements, i)
-		end
-	end
 
 	for _, elementLocation in ipairs(self.elementLocations) do
 				
@@ -395,7 +375,6 @@ function Stage:elementLocationOnScreen(elementLocation)
 	local newObject = self.elementFactories[elementLocation.name]:createAt(elementLocation.position, elementLocation.facing)
 
 	newObject.elementLocation = elementLocation
-
 	self.world:addObject(newObject)
 	
 	if newObject.start then
